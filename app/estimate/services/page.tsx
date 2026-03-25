@@ -201,11 +201,10 @@ export default function ServicesPage() {
 
   const handleCardClick = (service: ServiceItem) => {
     if (service.subOptions) {
-      // Toggle expand/collapse
       setExpandedCards((prev) => {
         const next = new Set(prev)
         if (next.has(service.id)) {
-          // Collapsing — also deselect any sub-options
+          // Deselect sub-options and collapse
           next.delete(service.id)
           const subIds = service.subOptions!.map((s) => s.id)
           setSelectedServices((prev) => prev.filter((id) => !subIds.includes(id)))
@@ -215,7 +214,6 @@ export default function ServicesPage() {
         return next
       })
     } else {
-      // Simple card — toggle selection
       handleServiceToggle(service.id)
     }
   }
@@ -331,14 +329,18 @@ export default function ServicesPage() {
                       const selected = isCardSelected(service)
                       const isExpanded = expandedCards.has(service.id)
 
+                      const isPopped = hasSubOptions && isExpanded
+
                       return (
                         <Card
                           key={service.id}
                           onClick={() => handleCardClick(service)}
                           className={`cursor-pointer transition-all duration-200 overflow-hidden ${
-                            selected
-                              ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-md"
-                              : "hover:shadow-md hover:border-gray-300 bg-white"
+                            isPopped
+                              ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-lg -translate-y-1"
+                              : selected
+                                ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-md"
+                                : "hover:shadow-md hover:border-gray-300 bg-white"
                           }`}
                         >
                           <CardContent className="p-4 flex flex-col justify-between h-full">
