@@ -4,11 +4,10 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, CheckCircle2, Camera, Shield, Award, Phone } from "lucide-react"
+import { ArrowRight, CheckCircle2, Lightbulb, Shield, Award, Phone } from "lucide-react"
 
-export default function RegularCleaningPage() {
+export default function LightFixturePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -18,42 +17,35 @@ export default function RegularCleaningPage() {
           {/* Hero Section */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-balance">Regular Dryer Vent Cleaning</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-balance">Light Fixture Installation & Replacement</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Our most comprehensive service includes full deep cleaning of your dryer vent with professional
-                inspection camera scope and a one-year guarantee.
+                Whether you need a new chandelier hung, recessed lights installed, or an old fixture swapped out, our skilled electricians handle it all with precision.
               </p>
               <div className="flex items-center gap-4">
-                <div className="text-4xl font-bold text-[#2A75AE]">$159</div>
+                <div className="text-4xl font-bold text-[#FFCB00]">$150</div>
                 <div className="text-sm text-muted-foreground">
-                  Complete service
+                  Per fixture
                   <br />
-                  with guarantee
+                  installation
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-[#2A75AE] hover:bg-[#2A75AE]/90" asChild>
+                <Button size="lg" className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black" asChild>
                   <Link href="/estimate/services">
                     Book Now
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <a href="tel:6156322980">
+                  <a href="tel:6158806701">
                     <Phone className="mr-2 h-5 w-5" />
-                    (615) 632-2980
+                    (615) 880-6701
                   </a>
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <Image
-                src="/dryer-vent-cleaning.jpg"
-                alt="Professional dryer vent cleaning service"
-                width={600}
-                height={400}
-                className="rounded-2xl shadow-2xl"
-              />
+            <div className="relative bg-yellow-50 rounded-2xl p-12 flex items-center justify-center">
+              <Lightbulb className="h-48 w-48 text-[#FFCB00]" />
             </div>
           </div>
 
@@ -63,125 +55,56 @@ export default function RegularCleaningPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Camera className="h-6 w-6 text-[#2A75AE]" />
+                  <div className="bg-[#FFCB00]/10 w-12 h-12 rounded-full flex items-center justify-center">
+                    <Lightbulb className="h-6 w-6 text-[#FFCB00]" />
                   </div>
-                  <h3 className="font-bold text-lg">Camera Inspection</h3>
+                  <h3 className="font-bold text-lg">Any Fixture Type</h3>
                   <p className="text-sm text-muted-foreground">
-                    We use professional inspection cameras to show you exactly what's inside your vent
+                    Chandeliers, pendants, recessed lights, sconces, flush mounts, and more
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="h-6 w-6 text-[#2A75AE]" />
+                  <div className="bg-[#FFCB00]/10 w-12 h-12 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="h-6 w-6 text-[#FFCB00]" />
                   </div>
-                  <h3 className="font-bold text-lg">Deep Cleaning</h3>
+                  <h3 className="font-bold text-lg">Clean Installation</h3>
                   <p className="text-sm text-muted-foreground">
-                    Complete removal of lint, debris, and blockages from your entire vent system
+                    Professional wiring, secure mounting, and a clean workspace when we leave
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-[#2A75AE]" />
+                  <div className="bg-[#FFCB00]/10 w-12 h-12 rounded-full flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-[#FFCB00]" />
                   </div>
-                  <h3 className="font-bold text-lg">Safety Check</h3>
+                  <h3 className="font-bold text-lg">Safety First</h3>
                   <p className="text-sm text-muted-foreground">
-                    Thorough inspection for damage, proper venting, and fire hazards
+                    All work done to code by licensed and insured electricians
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Award className="h-6 w-6 text-[#2A75AE]" />
+                  <div className="bg-[#FFCB00]/10 w-12 h-12 rounded-full flex items-center justify-center">
+                    <Award className="h-6 w-6 text-[#FFCB00]" />
                   </div>
-                  <h3 className="font-bold text-lg">1-Year Guarantee</h3>
+                  <h3 className="font-bold text-lg">Satisfaction Guaranteed</h3>
                   <p className="text-sm text-muted-foreground">
-                    We stand behind our work with a full one-year service guarantee
+                    We stand behind our work—if you're not happy, we'll make it right
                   </p>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-
-          {/* Service Photos */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">See Our Work</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="relative group overflow-hidden rounded-xl shadow-lg">
-                <Image
-                  src="/before-and-after-house-pressure-washing-exterior-c.jpg"
-                  alt="Before and after dryer vent cleaning"
-                  width={400}
-                  height={300}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                  <p className="text-white font-semibold">Before & After Results</p>
-                </div>
-              </div>
-              <div className="relative group overflow-hidden rounded-xl shadow-lg">
-                <Image
-                  src="/professional-pressure-washing-cleaning-house-exter.jpg"
-                  alt="Professional cleaning equipment"
-                  width={400}
-                  height={300}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                  <p className="text-white font-semibold">Professional Equipment</p>
-                </div>
-              </div>
-              <div className="relative group overflow-hidden rounded-xl shadow-lg">
-                <Image
-                  src="/clean-concrete-driveway.png"
-                  alt="Lint removal from dryer vent"
-                  width={400}
-                  height={300}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                  <p className="text-white font-semibold">Thorough Lint Removal</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Why It Matters */}
-          <div className="bg-gradient-to-b from-blue-50 to-white rounded-2xl p-8 md:p-12 mb-16">
-            <h2 className="text-3xl font-bold mb-6 text-center">Why Regular Cleaning Matters</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="space-y-3">
-                <div className="text-4xl font-bold text-[#D3331D]">15,000+</div>
-                <h3 className="font-bold text-lg">Dryer Fires Annually</h3>
-                <p className="text-muted-foreground">
-                  Lint buildup is the leading cause of dryer fires in the United States
-                </p>
-              </div>
-              <div className="space-y-3">
-                <div className="text-4xl font-bold text-[#2A75AE]">30%</div>
-                <h3 className="font-bold text-lg">Energy Savings</h3>
-                <p className="text-muted-foreground">Clean vents reduce drying time and lower your energy bills</p>
-              </div>
-              <div className="space-y-3">
-                <div className="text-4xl font-bold text-[#2A75AE]">2x</div>
-                <h3 className="font-bold text-lg">Dryer Lifespan</h3>
-                <p className="text-muted-foreground">
-                  Regular maintenance extends the life of your dryer significantly
-                </p>
-              </div>
             </div>
           </div>
 
           {/* CTA */}
-          <div className="text-center bg-[#2A75AE] text-white rounded-2xl p-12">
-            <h2 className="text-3xl font-bold mb-4">Ready to Schedule Your Cleaning?</h2>
-            <p className="text-lg mb-8 text-white/90">
-              Protect your home and family with professional dryer vent cleaning
+          <div className="text-center bg-[#FFCB00] text-black rounded-2xl p-12">
+            <h2 className="text-3xl font-bold mb-4">Ready to Upgrade Your Lighting?</h2>
+            <p className="text-lg mb-8 text-black/80">
+              Transform any room with a new light fixture—professional installation included
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
@@ -193,10 +116,10 @@ export default function RegularCleaningPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white hover:text-[#2A75AE]"
+                className="bg-transparent border-black text-black hover:bg-black hover:text-[#FFCB00]"
                 asChild
               >
-                <a href="tel:6156322980">
+                <a href="tel:6158806701">
                   <Phone className="mr-2 h-5 w-5" />
                   Call Now
                 </a>

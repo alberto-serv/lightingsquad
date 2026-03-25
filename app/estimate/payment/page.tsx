@@ -36,14 +36,32 @@ const timeWindows: Record<string, string> = {
 }
 
 const availableServices = [
-  { id: "dryer-vent-cleaning", name: "Dryer Vent Cleaning", basePrice: 159 },
-  { id: "roof-access", name: "Roof Access Vent Cleaning", basePrice: 249 },
-  { id: "ac-duct-cleaning", name: "AC or DUCT Cleaning", basePrice: 500 },
-  { id: "repair-estimate", name: "Repair or Reroute Estimate", basePrice: 0 },
-  { id: "dryer-vent-special", name: "Dryer Vent Cleaning Special", basePrice: 350 },
-  { id: "second-floor", name: "Second Floor Cleaning", basePrice: 189 },
-  { id: "coil-cleaning", name: "Coil Cleaning", basePrice: 385 },
-  { id: "bathroom-fan", name: "Bathroom Fan Cleaning", basePrice: 175 },
+  { id: "light-fixture", name: "Light Fixture Installation / Replacement", basePrice: 150 },
+  { id: "ceiling-fan", name: "Ceiling Fan Installation", basePrice: 185 },
+  { id: "tv-small", name: "TV Installation (up to 55\")", basePrice: 200 },
+  { id: "tv-large", name: "TV Installation (65\" and larger)", basePrice: 350 },
+  { id: "soundbar", name: "Soundbar Installation", basePrice: 200 },
+  { id: "surround-sound", name: "Full Surround System", basePrice: 600 },
+  { id: "doorbell", name: "Ring Doorbell Installation", basePrice: 150 },
+  { id: "single-camera", name: "Single Camera Installation", basePrice: 175 },
+  { id: "multi-camera", name: "Multi-Camera System", basePrice: 475 },
+  { id: "outlet-switch", name: "Outlet / Dimmer Switch Upgrade", basePrice: 100 },
+  { id: "smart-switch", name: "Smart Switch / Dimmer Install", basePrice: 125 },
+  { id: "picture-hanging-standard", name: "Picture & Art Hanging (1-3 items)", basePrice: 125 },
+  { id: "picture-hanging-gallery", name: "Gallery Walls / Multi-Piece Installs", basePrice: 237 },
+  { id: "landscape-basic", name: "Landscape & Outdoor Lighting (basic)", basePrice: 850 },
+  { id: "landscape-custom", name: "Landscape & Outdoor Lighting (custom)", basePrice: 2500 },
+  { id: "cabinet-standard", name: "Cabinet Lighting (standard)", basePrice: 550 },
+  { id: "cabinet-custom", name: "Cabinet Lighting (custom)", basePrice: 1150 },
+  { id: "garage-hex-1car", name: "Garage Hex Lighting (1-car)", basePrice: 700 },
+  { id: "garage-hex-2car", name: "Garage Hex Lighting (2-car)", basePrice: 1150 },
+  { id: "permanent-led-exterior", name: "Permanent LED Lighting (exterior)", basePrice: 27 },
+  { id: "permanent-led-home", name: "Permanent LED Lighting (home)", basePrice: 4250 },
+  { id: "led-bulb-per-fixture", name: "LED Bulb Upgrade (per fixture)", basePrice: 17 },
+  { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", basePrice: 400 },
+  { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", basePrice: 150 },
+  { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", basePrice: 150 },
+  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", basePrice: 400 },
 ]
 
 export default function PaymentPage() {
@@ -87,18 +105,10 @@ export default function PaymentPage() {
         const service = availableServices.find((s) => s.id === serviceId)
         if (!service) return null
 
-        let price = service.basePrice
-        if (serviceId === "ac-duct-cleaning" && bookingData.services.ductCount) {
-          const ductCount = bookingData.services.ductCount
-          if (ductCount > 10) {
-            price = 500 + (ductCount - 10) * 30
-          }
-        }
-
         return {
           id: service.id,
           name: service.name,
-          price: price,
+          price: service.basePrice,
         }
       })
       .filter(Boolean)
@@ -109,13 +119,8 @@ export default function PaymentPage() {
     return services.reduce((total: number, service: any) => total + service.price, 0)
   }
 
-  const getSubscriptionDiscount = () => {
-    if (!bookingData?.services?.isSubscription) return 0
-    return Math.round(getSubtotal() * 0.15)
-  }
-
   const getTotal = () => {
-    return getSubtotal() - getSubscriptionDiscount() - promoDiscount
+    return getSubtotal() - promoDiscount
   }
 
   const handleApplyPromo = () => {
@@ -183,7 +188,7 @@ export default function PaymentPage() {
     }
 
     localStorage.setItem("bookingConfirmation", JSON.stringify(confirmationData))
-    
+
     // Clear estimate data
     localStorage.removeItem("estimateData")
 
@@ -211,7 +216,7 @@ export default function PaymentPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-[#2A75AE]" />
+                    <CreditCard className="h-5 w-5 text-[#FFCB00]" />
                     Payment Information
                   </CardTitle>
                 </CardHeader>
@@ -297,7 +302,7 @@ export default function PaymentPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-[#2A75AE]" />
+                    <DollarSign className="h-5 w-5 text-[#FFCB00]" />
                     Promo Code
                   </CardTitle>
                 </CardHeader>
@@ -319,14 +324,14 @@ export default function PaymentPage() {
                   </div>
                   {appliedPromo && (
                     <p className="text-sm text-green-600 mt-2">
-                      Promo code "{appliedPromo}" applied successfully!
+                      Promo code &quot;{appliedPromo}&quot; applied successfully!
                     </p>
                   )}
                 </CardContent>
               </Card>
 
               {/* Info Banner */}
-              <Card className="bg-blue-50 border-[#2A75AE]/20">
+              <Card className="bg-yellow-50 border-[#FFCB00]/20">
                 <CardContent className="p-4">
                   <p className="text-sm text-foreground">
                     {"You'll be charged today and your service will be scheduled."}
@@ -342,7 +347,7 @@ export default function PaymentPage() {
                 <Button
                   onClick={handleSubmitPayment}
                   disabled={isLoading}
-                  className="w-full bg-[#2A75AE] hover:bg-[#2A75AE]/90"
+                  className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                   size="lg"
                 >
                   {isLoading ? "Processing..." : `Pay $${getTotal().toFixed(2)}`}
@@ -376,7 +381,7 @@ export default function PaymentPage() {
                   {/* Selected Services */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm font-medium">
-                      <CheckCircle className="h-4 w-4 text-[#2A75AE]" />
+                      <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
                       <span>Selected Services</span>
                     </div>
                     <div className="space-y-2 pl-6">
@@ -388,14 +393,6 @@ export default function PaymentPage() {
                       ))}
                     </div>
                   </div>
-
-                  {/* Subscription Discount */}
-                  {bookingData?.services?.isSubscription && getSubscriptionDiscount() > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-green-600">Subscribe & Save (15%)</span>
-                      <span className="font-medium text-green-600">-${getSubscriptionDiscount().toFixed(2)}</span>
-                    </div>
-                  )}
 
                   {/* Promo Discount */}
                   {promoDiscount > 0 && (
@@ -410,20 +407,11 @@ export default function PaymentPage() {
                   {/* Total */}
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2 font-semibold">
-                      <DollarSign className="h-4 w-4 text-[#2A75AE]" />
+                      <DollarSign className="h-4 w-4 text-[#FFCB00]" />
                       <span>Total</span>
                     </div>
                     <span className="text-xl font-bold">${getTotal().toFixed(2)}</span>
                   </div>
-
-                  {/* Subscription Info Box */}
-                  {bookingData?.services?.isSubscription && (
-                    <div className="border-2 border-[#2A75AE] rounded-lg p-3 bg-[#2A75AE]/5">
-                      <p className="text-xs text-[#2A75AE] leading-relaxed">
-                        <span className="font-semibold">Recurring Service:</span> Annual subscription with 15% savings. Cancel anytime.
-                      </p>
-                    </div>
-                  )}
 
                   {/* Secure Checkout */}
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-2">
@@ -436,7 +424,7 @@ export default function PaymentPage() {
                     <Button
                       onClick={handleSubmitPayment}
                       disabled={isLoading}
-                      className="w-full bg-[#2A75AE] hover:bg-[#2A75AE]/90"
+                      className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                       size="lg"
                     >
                       {isLoading ? "Processing..." : `Pay $${getTotal().toFixed(2)}`}

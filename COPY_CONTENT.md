@@ -1,212 +1,103 @@
-# Dryer Vent Superheroes - Website Copy
+# The Lighting Squad - Website Copy
 
 ---
 
 ## Products & Services
 
-### Main Services
+### Installation & Replacement Services
 
-#### 1. Dryer Vent Cleaning Special
-- **Price:** $350.00
-- **Badge:** BEST VALUE
-- **Description:** Our full, professional deep clean of your dryer vent, a new, fire resistant and high flow transition hose, a new magnetic and bird-proof exterior vent door and new braided washer hoses - save $150 on upgrades with this bundle!
+#### Light Fixture Installation / Replacement
+- **Price:** $150.00
+- **Description:** Install or replace any standard light fixture
 
-#### 2. Dryer Vent Cleaning
-- **Base Price:** $159.00 (1st Floor) | $189.00 (2nd Floor) | $249.00 (Roof Access)
-- **Description:** Full deep cleaning of dryer vent including vent inspection camera scope cleaning using professional tools and a years guarantee
+#### Ceiling Fan Installation
+- **Price:** $185.00
+- **Description:** Install a new ceiling fan or replace an existing one
 
-#### 3. AC or DUCT Cleaning
-- **Base Price:** $500.00 (for 8-10 ducts)
-- **Additional Pricing:** +$30.00 per duct over 10
-- **Description:** AC or DUCT Cleaning - Pricing depends on the amount of ducts in your home. Most single family homes (8-10 air ducts) will cost $500. Please list how many ducts are in your home in your booking.
+#### TV Installation
+- **Up to 55":** $200.00
+- **65" and larger:** $350.00
 
-#### 4. Coil Cleaning
-- **Price:** $385.00
-- **Description:** Deep cleaning of AC coils for maximum efficiency and performance. Improves cooling capacity and reduces energy costs.
+#### Sound System Installation
+- **Soundbar (concealed wiring):** $150–$250
+- **Full surround system (5.1 / 7.1):** $400–$800
 
-#### 5. Bathroom Fan Cleaning
-- **Price:** $175.00
-- **Description:** Remove dust and debris from bathroom exhaust fans for better ventilation and air quality. Reduces moisture and prevents mold.
+#### Ring Camera & Doorbell Installation
+- **Doorbell only:** $125–$175
+- **Single camera:** $150–$200
+- **Multi-camera system (3–5 cams):** $350–$600
+
+#### Outlet & Dimmer Switch Upgrades
+- **Per outlet/switch:** $75–$125
+- **Smart switch/dimmer install:** $100–$150 per unit
+
+#### Picture & Art Hanging
+- **Standard (1–3 items):** $100–$150
+- **Gallery walls / multi-piece installs:** $175–$300
+
+### Specialized Lighting Systems
+
+#### Landscape & Outdoor Lighting
+- **Basic pathway setup (5–8 lights):** $500–$1,200
+- **Larger custom systems:** $1,500–$3,500+
+
+#### Cabinet Lighting
+- **Per kitchen (standard):** $300–$800
+- **High-end/custom installs:** $800–$1,500
+
+#### Garage Hex Lighting
+- **1-car garage:** $500–$900
+- **2-car garage:** $800–$1,500
+
+#### Permanent LED Lighting (Exterior)
+- **Per linear foot installed:** $20–$35/ft
+- **Typical home total:** $2,500–$6,000
+
+#### LED Bulb Upgrades & Conversions
+- **Per fixture swap:** $10–$25
+- **Whole-home conversion:** $200–$600
+
+### Maintenance & Cleaning
+
+#### Light Fixture / Chandelier Cleaning
+- **Price:** $150.00
+
+#### Exterior Light Bulb Replacement
+- **Price:** $150.00
+
+### Additional Fees
+
+#### Large Ladder Fee (15'+)
+- **Price:** $400.00
 
 ---
 
-### Additional Services (from Confirmation Page)
+## Booking Flow
 
-#### Roof Access Vent Cleaning
-- **Price:** $249.00
-- **Description:** Access Via Roof for Basic Dryer Vent Cleaning - Includes Vent Inspection Camera Scope & Cleaning with One Year Guarantee
-
-#### Second Floor Cleaning
-- **Price:** $189.00
-- **Description:** Basic dryer vent cleaning from a second floor dryer including vent inspection camera scope cleaning using professional tools and a years guarantee
-
-#### Repair or Reroute Estimate
-- **Price:** FREE
-- **Description:** Free consultation for repair or reroute services
-
----
-
-### Add-Ons
-
-#### Window Cleaning
-- **Pricing:** $8.00 per window
-- **Description:** Interior and exterior window cleaning
-
-#### Gutter Guard Installation
-- **Price:** $350.00 (flat rate)
-- **Description:** Protect gutters from debris buildup
-
-#### Concrete Sealing
-- **Price:** $200.00 (flat rate)
-- **Description:** Protective sealant for driveways and walkways
-
-#### Rust Stain Removal
-- **Price:** $80.00 (flat rate)
-- **Description:** Specialized treatment for rust stains
-
----
-
-## Order Summary Copy
-
-### Service Selection Page (Step 2 of 4)
-
-#### Page Header
+### Step 1: Service Selection
 - **Title:** Choose Your Service
-- **Subtitle:** Step 2 of 4: Service Selection
+- **Subtitle:** Step 1 of 3: Service Selection
 
-#### House Graphic Section
-- **Section Title:** Select Services
-- **Helper Text:** Click on the dots to select services
-- **Floor Labels:** Roof | 2nd Floor | 1st Floor
+### Step 2: Customer Information & Scheduling
+- **Title:** Your Information
+- **Subtitle:** Step 2 of 3
 
-#### Service Card Elements
-- **Access Type Section Title:** Access Type
-- **Duct Counter Section Title:** Ducts
-- **Duct Counter Helper:** Min 10
-- **Extra Duct Pricing Display:** +$X.XX for X extra
+### Step 3: Payment
+- **Title:** Payment Information
 
-#### Order Summary Card
-- **Section Title:** Selected Services (X)
-- **Service Frequency Title:** Service Frequency
-
-#### Service Frequency Options
-
-**Annual Subscription:**
-- **Badge:** 15% OFF
-- **Title:** Annual
-- **Subtext:** Card on file
-
-**One-Time Service:**
-- **Title:** One-Time
-- **Subtext:** No commitment
-
-#### Savings Display
-- **Format:** Save $X.XX
-
-#### CTA Buttons
-- **Primary:** Continue
-- **Secondary:** Back Arrow (icon)
-
----
-
-## Confirmation Page Copy
-
-### Success Header
+### Confirmation Page
 - **Title:** Booking Confirmed!
-- **Subtitle:** Your dryer vent cleaning appointment has been successfully scheduled. We'll contact you to confirm the exact time and provide any additional details.
-
-### Order Summary Card
-- **Card Title:** Order Summary
-- **Section Headers:**
-  - Appointment Details
-  - Selected Services
-  - Add-Ons
-  - Total Estimate
-
-#### Subscription Discount Display
-- **Label:** Subscribe & Save Discount (15%)
-- **Format:** -$X.XX (in green)
-
-#### Promo Code Display
-- **Label:** Promo Code (CODE_NAME)
-- **Format:** -$X.XX (in green)
-
-#### Subscription Message Box
-- **Text:** Recurring Service: Annual subscription with 15% savings
-
-### Customer Details Card
-- **Card Title:** Customer Details
-- **Field Labels:**
-  - Property Address
-  - Name
-  - Email
-  - Phone
-
-### What's Next Section
-- **Section Title:** What's Next?
-
-#### Step 1: Confirmation Call
-- **Title:** Confirmation Call
-- **Description:** Our team will contact you within 24 hours to confirm your appointment details and answer any questions.
-
-#### Step 2: Property Assessment
-- **Title:** Property Assessment
-- **Description:** On the scheduled day, our professional team will arrive and conduct a final assessment before beginning work.
-
-#### Step 3: Service Completion
-- **Title:** Service Completion
-- **Description:** We'll complete your dryer vent cleaning service and ensure you're completely satisfied with the results.
-
-### Need Help Section
-- **Section Title:** Need Help?
-- **Description:** Have questions about your booking or need to make changes? We're here to help!
-
-#### Contact Buttons
-- **Phone:** Call (615) 632-2980
-- **Email:** Email Support (anaramos@homerunfranchises.com)
-
-### Return CTA
-- **Button Text:** Return to Home
+- **Subtitle:** Your lighting and electrical service appointment has been successfully scheduled. We'll contact you to confirm the exact time and provide any additional details.
 
 ---
 
-## Time Windows
+## Contact Information
 
-| Key | Display Text |
-|-----|--------------|
-| morning | Morning (8:00 AM - 12:00 PM) |
-| afternoon | Afternoon (12:00 PM - 4:00 PM) |
-| evening | Evening (5:00 PM - 7:00 PM) |
-| flexible | Flexible - Any Time |
+- **Phone:** (615) 880-6701
+- **Email:** info@thelightingsquad.com
+- **Service Area:** Nashville & Middle Tennessee
+- **Hours:** Mon-Sat: 7AM-6PM
 
 ---
 
-## Pricing Summary Table
-
-| Service | Price |
-|---------|-------|
-| Dryer Vent Cleaning Special | $350.00 |
-| Dryer Vent Cleaning (1st Floor) | $159.00 |
-| Dryer Vent Cleaning (2nd Floor) | $189.00 |
-| Dryer Vent Cleaning (Roof Access) | $249.00 |
-| AC or DUCT Cleaning (8-10 ducts) | $500.00 |
-| AC or DUCT Cleaning (extra ducts) | +$30.00/duct |
-| Coil Cleaning | $385.00 |
-| Bathroom Fan Cleaning | $175.00 |
-| Window Cleaning | $8.00/window |
-| Gutter Guard Installation | $350.00 |
-| Concrete Sealing | $200.00 |
-| Rust Stain Removal | $80.00 |
-| Repair or Reroute Estimate | FREE |
-
----
-
-## Discounts
-
-| Type | Discount |
-|------|----------|
-| Annual Subscription | 15% off total |
-
----
-
-*Last Updated: January 2026*
+*Last Updated: March 2026*

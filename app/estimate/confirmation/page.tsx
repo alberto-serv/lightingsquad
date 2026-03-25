@@ -13,26 +13,41 @@ import {
   Phone,
   Mail,
   Home,
-  TreePine,
-  Building,
-  Droplets,
   MessageSquare,
   ArrowRight,
   Shield,
   DollarSign,
-  Plus,
+  Lightbulb,
 } from "lucide-react"
 import { format } from "date-fns"
 
-const serviceDetails = {
-  "dryer-vent-cleaning": { name: "Dryer Vent Cleaning", icon: <Home className="h-4 w-4" /> },
-  "roof-access": { name: "Roof Access Vent Cleaning", icon: <Building className="h-4 w-4" /> },
-  "ac-duct-cleaning": { name: "AC or DUCT Cleaning", icon: <Droplets className="h-4 w-4" /> },
-  "repair-estimate": { name: "Repair or Reroute Estimate", icon: <Home className="h-4 w-4" /> },
-  "dryer-vent-special": { name: "Dryer Vent Cleaning Special", icon: <TreePine className="h-4 w-4" /> },
-  "second-floor": { name: "Second Floor Cleaning", icon: <Building className="h-4 w-4" /> },
-  "coil-cleaning": { name: "Coil Cleaning", icon: <Droplets className="h-4 w-4" /> },
-  "bathroom-fan": { name: "Bathroom Fan Cleaning", icon: <Home className="h-4 w-4" /> },
+const serviceDetails: Record<string, { name: string; icon: React.ReactNode }> = {
+  "light-fixture": { name: "Light Fixture Installation / Replacement", icon: <Lightbulb className="h-4 w-4" /> },
+  "ceiling-fan": { name: "Ceiling Fan Installation", icon: <Lightbulb className="h-4 w-4" /> },
+  "tv-small": { name: 'TV Installation (up to 55")', icon: <Home className="h-4 w-4" /> },
+  "tv-large": { name: 'TV Installation (65" and larger)', icon: <Home className="h-4 w-4" /> },
+  "soundbar": { name: "Soundbar Installation", icon: <Home className="h-4 w-4" /> },
+  "surround-sound": { name: "Full Surround System", icon: <Home className="h-4 w-4" /> },
+  "doorbell": { name: "Ring Doorbell Installation", icon: <Home className="h-4 w-4" /> },
+  "single-camera": { name: "Single Camera Installation", icon: <Home className="h-4 w-4" /> },
+  "multi-camera": { name: "Multi-Camera System", icon: <Home className="h-4 w-4" /> },
+  "outlet-switch": { name: "Outlet / Dimmer Switch Upgrade", icon: <Lightbulb className="h-4 w-4" /> },
+  "smart-switch": { name: "Smart Switch / Dimmer Install", icon: <Lightbulb className="h-4 w-4" /> },
+  "picture-hanging-standard": { name: "Picture & Art Hanging (1-3 items)", icon: <Home className="h-4 w-4" /> },
+  "picture-hanging-gallery": { name: "Gallery Walls / Multi-Piece Installs", icon: <Home className="h-4 w-4" /> },
+  "landscape-basic": { name: "Landscape & Outdoor Lighting (basic)", icon: <Lightbulb className="h-4 w-4" /> },
+  "landscape-custom": { name: "Landscape & Outdoor Lighting (custom)", icon: <Lightbulb className="h-4 w-4" /> },
+  "cabinet-standard": { name: "Cabinet Lighting (standard)", icon: <Lightbulb className="h-4 w-4" /> },
+  "cabinet-custom": { name: "Cabinet Lighting (custom)", icon: <Lightbulb className="h-4 w-4" /> },
+  "garage-hex-1car": { name: "Garage Hex Lighting (1-car)", icon: <Lightbulb className="h-4 w-4" /> },
+  "garage-hex-2car": { name: "Garage Hex Lighting (2-car)", icon: <Lightbulb className="h-4 w-4" /> },
+  "permanent-led-exterior": { name: "Permanent LED Lighting (exterior)", icon: <Lightbulb className="h-4 w-4" /> },
+  "permanent-led-home": { name: "Permanent LED Lighting (home)", icon: <Lightbulb className="h-4 w-4" /> },
+  "led-bulb-per-fixture": { name: "LED Bulb Upgrade (per fixture)", icon: <Lightbulb className="h-4 w-4" /> },
+  "led-bulb-whole-home": { name: "LED Bulb Whole-Home Conversion", icon: <Lightbulb className="h-4 w-4" /> },
+  "fixture-cleaning": { name: "Light Fixture / Chandelier Cleaning", icon: <Lightbulb className="h-4 w-4" /> },
+  "exterior-bulb-replacement": { name: "Exterior Light Bulb Replacement", icon: <Lightbulb className="h-4 w-4" /> },
+  "large-ladder-fee": { name: "Large Ladder Fee (15'+)", icon: <Home className="h-4 w-4" /> },
 }
 
 const timeWindows: Record<string, string> = {
@@ -49,117 +64,212 @@ const timeWindows: Record<string, string> = {
   "5pm": "5:00 PM - 6:00 PM",
 }
 
-// Added interfaces and data for detailed order summary
-interface AddOn {
-  id: string
-  name: string
-  description: string
-  price: number
-  pricingType?: "flat" | "perUnit"
-  unit?: string
-}
-
-const availableAddOns: AddOn[] = [
-  {
-    id: "window-cleaning",
-    name: "Window Cleaning",
-    description: "Interior and exterior window cleaning",
-    price: 8,
-    pricingType: "perUnit",
-    unit: "window",
-  },
-  {
-    id: "gutter-guards",
-    name: "Gutter Guard Installation",
-    description: "Protect gutters from debris buildup",
-    price: 350,
-    pricingType: "flat",
-  },
-  {
-    id: "concrete-sealing",
-    name: "Concrete Sealing",
-    description: "Protective sealant for driveways and walkways",
-    price: 200,
-    pricingType: "flat",
-  },
-  {
-    id: "rust-removal",
-    name: "Rust Stain Removal",
-    description: "Specialized treatment for rust stains",
-    price: 80,
-    pricingType: "flat",
-  },
-]
-
 const availableServices = [
   {
-    id: "dryer-vent-cleaning",
-    name: "Dryer Vent Cleaning",
-    description:
-      "Full deep cleaning of dryer vent including vent inspection camera scope cleaning using professional tools and a years guarantee",
-    basePrice: 159,
+    id: "light-fixture",
+    name: "Light Fixture Installation / Replacement",
+    description: "Professional installation or replacement of light fixtures",
+    basePrice: 150,
     category: "standard",
     pricingType: "flat",
   },
   {
-    id: "roof-access",
-    name: "Roof Access Vent Cleaning",
-    description:
-      "Access Via Roof for Basic Dryer Vent Cleaning - Includes Vent Inspection Camera Scope & Cleaning with One Year Guarantee",
-    basePrice: 249,
-    category: "specialty",
+    id: "ceiling-fan",
+    name: "Ceiling Fan Installation",
+    description: "Professional ceiling fan installation",
+    basePrice: 185,
+    category: "standard",
     pricingType: "flat",
   },
   {
-    id: "ac-duct-cleaning",
-    name: "AC or DUCT Cleaning",
-    description:
-      "AC Duct Cleaning - Pricing for AC Duct Cleaning depends on the amount of AC Ducts in your home. Most single family homes (8-10 air ducts) will cost $500.",
-    basePrice: 500,
-    category: "specialty",
+    id: "tv-small",
+    name: 'TV Installation (up to 55")',
+    description: "Wall mount and installation for TVs up to 55 inches",
+    basePrice: 200,
+    category: "standard",
     pricingType: "flat",
   },
   {
-    id: "repair-estimate",
-    name: "Repair or Reroute Estimate",
-    description: "Free consultation for repair or reroute services",
-    basePrice: 0,
-    category: "consultation",
-    pricingType: "flat",
-  },
-  {
-    id: "dryer-vent-special",
-    name: "Dryer Vent Cleaning Special",
-    description:
-      "Our full, professional deep clean of your dryer vent, a new, fire resistant and high flow transition hose, a new magnetic and bird-proof exterior vent door and new braided washer hoses - save $150 on upgrades with this bundle!",
+    id: "tv-large",
+    name: 'TV Installation (65" and larger)',
+    description: "Wall mount and installation for TVs 65 inches and larger",
     basePrice: 350,
-    category: "special",
-    pricingType: "flat",
-  },
-  {
-    id: "second-floor",
-    name: "Second Floor Cleaning",
-    description:
-      "Basic dryer vent cleaning from a second floor dryer including vent inspection camera scope cleaning using professional tools and a years guarantee",
-    basePrice: 189,
     category: "standard",
     pricingType: "flat",
   },
   {
-    id: "coil-cleaning",
-    name: "Coil Cleaning",
-    description:
-      "Deep cleaning of AC coils for maximum efficiency and performance. Improves cooling capacity and reduces energy costs.",
-    basePrice: 385,
+    id: "soundbar",
+    name: "Soundbar Installation",
+    description: "Professional soundbar mounting and setup",
+    basePrice: 200,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "surround-sound",
+    name: "Full Surround System",
+    description: "Complete surround sound system installation and configuration",
+    basePrice: 600,
     category: "specialty",
     pricingType: "flat",
   },
   {
-    id: "bathroom-fan",
-    name: "Bathroom Fan Cleaning",
-    description:
-      "Remove dust and debris from bathroom exhaust fans for better ventilation and air quality.",
+    id: "doorbell",
+    name: "Ring Doorbell Installation",
+    description: "Ring doorbell installation and setup",
+    basePrice: 150,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "single-camera",
+    name: "Single Camera Installation",
+    description: "Professional installation of a single security camera",
     basePrice: 175,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "multi-camera",
+    name: "Multi-Camera System",
+    description: "Installation of a multi-camera security system",
+    basePrice: 475,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "outlet-switch",
+    name: "Outlet / Dimmer Switch Upgrade",
+    description: "Upgrade outlets or dimmer switches",
+    basePrice: 100,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "smart-switch",
+    name: "Smart Switch / Dimmer Install",
+    description: "Installation of smart switches or dimmers",
+    basePrice: 125,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "picture-hanging-standard",
+    name: "Picture & Art Hanging (1-3 items)",
+    description: "Professional hanging of 1-3 pictures or art pieces",
+    basePrice: 125,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "picture-hanging-gallery",
+    name: "Gallery Walls / Multi-Piece Installs",
+    description: "Gallery wall layout and multi-piece art installation",
+    basePrice: 237,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "landscape-basic",
+    name: "Landscape & Outdoor Lighting (basic)",
+    description: "Basic landscape and outdoor lighting installation",
+    basePrice: 850,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "landscape-custom",
+    name: "Landscape & Outdoor Lighting (custom)",
+    description: "Custom landscape and outdoor lighting design and installation",
+    basePrice: 2500,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "cabinet-standard",
+    name: "Cabinet Lighting (standard)",
+    description: "Standard under-cabinet or in-cabinet lighting installation",
+    basePrice: 550,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "cabinet-custom",
+    name: "Cabinet Lighting (custom)",
+    description: "Custom cabinet lighting design and installation",
+    basePrice: 1150,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "garage-hex-1car",
+    name: "Garage Hex Lighting (1-car)",
+    description: "Hexagonal LED lighting for a 1-car garage",
+    basePrice: 700,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "garage-hex-2car",
+    name: "Garage Hex Lighting (2-car)",
+    description: "Hexagonal LED lighting for a 2-car garage",
+    basePrice: 1150,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "permanent-led-exterior",
+    name: "Permanent LED Lighting (exterior)",
+    description: "Permanent exterior LED lighting per linear foot",
+    basePrice: 27,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "permanent-led-home",
+    name: "Permanent LED Lighting (home)",
+    description: "Whole-home permanent LED lighting installation",
+    basePrice: 4250,
+    category: "specialty",
+    pricingType: "flat",
+  },
+  {
+    id: "led-bulb-per-fixture",
+    name: "LED Bulb Upgrade (per fixture)",
+    description: "LED bulb upgrade for a single fixture",
+    basePrice: 17,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "led-bulb-whole-home",
+    name: "LED Bulb Whole-Home Conversion",
+    description: "Convert all home fixtures to LED bulbs",
+    basePrice: 400,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "fixture-cleaning",
+    name: "Light Fixture / Chandelier Cleaning",
+    description: "Professional cleaning of light fixtures and chandeliers",
+    basePrice: 150,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "exterior-bulb-replacement",
+    name: "Exterior Light Bulb Replacement",
+    description: "Replacement of exterior light bulbs",
+    basePrice: 150,
+    category: "standard",
+    pricingType: "flat",
+  },
+  {
+    id: "large-ladder-fee",
+    name: "Large Ladder Fee (15'+)",
+    description: "Additional fee for work requiring a large ladder (15 feet or more)",
+    basePrice: 400,
     category: "standard",
     pricingType: "flat",
   },
@@ -192,57 +302,13 @@ export default function ConfirmationPage() {
         const service = availableServices.find((s) => s.id === serviceId)
         if (!service) return null
 
-        let price = service.basePrice
-        if (serviceId === "ac-duct-cleaning" && bookingData.services.ductCount) {
-          const ductCount = bookingData.services.ductCount
-          if (ductCount > 10) {
-            price = 500 + (ductCount - 10) * 30
-          }
-        }
-
         return {
           id: service.id,
           name: service.name,
-          price: price,
+          price: service.basePrice,
         }
       })
       .filter(Boolean)
-  }
-
-  const getSelectedAddOnsWithDetails = () => {
-    if (!bookingData?.services?.selectedAddOns) {
-      return []
-    }
-
-    return bookingData.services.selectedAddOns
-      .map((addOnId: string) => {
-        const addOn = availableAddOns.find((a) => a.id === addOnId)
-        if (!addOn) return null
-
-        const quantity = bookingData.services.addOnQuantities?.[addOnId] || 1
-        const totalPrice = addOn.price * quantity
-
-        return {
-          id: addOn.id,
-          name: addOn.name,
-          price: totalPrice,
-          quantity: quantity,
-          unitPrice: addOn.price,
-          pricingType: addOn.pricingType,
-          unit: addOn.unit,
-        }
-      })
-      .filter(Boolean)
-  }
-
-  const getDiscountAmount = () => {
-    if (!bookingData?.services?.isSubscription) return 0
-    const servicesWithDetails = getSelectedServicesWithDetails()
-    const servicesTotal = servicesWithDetails.reduce((total: number, service: any) => total + service.price, 0)
-    const addOnsWithDetails = getSelectedAddOnsWithDetails()
-    const addOnsTotal = addOnsWithDetails.reduce((total: number, addOn: any) => total + addOn.price, 0)
-    const subtotal = servicesTotal + addOnsTotal
-    return Math.round(subtotal * 0.15) // 15% subscription discount
   }
 
   if (!bookingData) {
@@ -257,13 +323,13 @@ export default function ConfirmationPage() {
         <div className="max-w-4xl mx-auto">
           {/* Success Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto w-16 h-16 bg-[#2A75AE]/10 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle className="h-8 w-8 text-[#2A75AE]" />
+            <div className="mx-auto w-16 h-16 bg-[#FFCB00]/10 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="h-8 w-8 text-[#FFCB00]" />
             </div>
-            <h1 className="text-3xl font-bold text-[#2A75AE] mb-2">Booking Confirmed!</h1>
+            <h1 className="text-3xl font-bold text-[#FFCB00] mb-2">Booking Confirmed!</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Your dryer vent cleaning appointment has been successfully scheduled. We'll contact you to confirm the
-              exact time and provide any additional details.
+              Your lighting and electrical service appointment has been successfully scheduled. We'll contact you to
+              confirm the exact time and provide any additional details.
             </p>
           </div>
 
@@ -272,7 +338,7 @@ export default function ConfirmationPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Shield className="h-5 w-5 text-[#2A75AE]" />
+                  <Shield className="h-5 w-5 text-[#FFCB00]" />
                   <span>Order Summary</span>
                 </CardTitle>
               </CardHeader>
@@ -280,7 +346,7 @@ export default function ConfirmationPage() {
                 {/* Appointment Details */}
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2 text-sm font-medium">
-                    <CheckCircle className="h-4 w-4 text-[#2A75AE]" />
+                    <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
                     <span>Appointment Details</span>
                   </div>
                   <div className="space-y-1 pl-6">
@@ -300,7 +366,7 @@ export default function ConfirmationPage() {
                 {/* Selected Services */}
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2 text-sm font-medium">
-                    <CheckCircle className="h-4 w-4 text-[#2A75AE]" />
+                    <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
                     <span>Selected Services</span>
                   </div>
                   <div className="space-y-2 pl-6">
@@ -327,43 +393,6 @@ export default function ConfirmationPage() {
                   </div>
                 </div>
 
-                {/* Add-Ons */}
-                {getSelectedAddOnsWithDetails().length > 0 && (
-                  <>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-sm font-medium">
-                        <Plus className="h-4 w-4 text-[#2A75AE]" />
-                        <span>Add-Ons</span>
-                      </div>
-                      <div className="space-y-2 pl-6">
-                        {getSelectedAddOnsWithDetails().map((addOn: any, index: number) => (
-                          <div key={index} className="flex justify-between text-sm gap-2">
-                            <span className="text-muted-foreground break-words flex-1">
-                              {addOn.name}
-                              {addOn.pricingType === "perUnit" &&
-                                ` (${addOn.quantity} ${addOn.unit}${addOn.quantity > 1 ? "s" : ""})`}
-                            </span>
-                            <span className="font-medium flex-shrink-0">${addOn.price.toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* Discounts */}
-                {bookingData?.services?.isSubscription && getDiscountAmount() > 0 && (
-                  <>
-                    <Separator />
-                    <div className="flex justify-between text-sm gap-2">
-                      <span className="text-green-600 break-words flex-1">Subscribe & Save Discount (15%)</span>
-                      <span className="font-medium text-green-600 flex-shrink-0">
-                        -${getDiscountAmount().toFixed(2)}
-                      </span>
-                    </div>
-                  </>
-                )}
-
                 {bookingData?.customer?.appliedPromoCode && bookingData?.customer?.promoDiscount > 0 && (
                   <>
                     <Separator />
@@ -384,7 +413,7 @@ export default function ConfirmationPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between font-semibold">
                     <div className="flex items-center space-x-2">
-                      <DollarSign className="h-4 w-4 text-[#2A75AE]" />
+                      <DollarSign className="h-4 w-4 text-[#FFCB00]" />
                       <span className="text-sm">Total Estimate</span>
                     </div>
                     <span className="text-base">
@@ -395,18 +424,6 @@ export default function ConfirmationPage() {
                     </span>
                   </div>
                 </div>
-
-                {/* Subscription Message Box */}
-                {bookingData?.services?.isSubscription && (
-                  <>
-                    <Separator />
-                    <div className="border-2 border-[#2A75AE] rounded-lg p-3 bg-[#2A75AE]/5">
-                      <div className="text-xs text-[#2A75AE] leading-relaxed">
-                        <span className="font-semibold">Recurring Service:</span> Annual subscription with 15% savings
-                      </div>
-                    </div>
-                  </>
-                )}
               </CardContent>
             </Card>
 
@@ -414,7 +431,7 @@ export default function ConfirmationPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <User className="h-5 w-5 text-[#2A75AE]" />
+                  <User className="h-5 w-5 text-[#FFCB00]" />
                   <span>Customer Details</span>
                 </CardTitle>
               </CardHeader>
@@ -456,14 +473,14 @@ export default function ConfirmationPage() {
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <ArrowRight className="h-5 w-5 text-[#2A75AE]" />
+                <ArrowRight className="h-5 w-5 text-[#FFCB00]" />
                 <span>What's Next?</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-[#2A75AE] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#FFCB00] text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     1
                   </div>
                   <div>
@@ -476,7 +493,7 @@ export default function ConfirmationPage() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-[#2A75AE] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#FFCB00] text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     2
                   </div>
                   <div>
@@ -489,13 +506,13 @@ export default function ConfirmationPage() {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-[#2A75AE] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#FFCB00] text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     3
                   </div>
                   <div>
                     <p className="font-medium">Service Completion</p>
                     <p className="text-sm text-muted-foreground">
-                      We'll complete your dryer vent cleaning service and ensure you're completely satisfied with the
+                      We'll complete your lighting and electrical service and ensure you're completely satisfied with the
                       results.
                     </p>
                   </div>
@@ -508,7 +525,7 @@ export default function ConfirmationPage() {
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <MessageSquare className="h-5 w-5 text-[#2A75AE]" />
+                <MessageSquare className="h-5 w-5 text-[#FFCB00]" />
                 <span>Need Help?</span>
               </CardTitle>
             </CardHeader>
@@ -519,14 +536,14 @@ export default function ConfirmationPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <Button variant="outline" className="flex items-center space-x-2 bg-transparent" asChild>
-                  <a href="tel:+16156322980">
+                  <a href="tel:+16158806701">
                     <Phone className="h-4 w-4" />
-                    <span>Call (615) 632-2980</span>
+                    <span>Call (615) 880-6701</span>
                   </a>
                 </Button>
 
                 <Button variant="outline" className="flex items-center space-x-2 bg-transparent" asChild>
-                  <a href="mailto:anaramos@homerunfranchises.com">
+                  <a href="mailto:info@thelightingsquad.com">
                     <Mail className="h-4 w-4" />
                     <span>Email Support</span>
                   </a>

@@ -114,170 +114,45 @@ function getFirstAvailableDate(): Date {
 }
 
 const availableServices = [
-  {
-    id: "dryer-vent-cleaning",
-    name: "Dryer Vent Cleaning",
-    description:
-      "Full deep cleaning of dryer vent including vent inspection camera scope cleaning using professional tools and a years guarantee",
-    basePrice: 159,
-    category: "cleaning",
-    pricingType: "flat",
-  },
-  {
-    id: "roof-access",
-    name: "Roof Access Vent Cleaning",
-    description:
-      "Access Via Roof for Basic Dryer Vent Cleaning - Includes Vent Inspection Camera Scope & Cleaning with One Year Guarantee",
-    basePrice: 249,
-    category: "cleaning",
-    pricingType: "flat",
-  },
-  {
-    id: "ac-duct-cleaning",
-    name: "AC or DUCT Cleaning",
-    description:
-      "AC or DUCT Cleaning - Pricing depends on the amount of ducts in your home. Most single family homes (8-10 air ducts) will cost $500.",
-    basePrice: 500,
-    category: "cleaning",
-    pricingType: "flat",
-  },
-  {
-    id: "repair-estimate",
-    name: "Repair or Reroute Estimate",
-    description: "Free consultation for repair or reroute services",
-    basePrice: 0,
-    category: "consultation",
-    pricingType: "flat",
-  },
-  {
-    id: "dryer-vent-special",
-    name: "Dryer Vent Cleaning Special",
-    description:
-      "Our full, professional deep clean of your dryer vent, a new, fire resistant and high flow transition hose, a new magnetic and bird-proof exterior vent door and new braided washer hoses - save $150 on upgrades with this bundle!",
-    basePrice: 350,
-    category: "special",
-    pricingType: "flat",
-  },
-  {
-    id: "second-floor",
-    name: "Second Floor Cleaning",
-    description:
-      "Basic dryer vent cleaning from a second floor dryer including vent inspection camera scope cleaning using professional tools and a years guarantee",
-    basePrice: 189,
-    category: "cleaning",
-    pricingType: "flat",
-  },
-  {
-    id: "coil-cleaning",
-    name: "Coil Cleaning",
-    description:
-      "Deep cleaning of AC coils for maximum efficiency and performance. Improves cooling capacity and reduces energy costs.",
-    basePrice: 385,
-    category: "cleaning",
-    pricingType: "flat",
-  },
-  {
-    id: "bathroom-fan",
-    name: "Bathroom Fan Cleaning",
-    description:
-      "Remove dust and debris from bathroom fans for better ventilation and air quality. Reduces moisture and prevents mold.",
-    basePrice: 175,
-    category: "cleaning",
-    pricingType: "flat",
-  },
+  { id: "light-fixture", name: "Light Fixture Installation / Replacement", basePrice: 150, category: "installation", pricingType: "flat" },
+  { id: "ceiling-fan", name: "Ceiling Fan Installation", basePrice: 185, category: "installation", pricingType: "flat" },
+  { id: "tv-small", name: "TV Installation (up to 55\")", basePrice: 200, category: "installation", pricingType: "flat" },
+  { id: "tv-large", name: "TV Installation (65\" and larger)", basePrice: 350, category: "installation", pricingType: "flat" },
+  { id: "soundbar", name: "Soundbar Installation", basePrice: 200, category: "installation", pricingType: "flat" },
+  { id: "surround-sound", name: "Full Surround System (5.1/7.1)", basePrice: 600, category: "installation", pricingType: "flat" },
+  { id: "doorbell", name: "Ring Doorbell Installation", basePrice: 150, category: "installation", pricingType: "flat" },
+  { id: "single-camera", name: "Single Camera Installation", basePrice: 175, category: "installation", pricingType: "flat" },
+  { id: "multi-camera", name: "Multi-Camera System (3-5 cams)", basePrice: 475, category: "installation", pricingType: "flat" },
+  { id: "outlet-switch", name: "Outlet / Dimmer Switch Upgrade", basePrice: 100, category: "electrical", pricingType: "flat" },
+  { id: "smart-switch", name: "Smart Switch / Dimmer Install", basePrice: 125, category: "electrical", pricingType: "flat" },
+  { id: "picture-hanging-standard", name: "Picture & Art Hanging (1-3 items)", basePrice: 125, category: "installation", pricingType: "flat" },
+  { id: "picture-hanging-gallery", name: "Gallery Walls / Multi-Piece Installs", basePrice: 237, category: "installation", pricingType: "flat" },
+  { id: "landscape-basic", name: "Landscape & Outdoor Lighting (basic)", basePrice: 850, category: "lighting", pricingType: "flat" },
+  { id: "landscape-custom", name: "Landscape & Outdoor Lighting (custom)", basePrice: 2500, category: "lighting", pricingType: "flat" },
+  { id: "cabinet-standard", name: "Cabinet Lighting (standard)", basePrice: 550, category: "lighting", pricingType: "flat" },
+  { id: "cabinet-custom", name: "Cabinet Lighting (custom)", basePrice: 1150, category: "lighting", pricingType: "flat" },
+  { id: "garage-hex-1car", name: "Garage Hex Lighting (1-car)", basePrice: 700, category: "lighting", pricingType: "flat" },
+  { id: "garage-hex-2car", name: "Garage Hex Lighting (2-car)", basePrice: 1150, category: "lighting", pricingType: "flat" },
+  { id: "permanent-led-exterior", name: "Permanent LED Lighting (exterior per ft)", basePrice: 27, category: "lighting", pricingType: "flat" },
+  { id: "permanent-led-home", name: "Permanent LED Lighting (typical home)", basePrice: 4250, category: "lighting", pricingType: "flat" },
+  { id: "led-bulb-per-fixture", name: "LED Bulb Upgrade (per fixture)", basePrice: 17, category: "lighting", pricingType: "flat" },
+  { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", basePrice: 400, category: "lighting", pricingType: "flat" },
+  { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", basePrice: 150, category: "maintenance", pricingType: "flat" },
+  { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", basePrice: 150, category: "maintenance", pricingType: "flat" },
+  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", basePrice: 400, category: "additional", pricingType: "flat" },
 ]
 
-const availableAddOns: AddOn[] = [
-  {
-    id: "window-cleaning",
-    name: "Window Cleaning",
-    description: "Interior and exterior window cleaning",
-    price: 8,
-    pricingType: "perUnit",
-    unit: "window",
-  },
-  {
-    id: "gutter-guards",
-    name: "Gutter Guard Installation",
-    description: "Protect gutters from debris buildup",
-    price: 350,
-    pricingType: "flat",
-  },
-  {
-    id: "concrete-sealing",
-    name: "Concrete Sealing",
-    description: "Protective sealant for driveways and walkways",
-    price: 200,
-    pricingType: "flat",
-  },
-  {
-    id: "rust-removal",
-    name: "Rust Stain Removal",
-    description: "Specialized treatment for rust stains",
-    price: 80,
-    pricingType: "flat",
-  },
-]
+const availableAddOns: AddOn[] = []
 
 // Supported service areas - states and major cities/regions
-const SUPPORTED_STATES = [
-  "AL", "AZ", "CT", "FL", "GA", "IL", "IN", "KS", "KY", "LA",
-  "MA", "MN", "MO", "NE", "NV", "NJ", "NM", "NC", "OH", "SC",
-  "TN", "TX", "UT", "WI",
-]
+const SUPPORTED_STATES = ["TN"]
 
 const SUPPORTED_CITIES: Record<string, string[]> = {
-  AL: ["birmingham", "huntsville"],
-  AZ: ["phoenix", "scottsdale", "north phoenix"],
-  CT: ["hartford", "new britain", "middletown", "bristol", "meriden"],
-  FL: ["jacksonville", "tampa", "st. petersburg", "clearwater", "winter garden", "orlando", "boca raton", "port st. lucie"],
-  GA: ["atlanta", "decatur", "dekalb", "stone mountain", "dalton", "gainesville"],
-  IL: ["chicago", "naperville", "aurora", "elgin", "schaumburg", "evanston"],
-  IN: ["indianapolis", "carmel", "fishers", "noblesville"],
-  KS: ["kansas city", "overland park", "olathe", "lenexa"],
-  KY: ["lexington", "louisville"],
-  LA: ["new orleans", "metairie", "baton rouge", "mandeville", "covington", "slidell"],
-  MA: ["norfolk", "quincy", "braintree", "weymouth"],
-  MN: ["minneapolis", "st. paul", "saint paul", "edina", "bloomington", "eagan", "burnsville", "lakeville", "apple valley", "maple grove", "minnetonka", "woodbury", "roseville", "blaine", "coon rapids", "wayzata"],
-  MO: ["kansas city"],
-  NE: ["omaha"],
-  NV: ["las vegas", "henderson", "reno", "sparks"],
-  NJ: ["passaic", "paterson", "wayne"],
-  NM: ["albuquerque", "rio rancho"],
-  NC: ["charlotte", "mecklenburg"],
-  OH: ["cincinnati", "columbus"],
-  SC: ["greenville", "spartanburg", "myrtle beach"],
-  TN: ["nashville", "chattanooga", "knoxville", "franklin", "murfreesboro", "brentwood", "lebanon", "mt. juliet", "mount juliet", "smyrna", "la vergne", "johnson city", "kingsport", "bristol"],
-  TX: ["houston", "austin", "dallas", "katy", "sugar land", "spring", "the woodlands", "cypress", "denton", "frisco"],
-  UT: ["salt lake city", "sandy", "west jordan", "murray"],
-  WI: ["milwaukee", "wauwatosa", "west allis"],
+  TN: ["nashville", "franklin", "murfreesboro", "brentwood", "lebanon", "mt. juliet", "mount juliet", "smyrna", "la vergne", "hendersonville", "gallatin", "columbia", "spring hill", "dickson", "cookeville", "clarksville"],
 }
 
 const SUPPORTED_ZIP_PREFIXES: Record<string, string[]> = {
-  AL: ["350", "351", "352", "356", "357", "358"],
-  AZ: ["850", "851", "852", "853"],
-  CT: ["060", "061", "062", "063", "064", "065", "066"],
-  FL: ["320", "321", "322", "334", "335", "336", "337", "338", "339", "349"],
-  GA: ["300", "301", "302", "303", "304", "305", "306", "307"],
-  IL: ["600", "601", "602", "603", "604", "605", "606", "607"],
-  IN: ["460", "461", "462"],
-  KS: ["660", "661", "662"],
-  KY: ["400", "401", "402", "403", "405"],
-  LA: ["700", "701", "704", "708"],
-  MA: ["020", "021"],
-  MN: ["550", "551", "553", "554", "555"],
-  MO: ["640", "641"],
-  NE: ["680", "681"],
-  NV: ["889", "890", "891", "895"],
-  NJ: ["070", "071", "074", "075"],
-  NM: ["871"],
-  NC: ["280", "281", "282"],
-  OH: ["430", "431", "432", "450", "451", "452"],
-  SC: ["293", "295", "296"],
-  TN: ["370", "371", "372", "373", "374", "376", "377", "378", "379"],
-  TX: ["733", "734", "750", "751", "752", "760", "761", "770", "771", "772", "773", "774", "775", "776", "777", "778", "779", "787", "788"],
-  UT: ["840", "841"],
-  WI: ["530", "531", "532"],
+  TN: ["370", "371", "372", "373", "374", "375", "376", "377", "378", "379", "380", "381", "382", "383", "384"],
 }
 
 function isAddressSupported(state: string, city: string, zipCode: string): { supported: boolean; reason?: string } {
@@ -575,21 +450,6 @@ export default function CustomerPage() {
 
         let price = service.basePrice
 
-        if (serviceId === "dryer-vent-cleaning" && estimateData.services.dryerVentAccessType) {
-          const accessType = estimateData.services.dryerVentAccessType
-          if (accessType === "roof") price = 249
-          else if (accessType === "2nd-floor") price = 189
-          else price = 159
-        }
-
-        if (serviceId === "ac-duct-cleaning" && estimateData.services.ductCount) {
-          const ductCount = estimateData.services.ductCount
-          if (ductCount > 10) {
-            const additionalDucts = ductCount - 10
-            price = 500 + additionalDucts * 30
-          }
-        }
-
         return {
           id: service.id,
           name: service.name,
@@ -672,8 +532,8 @@ export default function CustomerPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#2A75AE]/10">
-                        <Wrench className="h-5 w-5 text-[#2A75AE]" />
+                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FFCB00]/10">
+                        <Wrench className="h-5 w-5 text-[#FFCB00]" />
                       </div>
                       <span>Selected Services</span>
                     </CardTitle>
@@ -683,7 +543,7 @@ export default function CustomerPage() {
                       {getSelectedServicesWithDetails().map((service: any, index: number) => (
                         <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                           <span className="font-medium text-gray-900">{service.name}</span>
-                          <span className="font-semibold text-[#2A75AE]">
+                          <span className="font-semibold text-[#FFCB00]">
                             {typeof service.price === "string" ? service.price : `$${service.price.toFixed(2)}`}
                           </span>
                         </div>
@@ -696,7 +556,7 @@ export default function CustomerPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-                    <MapPin className="h-5 w-5 text-[#2A75AE]" />
+                    <MapPin className="h-5 w-5 text-[#FFCB00]" />
                     <span>Service Address</span>
                   </CardTitle>
                 </CardHeader>
@@ -749,15 +609,7 @@ export default function CustomerPage() {
                         {"We don't serve that area yet."}
                       </p>
                       <p className="text-sm text-amber-800 mt-1">
-                        Please find your nearest location at{" "}
-                        <a
-                          href="https://dryerventheroes.com/dryer-vent-superheroes-locations/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-semibold underline text-[#2A75AE] hover:text-[#1e5a8a]"
-                        >
-                          Dryer Vent Superheroes Locations
-                        </a>
+                        We currently serve Nashville and Middle Tennessee.
                       </p>
                     </div>
                   )}
@@ -791,7 +643,7 @@ export default function CustomerPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-                    <User className="h-5 w-5 text-[#2A75AE]" />
+                    <User className="h-5 w-5 text-[#FFCB00]" />
                     <span>Contact Information</span>
                   </CardTitle>
                 </CardHeader>
@@ -855,7 +707,7 @@ export default function CustomerPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-                    <Clock className="h-5 w-5 text-[#2A75AE]" />
+                    <Clock className="h-5 w-5 text-[#FFCB00]" />
                     <div>
                       <span>Schedule Appointment</span>
                       <p className="text-sm font-normal text-muted-foreground mt-1">
@@ -876,7 +728,7 @@ export default function CustomerPage() {
                           onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
                           className="p-1"
                         >
-                          <ChevronLeft className="h-4 w-4 text-[#D3331D]" />
+                          <ChevronLeft className="h-4 w-4 text-[#FFCB00]" />
                         </Button>
                         <h4 className="text-base font-medium">{format(currentMonth, "MMMM yyyy")}</h4>
                         <Button
@@ -885,7 +737,7 @@ export default function CustomerPage() {
                           onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
                           className="p-1"
                         >
-                          <ChevronRight className="h-4 w-4 text-[#D3331D]" />
+                          <ChevronRight className="h-4 w-4 text-[#FFCB00]" />
                         </Button>
                       </div>
 
@@ -917,7 +769,7 @@ export default function CustomerPage() {
                                 aspect-square text-xs font-medium rounded transition-colors h-8 w-8
                                 ${
                                   isSelected
-                                    ? "bg-[#2A75AE] text-white"
+                                    ? "bg-[#FFCB00] text-white"
                                     : isAvailable && !isPast
                                       ? "hover:bg-gray-100 text-gray-900"
                                       : "text-gray-300 cursor-not-allowed"
@@ -949,7 +801,7 @@ export default function CustomerPage() {
                                 isUnavailable
                                   ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed opacity-60"
                                   : customerData.timeWindow === slot.value
-                                    ? "border-[#2A75AE] bg-[#2A75AE]/10"
+                                    ? "border-[#FFCB00] bg-[#FFCB00]/10"
                                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                               }
                             `}
@@ -992,7 +844,7 @@ export default function CustomerPage() {
                             href="/terms"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#2A75AE] hover:underline"
+                            className="text-[#FFCB00] hover:underline"
                             onClick={(e) => e.stopPropagation()}
                           >
                             Terms & Conditions
@@ -1002,7 +854,7 @@ export default function CustomerPage() {
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#2A75AE] hover:underline"
+                            className="text-[#FFCB00] hover:underline"
                             onClick={(e) => e.stopPropagation()}
                           >
                             Privacy Policy
@@ -1030,7 +882,7 @@ export default function CustomerPage() {
                     <>
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2 text-sm font-medium">
-                          <CheckCircle className="h-4 w-4 text-[#2A75AE]" />
+                          <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
                           <span>Appointment Details</span>
                         </div>
                         <div className="space-y-1 pl-6">
@@ -1049,7 +901,7 @@ export default function CustomerPage() {
                   {/* Selected Services */}
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2 text-sm font-medium">
-                      <CheckCircle className="h-4 w-4 text-[#2A75AE]" />
+                      <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
                       <span>Selected Services</span>
                     </div>
                     <div className="space-y-2 pl-6">
@@ -1128,7 +980,7 @@ export default function CustomerPage() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between font-semibold">
                         <div className="flex items-center space-x-2">
-                          <DollarSign className="h-4 w-4 text-[#2A75AE]" />
+                          <DollarSign className="h-4 w-4 text-[#FFCB00]" />
                           <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
@@ -1142,8 +994,8 @@ export default function CustomerPage() {
                   {estimateData?.services?.isSubscription && (
                     <>
                       <Separator />
-                      <div className="border-2 border-[#2A75AE] rounded-lg p-3 bg-[#2A75AE]/5">
-                        <div className="text-xs text-[#2A75AE] leading-relaxed">
+                      <div className="border-2 border-[#FFCB00] rounded-lg p-3 bg-[#FFCB00]/5">
+                        <div className="text-xs text-[#FFCB00] leading-relaxed">
                           <span className="font-semibold">Recurring Service:</span> Annual subscription with 15%
                           savings. Cancel anytime.
                         </div>
@@ -1165,7 +1017,7 @@ export default function CustomerPage() {
             <Button
               onClick={handleNext}
               disabled={!isFormComplete}
-              className="gap-2 bg-[#2A75AE] hover:bg-[#1e5a8a]"
+              className="gap-2 bg-[#FFCB00] hover:bg-[#1e5a8a]"
               size="lg"
             >
               Continue to Payment
