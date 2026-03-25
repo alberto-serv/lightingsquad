@@ -17,7 +17,6 @@ import {
   Calendar,
   CheckCircle,
   DollarSign,
-  Shield,
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -73,7 +72,6 @@ export default function PaymentPage() {
   const [promoDiscount, setPromoDiscount] = useState(0)
 
   // Payment form state
-  const [cardName, setCardName] = useState("")
   const [cardNumber, setCardNumber] = useState("")
   const [expiryDate, setExpiryDate] = useState("")
   const [cvc, setCvc] = useState("")
@@ -223,17 +221,6 @@ export default function PaymentPage() {
                 <CardContent>
                   <form onSubmit={handleSubmitPayment} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="cardName">Name on Card *</Label>
-                      <Input
-                        id="cardName"
-                        placeholder="John Doe"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
                       <Label htmlFor="cardNumber">Card Number *</Label>
                       <div className="relative">
                         <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -290,10 +277,6 @@ export default function PaymentPage() {
                       />
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
-                      <Lock className="h-4 w-4" />
-                      <span>Your payment information is secure and encrypted</span>
-                    </div>
                   </form>
                 </CardContent>
               </Card>
@@ -330,18 +313,6 @@ export default function PaymentPage() {
                 </CardContent>
               </Card>
 
-              {/* Info Banner */}
-              <Card className="bg-yellow-50 border-[#FFCB00]/20">
-                <CardContent className="p-4">
-                  <p className="text-sm text-foreground">
-                    {"You'll be charged today and your service will be scheduled."}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Payment is fully refundable prior to your first service.
-                  </p>
-                </CardContent>
-              </Card>
-
               {/* Submit Button - Mobile */}
               <div className="lg:hidden">
                 <Button
@@ -350,7 +321,7 @@ export default function PaymentPage() {
                   className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                   size="lg"
                 >
-                  {isLoading ? "Processing..." : `Pay $${getTotal().toFixed(2)}`}
+                  {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
                 </Button>
               </div>
             </div>
@@ -388,17 +359,38 @@ export default function PaymentPage() {
                       {getSelectedServicesWithDetails().map((service: any) => (
                         <div key={service.id} className="flex justify-between text-sm">
                           <span className="text-muted-foreground">{service.name}</span>
-                          <span className="font-medium">${service.price.toFixed(2)}</span>
+                          <span className="font-medium">${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
+                  {/* Subscription Discount */}
+                  {bookingData?.services?.isSubscription && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-sm">
+                        <span className="text-green-600">Annual Plan Discount (15%)</span>
+                        <span className="font-medium text-green-600">
+                          -{(() => {
+                            const subtotal = getSelectedServicesWithDetails().reduce((t: number, s: any) => t + s.price, 0)
+                            return `$${Math.round(subtotal * 0.15).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                          })()}
+                        </span>
+                      </div>
+                      <div className="rounded-lg border border-[#FFCB00]/30 bg-[#FFCB00]/5 p-3">
+                        <p className="text-xs text-gray-600">
+                          <span className="font-semibold">Annual Plan:</span> Priority scheduling, annual maintenance visit, and 1-year workmanship warranty included.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
                   {/* Promo Discount */}
                   {promoDiscount > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-green-600">Promo Code ({appliedPromo})</span>
-                      <span className="font-medium text-green-600">-${promoDiscount.toFixed(2)}</span>
+                      <span className="font-medium text-green-600">-${promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                     </div>
                   )}
 
@@ -410,13 +402,7 @@ export default function PaymentPage() {
                       <DollarSign className="h-4 w-4 text-[#FFCB00]" />
                       <span>Total</span>
                     </div>
-                    <span className="text-xl font-bold">${getTotal().toFixed(2)}</span>
-                  </div>
-
-                  {/* Secure Checkout */}
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-2">
-                    <Shield className="h-4 w-4" />
-                    <span>Secure checkout</span>
+                    <span className="text-xl font-bold">${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                   </div>
 
                   {/* Submit Button - Desktop */}
@@ -427,7 +413,7 @@ export default function PaymentPage() {
                       className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                       size="lg"
                     >
-                      {isLoading ? "Processing..." : `Pay $${getTotal().toFixed(2)}`}
+                      {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
                     </Button>
                   </div>
                 </CardContent>
