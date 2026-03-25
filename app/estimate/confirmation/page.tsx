@@ -10,10 +10,7 @@ import { Footer } from "@/components/footer"
 import {
   CheckCircle,
   User,
-  Phone,
-  Mail,
   Home,
-  MessageSquare,
   ArrowRight,
   Shield,
   DollarSign,
@@ -323,10 +320,7 @@ export default function ConfirmationPage() {
         <div className="max-w-4xl mx-auto">
           {/* Success Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto w-16 h-16 bg-[#FFCB00]/10 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle className="h-8 w-8 text-[#FFCB00]" />
-            </div>
-            <h1 className="text-3xl font-bold text-[#FFCB00] mb-2">Booking Confirmed!</h1>
+            <h1 className="text-3xl font-bold text-[#FFCB00] mb-2">Thank you!</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Your lighting and electrical service appointment has been successfully scheduled. We'll contact you to
               confirm the exact time and provide any additional details.
@@ -376,7 +370,7 @@ export default function ConfirmationPage() {
                         ? servicesWithDetails.map((service: any, index: number) => (
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
-                              <span className="font-medium flex-shrink-0">${service.price.toFixed(2)}</span>
+                              <span className="font-medium flex-shrink-0">${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                             </div>
                           ))
                         : bookingData.services.selectedServices.map((serviceId: string) => {
@@ -401,7 +395,7 @@ export default function ConfirmationPage() {
                         Promo Code ({bookingData.customer.appliedPromoCode})
                       </span>
                       <span className="font-medium text-green-600 flex-shrink-0">
-                        -${bookingData.customer.promoDiscount.toFixed(2)}
+                        -${bookingData.customer.promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </>
@@ -517,37 +511,6 @@ export default function ConfirmationPage() {
                     </p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Need Help Section */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <MessageSquare className="h-5 w-5 text-[#FFCB00]" />
-                <span>Need Help?</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Have questions about your booking or need to make changes? We're here to help!
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Button variant="outline" className="flex items-center space-x-2 bg-transparent" asChild>
-                  <a href="tel:+16158806701">
-                    <Phone className="h-4 w-4" />
-                    <span>Call (615) 880-6701</span>
-                  </a>
-                </Button>
-
-                <Button variant="outline" className="flex items-center space-x-2 bg-transparent" asChild>
-                  <a href="mailto:info@thelightingsquad.com">
-                    <Mail className="h-4 w-4" />
-                    <span>Email Support</span>
-                  </a>
-                </Button>
               </div>
             </CardContent>
           </Card>
