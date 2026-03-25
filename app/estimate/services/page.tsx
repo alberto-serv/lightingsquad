@@ -210,6 +210,10 @@ export default function ServicesPage() {
           setSelectedServices((prev) => prev.filter((id) => !subIds.includes(id)))
         } else {
           next.add(service.id)
+          // Auto-select first variant
+          const firstSubId = service.subOptions![0].id
+          const siblingIds = service.subOptions!.map((s) => s.id)
+          setSelectedServices((prev) => [...prev.filter((id) => !siblingIds.includes(id)), firstSubId])
         }
         return next
       })
@@ -375,7 +379,7 @@ export default function ServicesPage() {
                                         className={`w-full text-left px-2.5 py-2 rounded-md text-sm transition-all ${
                                           subSelected
                                             ? "bg-[#FFCB00]/15 border border-[#FFCB00]"
-                                            : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
+                                            : "bg-white border border-gray-200 hover:border-gray-300"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between">
