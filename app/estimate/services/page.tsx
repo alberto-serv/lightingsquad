@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
-  Lightbulb,
-  Sparkles,
-  Wrench,
-  Plus,
+  Zap,
+  Hammer,
   ArrowRight,
   ShoppingCart,
   ChevronDown,
@@ -41,13 +39,72 @@ interface ServiceCategory {
 
 const serviceCategories: ServiceCategory[] = [
   {
-    id: "installation-replacement",
-    name: "Installation",
-    description: "Fixtures, fans, TVs & more",
-    icon: Lightbulb,
+    id: "lighting",
+    name: "Lighting",
+    description: "LED, fixtures, outdoor & maintenance",
+    icon: Zap,
     services: [
+      {
+        id: "permanent-led",
+        name: "Permanent LED Lighting",
+        description: "Permanent exterior LED systems",
+        price: null,
+        subOptions: [
+          { id: "permanent-led-exterior", label: "Per Linear Foot", price: null, priceLabel: "$20–$35/ft" },
+          { id: "permanent-led-home", label: "Whole Home", price: null, priceLabel: "$2,500–$6,000" },
+        ],
+      },
+      {
+        id: "garage-hex",
+        name: "Garage Hex Lighting",
+        description: "Hexagonal LED garage lighting",
+        price: null,
+        subOptions: [
+          { id: "garage-hex-1car", label: "1-Car Garage", price: null, priceLabel: "$500–$900" },
+          { id: "garage-hex-2car", label: "2-Car Garage", price: null, priceLabel: "$800–$1,500" },
+        ],
+      },
+      {
+        id: "switches-outlets",
+        name: "Switches & Outlets",
+        description: "Upgrade or install per unit",
+        price: null,
+        subOptions: [
+          { id: "outlet-switch", label: "Outlet / Dimmer Upgrade", price: null, priceLabel: "$75–$125" },
+          { id: "smart-switch", label: "Smart Switch / Dimmer", price: null, priceLabel: "$100–$150" },
+        ],
+      },
+      {
+        id: "led-bulb-upgrade",
+        name: "LED Bulb Upgrade",
+        description: "Swap to energy-efficient LED",
+        price: null,
+        subOptions: [
+          { id: "led-bulb-per-fixture", label: "Per Fixture", price: null, priceLabel: "$10–$25" },
+          { id: "led-bulb-whole-home", label: "Whole Home", price: null, priceLabel: "$200–$600" },
+        ],
+      },
       { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture" },
-      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan" },
+      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning" },
+      {
+        id: "outdoor-lighting",
+        name: "Outdoor Lighting",
+        description: "Pathway, garden, and outdoor setups",
+        price: null,
+        subOptions: [
+          { id: "landscape-basic", label: "Basic (5–8 lights)", price: null, priceLabel: "$500–$1,200" },
+          { id: "landscape-custom", label: "Custom / Large", price: null, priceLabel: "$1,500–$3,500+" },
+        ],
+      },
+      { id: "exterior-bulb-replacement", name: "Exterior Bulb Replacement", price: 150, description: "Hard-to-reach bulb replacement" },
+    ],
+  },
+  {
+    id: "installation",
+    name: "Installation",
+    description: "TVs, audio, security & more",
+    icon: Hammer,
+    services: [
       {
         id: "tv-mounting",
         name: "TV Mounting",
@@ -68,7 +125,7 @@ const serviceCategories: ServiceCategory[] = [
           { id: "surround-sound", label: "Full Surround (5.1 / 7.1)", price: null, priceLabel: "$400–$800" },
         ],
       },
-      { id: "doorbell", name: "Ring Doorbell", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation" },
+      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation" },
       {
         id: "security-cameras",
         name: "Security Cameras",
@@ -77,16 +134,6 @@ const serviceCategories: ServiceCategory[] = [
         subOptions: [
           { id: "single-camera", label: "Single Camera", price: null, priceLabel: "$150–$200" },
           { id: "multi-camera", label: "Multi-Camera (3–5)", price: null, priceLabel: "$350–$600" },
-        ],
-      },
-      {
-        id: "switches-outlets",
-        name: "Switches & Outlets",
-        description: "Upgrade or install per unit",
-        price: null,
-        subOptions: [
-          { id: "outlet-switch", label: "Outlet / Dimmer Upgrade", price: null, priceLabel: "$75–$125" },
-          { id: "smart-switch", label: "Smart Switch / Dimmer", price: null, priceLabel: "$100–$150" },
         ],
       },
       {
@@ -99,83 +146,7 @@ const serviceCategories: ServiceCategory[] = [
           { id: "picture-hanging-gallery", label: "Gallery Wall", price: null, priceLabel: "$175–$300" },
         ],
       },
-    ],
-  },
-  {
-    id: "specialized-lighting",
-    name: "Specialty",
-    description: "Landscape, cabinet & LED",
-    icon: Sparkles,
-    services: [
-      {
-        id: "landscape-lighting",
-        name: "Landscape & Outdoor Lighting",
-        description: "Pathway, garden, and outdoor setups",
-        price: null,
-        subOptions: [
-          { id: "landscape-basic", label: "Basic (5–8 lights)", price: null, priceLabel: "$500–$1,200" },
-          { id: "landscape-custom", label: "Custom / Large", price: null, priceLabel: "$1,500–$3,500+" },
-        ],
-      },
-      {
-        id: "cabinet-lighting",
-        name: "Cabinet Lighting",
-        description: "Under-cabinet LED installation",
-        price: null,
-        subOptions: [
-          { id: "cabinet-standard", label: "Standard Kitchen", price: null, priceLabel: "$300–$800" },
-          { id: "cabinet-custom", label: "High-End / Custom", price: null, priceLabel: "$800–$1,500" },
-        ],
-      },
-      {
-        id: "garage-hex",
-        name: "Garage Hex Lighting",
-        description: "Hexagonal LED garage lighting",
-        price: null,
-        subOptions: [
-          { id: "garage-hex-1car", label: "1-Car Garage", price: null, priceLabel: "$500–$900" },
-          { id: "garage-hex-2car", label: "2-Car Garage", price: null, priceLabel: "$800–$1,500" },
-        ],
-      },
-      {
-        id: "permanent-led",
-        name: "Permanent LED Lighting",
-        description: "Permanent exterior LED systems",
-        price: null,
-        subOptions: [
-          { id: "permanent-led-exterior", label: "Per Linear Foot", price: null, priceLabel: "$20–$35/ft" },
-          { id: "permanent-led-home", label: "Whole Home", price: null, priceLabel: "$2,500–$6,000" },
-        ],
-      },
-      {
-        id: "led-bulb-upgrade",
-        name: "LED Bulb Upgrade",
-        description: "Swap to energy-efficient LED",
-        price: null,
-        subOptions: [
-          { id: "led-bulb-per-fixture", label: "Per Fixture", price: null, priceLabel: "$10–$25" },
-          { id: "led-bulb-whole-home", label: "Whole Home", price: null, priceLabel: "$200–$600" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "maintenance-cleaning",
-    name: "Maintenance",
-    description: "Cleaning & bulb replacement",
-    icon: Wrench,
-    services: [
-      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning" },
-      { id: "exterior-bulb-replacement", name: "Exterior Bulb Replacement", price: 150, description: "Hard-to-reach bulb replacement" },
-    ],
-  },
-  {
-    id: "additional-fees",
-    name: "Add-Ons",
-    description: "Special access fees",
-    icon: Plus,
-    services: [
-      { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", price: 400, description: "Required for jobs needing a tall ladder" },
+      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan" },
     ],
   },
 ]
@@ -184,7 +155,7 @@ export default function ServicesPage() {
   const router = useRouter()
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
-  const [activeCategory, setActiveCategory] = useState<string>("installation-replacement")
+  const [activeCategory, setActiveCategory] = useState<string>("lighting")
   const [expandedCards, setExpandedCards] = useState<string[]>([])
 
   useEffect(() => {

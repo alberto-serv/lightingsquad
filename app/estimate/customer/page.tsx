@@ -142,7 +142,9 @@ const availableServices = [
   { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", basePrice: 400, category: "additional", pricingType: "flat" },
 ]
 
-const availableAddOns: AddOn[] = []
+const availableAddOns: AddOn[] = [
+  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", description: "Required for jobs needing a ladder over 15 feet", price: 400, pricingType: "flat" },
+]
 
 // Supported service areas - states and major cities/regions
 const SUPPORTED_STATES = ["TN"]
@@ -925,7 +927,47 @@ export default function CustomerPage() {
                     </div>
                   </div>
 
-                  {/* Add-Ons */}
+                  {/* Add-On Selection */}
+                  {availableAddOns.length > 0 && (
+                    <>
+                      <Separator />
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Add-Ons</div>
+                        {availableAddOns.map((addOn) => {
+                          const isChecked = estimateData?.services?.selectedAddOns?.includes(addOn.id) || false
+                          return (
+                            <label key={addOn.id} className="flex items-start gap-2 cursor-pointer">
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  const current = estimateData?.services?.selectedAddOns || []
+                                  const updated = checked
+                                    ? [...current, addOn.id]
+                                    : current.filter((id: string) => id !== addOn.id)
+                                  const newData = {
+                                    ...estimateData,
+                                    services: { ...estimateData.services, selectedAddOns: updated },
+                                  }
+                                  setEstimateData(newData)
+                                  localStorage.setItem("estimateData", JSON.stringify(newData))
+                                }}
+                                className="mt-0.5 border-gray-300 data-[state=checked]:bg-[#FFCB00] data-[state=checked]:border-[#FFCB00]"
+                              />
+                              <div className="flex-1">
+                                <div className="flex justify-between text-sm gap-2">
+                                  <span>{addOn.name}</span>
+                                  <span className="font-medium flex-shrink-0">${addOn.price.toFixed(2)}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">{addOn.description}</p>
+                              </div>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Add-Ons Summary */}
                   {getSelectedAddOnsWithDetails().length > 0 && (
                     <>
                       <Separator />
