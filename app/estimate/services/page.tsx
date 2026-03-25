@@ -179,10 +179,16 @@ export default function ServicesPage() {
     }
   }, [router])
 
-  const handleServiceToggle = (serviceId: string) => {
-    setSelectedServices((prev) =>
-      prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
-    )
+  const handleServiceToggle = (serviceId: string, siblingIds?: string[]) => {
+    setSelectedServices((prev) => {
+      if (prev.includes(serviceId)) {
+        // Deselect
+        return prev.filter((id) => id !== serviceId)
+      }
+      // If part of a group, remove siblings first (radio behavior)
+      const without = siblingIds ? prev.filter((id) => !siblingIds.includes(id)) : prev
+      return [...without, serviceId]
+    })
   }
 
   const getServiceById = (serviceId: string): (SubOption & { parentName?: string }) | undefined => {
@@ -323,7 +329,7 @@ export default function ServicesPage() {
                             return (
                               <button
                                 key={sub.id}
-                                onClick={() => handleServiceToggle(sub.id)}
+                                onClick={() => handleServiceToggle(sub.id, service.subOptions!.map(s => s.id))}
                                 className={`w-full text-left px-2.5 py-2 rounded-md text-sm transition-all ${
                                   subSelected
                                     ? "bg-[#FFCB00]/15 border border-[#FFCB00]"
