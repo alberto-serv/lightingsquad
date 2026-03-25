@@ -234,6 +234,7 @@ export default function PaymentPage() {
 
   const subtotal = getSubtotal()
   const savings = getSubscriptionDiscount()
+  const potentialSavings = Math.round(subtotal * SUBSCRIPTION_DISCOUNT)
 
   return (
     <div className="min-h-screen bg-background">
@@ -252,7 +253,7 @@ export default function PaymentPage() {
                     onClick={() => setIsSubscription(!isSubscription)}
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-1 transition-all ${
                         isSubscription
                           ? "border-[#FFCB00] bg-[#FFCB00]"
                           : "border-gray-300"
@@ -260,14 +261,14 @@ export default function PaymentPage() {
                         {isSubscription && <Check className="w-3 h-3 text-black" />}
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-lg font-bold text-gray-900 mb-1">
+                          Save ${potentialSavings.toLocaleString("en-US", { minimumFractionDigits: 2 })} on this order?
+                        </h3>
+                        <div className="flex items-center gap-2 mb-2">
                           <Zap className="w-4 h-4 text-[#FFCB00]" />
-                          <h3 className="font-semibold text-gray-900">Join the Lighting Squad</h3>
-                          <span className="text-xs font-bold bg-[#FFCB00] text-black px-2 py-0.5 rounded-full">SAVE 15%</span>
+                          <span className="text-sm font-medium text-gray-700">Join the Lighting Squad</span>
+                          <span className="text-xs font-bold bg-[#FFCB00] text-black px-2 py-0.5 rounded-full">${MONTHLY_MEMBERSHIP_FEE}/mo</span>
                         </div>
-                        <p className="text-sm text-gray-500 mb-3">
-                          ${MONTHLY_MEMBERSHIP_FEE}/month — Save on every service call with priority scheduling and more.
-                        </p>
 
                         {/* Perks */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -285,8 +286,8 @@ export default function PaymentPage() {
                         </div>
 
                         {isSubscription && subtotal > 0 && (
-                          <div className="mt-3 p-2.5 bg-green-50 rounded-lg border border-green-100">
-                            <p className="text-sm text-green-700 font-medium">
+                          <div className="mt-3 p-2.5 bg-[#FFCB00]/10 rounded-lg border border-[#FFCB00]/30">
+                            <p className="text-sm text-[#b8920a] font-semibold">
                               You save ${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })} on today&apos;s order
                             </p>
                           </div>
@@ -457,8 +458,8 @@ export default function PaymentPage() {
                     <>
                       <Separator />
                       <div className="flex justify-between text-sm">
-                        <span className="text-green-600">Member Discount (15%)</span>
-                        <span className="font-medium text-green-600">
+                        <span className="text-[#b8920a] font-medium">Member Discount (15%)</span>
+                        <span className="font-medium text-[#b8920a]">
                           -${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       </div>

@@ -140,42 +140,6 @@ const availableServices = [
 
 const availableAddOns: AddOn[] = []
 
-// Supported service areas - states and major cities/regions
-const SUPPORTED_STATES = ["TN"]
-
-const SUPPORTED_CITIES: Record<string, string[]> = {
-  TN: ["nashville", "franklin", "murfreesboro", "brentwood", "lebanon", "mt. juliet", "mount juliet", "smyrna", "la vergne", "hendersonville", "gallatin", "columbia", "spring hill", "dickson", "cookeville", "clarksville"],
-}
-
-const SUPPORTED_ZIP_PREFIXES: Record<string, string[]> = {
-  TN: ["370", "371", "372", "373", "374", "375", "376", "377", "378", "379", "380", "381", "382", "383", "384"],
-}
-
-function isAddressSupported(state: string, city: string, zipCode: string): { supported: boolean; reason?: string } {
-  const upperState = state.toUpperCase().trim()
-  const lowerCity = city.toLowerCase().trim()
-  const zip = zipCode.trim()
-
-  if (!upperState || !lowerCity || !zip) {
-    return { supported: true } // Don't show error until all fields are filled
-  }
-
-  // Check state
-  if (!SUPPORTED_STATES.includes(upperState)) {
-    return { supported: false, reason: "state" }
-  }
-
-  // Check ZIP prefix against state
-  const validPrefixes = SUPPORTED_ZIP_PREFIXES[upperState]
-  if (validPrefixes && zip.length >= 3) {
-    const zipPrefix = zip.substring(0, 3)
-    if (!validPrefixes.includes(zipPrefix)) {
-      return { supported: false, reason: "zip" }
-    }
-  }
-
-  return { supported: true }
-}
 
 export default function CustomerPage() {
   const router = useRouter()
@@ -200,8 +164,6 @@ export default function CustomerPage() {
   const [showOtpInput, setShowOtpInput] = useState(false)
   const [resendTimer, setResendTimer] = useState(30)
   const [canResend, setCanResend] = useState(false)
-
-  const [addressUnsupported, setAddressUnsupported] = useState(false)
 
   const [showPromoCode, setShowPromoCode] = useState(false)
   const [promoCode, setPromoCode] = useState("")
@@ -270,20 +232,6 @@ export default function CustomerPage() {
     }
 
     setCustomerData(updated)
-
-    // Check service area whenever address fields change
-    if (field === "state" || field === "city" || field === "zipCode") {
-      const checkState = field === "state" ? value : updated.state
-      const checkCity = field === "city" ? value : updated.city
-      const checkZip = field === "zipCode" ? value : updated.zipCode
-
-      if (checkState && checkCity && checkZip && checkZip.length >= 3) {
-        const result = isAddressSupported(checkState, checkCity, checkZip)
-        setAddressUnsupported(!result.supported)
-      } else {
-        setAddressUnsupported(false)
-      }
-    }
   }
 
   const handlePhoneVerification = () => {
@@ -390,7 +338,6 @@ export default function CustomerPage() {
     customerData.city &&
     customerData.state &&
     customerData.zipCode &&
-    !addressUnsupported &&
     customerData.preferredDate &&
     customerData.timeWindow &&
     (estimateData?.services?.isSubscription ? true : customerData.termsAccepted)
@@ -632,16 +579,6 @@ export default function CustomerPage() {
                     </div>
                   </div>
 
-                  {addressUnsupported && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                      <p className="text-sm font-medium text-amber-900">
-                        {"We don't serve that area yet."}
-                      </p>
-                      <p className="text-sm text-amber-800 mt-1">
-                        We currently serve Nashville and Middle Tennessee.
-                      </p>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
@@ -900,7 +837,7 @@ export default function CustomerPage() {
                           <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
-                          ${((estimateData.services.totalPrice || 0) - promoDiscount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          ${(getTotalServicesPrice() + getTotalAddOnsPrice() - getDiscountAmount() - promoDiscount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                     </div>
