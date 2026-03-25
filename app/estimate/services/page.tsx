@@ -6,7 +6,18 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { CheckCircle2, ChevronDown, ChevronUp } from "lucide-react"
+import {
+  CheckCircle2,
+  Lightbulb,
+  Tv,
+  Shield,
+  Sparkles,
+  Wrench,
+  Ladder,
+  ArrowRight,
+  X,
+  ShoppingCart,
+} from "lucide-react"
 
 interface ServiceOption {
   id: string
@@ -14,73 +25,79 @@ interface ServiceOption {
   price: number | null
   priceLabel?: string
   description?: string
+  popular?: boolean
 }
 
 interface ServiceCategory {
   id: string
   name: string
   description: string
-  icon: string
+  icon: React.ElementType
+  color: string
   services: ServiceOption[]
 }
 
 const serviceCategories: ServiceCategory[] = [
   {
     id: "installation-replacement",
-    name: "Installation & Replacement",
-    description: "Light fixtures, ceiling fans, TVs, and more",
-    icon: "💡",
+    name: "Installation",
+    description: "Fixtures, fans, TVs & more",
+    icon: Lightbulb,
+    color: "#FFCB00",
     services: [
-      { id: "light-fixture", name: "Light Fixture Installation / Replacement", price: 150, description: "Install or replace any standard light fixture" },
-      { id: "ceiling-fan", name: "Ceiling Fan Installation", price: 185, description: "Install a new ceiling fan or replace an existing one" },
-      { id: "tv-small", name: "TV Installation (up to 55\")", price: 200, description: "Wall mount and cable management for TVs up to 55\"" },
-      { id: "tv-large", name: "TV Installation (65\" and larger)", price: 350, description: "Wall mount and cable management for large TVs 65\"+", },
-      { id: "soundbar", name: "Soundbar Installation (concealed wiring)", price: null, priceLabel: "$150–$250", description: "Soundbar mounting with concealed wiring" },
-      { id: "surround-sound", name: "Full Surround System (5.1 / 7.1)", price: null, priceLabel: "$400–$800", description: "Complete surround sound system installation" },
-      { id: "doorbell", name: "Ring Doorbell Installation", price: null, priceLabel: "$125–$175", description: "Install Ring or smart doorbell" },
-      { id: "single-camera", name: "Single Camera Installation", price: null, priceLabel: "$150–$200", description: "Install a single security camera" },
-      { id: "multi-camera", name: "Multi-Camera System (3–5 cams)", price: null, priceLabel: "$350–$600", description: "Install a multi-camera security system" },
-      { id: "outlet-switch", name: "Outlet / Dimmer Switch Upgrade (per unit)", price: null, priceLabel: "$75–$125", description: "Replace or upgrade a single outlet or switch" },
-      { id: "smart-switch", name: "Smart Switch / Dimmer Install (per unit)", price: null, priceLabel: "$100–$150", description: "Install a smart switch or dimmer" },
-      { id: "picture-hanging-standard", name: "Picture & Art Hanging (1–3 items)", price: null, priceLabel: "$100–$150", description: "Hang 1-3 pictures or art pieces" },
-      { id: "picture-hanging-gallery", name: "Gallery Walls / Multi-Piece Installs", price: null, priceLabel: "$175–$300", description: "Gallery wall or multi-piece art installation" },
+      { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture", popular: true },
+      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan", popular: true },
+      { id: "tv-small", name: "TV Mounting (up to 55\")", price: 200, description: "Wall mount with cable management" },
+      { id: "tv-large", name: "TV Mounting (65\"+)", price: 350, description: "Large TV wall mount with cable management", popular: true },
+      { id: "soundbar", name: "Soundbar Install", price: null, priceLabel: "$150–$250", description: "Soundbar mounting with concealed wiring" },
+      { id: "surround-sound", name: "Surround System", price: null, priceLabel: "$400–$800", description: "5.1 or 7.1 surround sound setup" },
+      { id: "doorbell", name: "Ring Doorbell", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation" },
+      { id: "single-camera", name: "Security Camera", price: null, priceLabel: "$150–$200", description: "Single camera installation" },
+      { id: "multi-camera", name: "Multi-Camera System", price: null, priceLabel: "$350–$600", description: "3–5 camera security system" },
+      { id: "outlet-switch", name: "Outlet / Dimmer Upgrade", price: null, priceLabel: "$75–$125", description: "Per unit outlet or switch upgrade" },
+      { id: "smart-switch", name: "Smart Switch Install", price: null, priceLabel: "$100–$150", description: "Per unit smart switch or dimmer" },
+      { id: "picture-hanging-standard", name: "Picture Hanging (1–3)", price: null, priceLabel: "$100–$150", description: "Hang 1-3 pictures or art pieces" },
+      { id: "picture-hanging-gallery", name: "Gallery Wall Install", price: null, priceLabel: "$175–$300", description: "Multi-piece art installation" },
     ],
   },
   {
     id: "specialized-lighting",
-    name: "Specialized Lighting Systems",
-    description: "Landscape, cabinet, garage, and permanent LED lighting",
-    icon: "✨",
+    name: "Specialty",
+    description: "Landscape, cabinet & LED",
+    icon: Sparkles,
+    color: "#FF9500",
     services: [
-      { id: "landscape-basic", name: "Landscape & Outdoor Lighting (basic, 5–8 lights)", price: null, priceLabel: "$500–$1,200", description: "Basic pathway or garden lighting setup" },
-      { id: "landscape-custom", name: "Landscape & Outdoor Lighting (larger custom)", price: null, priceLabel: "$1,500–$3,500+", description: "Larger custom outdoor lighting systems" },
-      { id: "cabinet-standard", name: "Cabinet Lighting (standard kitchen)", price: null, priceLabel: "$300–$800", description: "Under-cabinet lighting for a standard kitchen" },
-      { id: "cabinet-custom", name: "Cabinet Lighting (high-end / custom)", price: null, priceLabel: "$800–$1,500", description: "High-end or custom cabinet lighting installation" },
-      { id: "garage-hex-1car", name: "Garage Hex Lighting (1-car garage)", price: null, priceLabel: "$500–$900", description: "Hexagonal LED lighting for a 1-car garage" },
-      { id: "garage-hex-2car", name: "Garage Hex Lighting (2-car garage)", price: null, priceLabel: "$800–$1,500", description: "Hexagonal LED lighting for a 2-car garage" },
-      { id: "permanent-led-exterior", name: "Permanent LED Lighting (exterior, per linear ft)", price: null, priceLabel: "$20–$35/ft", description: "Permanent exterior LED lighting system" },
-      { id: "permanent-led-home", name: "Permanent LED Lighting (typical home total)", price: null, priceLabel: "$2,500–$6,000", description: "Full-home permanent exterior LED lighting" },
-      { id: "led-bulb-per-fixture", name: "LED Bulb Upgrade (per fixture swap)", price: null, priceLabel: "$10–$25", description: "Swap a single fixture to LED" },
-      { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", price: null, priceLabel: "$200–$600", description: "Convert all fixtures in your home to LED" },
+      { id: "landscape-basic", name: "Landscape Lighting (Basic)", price: null, priceLabel: "$500–$1,200", description: "5–8 light pathway or garden setup", popular: true },
+      { id: "landscape-custom", name: "Landscape Lighting (Custom)", price: null, priceLabel: "$1,500–$3,500+", description: "Large custom outdoor lighting" },
+      { id: "cabinet-standard", name: "Cabinet Lighting", price: null, priceLabel: "$300–$800", description: "Standard kitchen under-cabinet LEDs", popular: true },
+      { id: "cabinet-custom", name: "Cabinet Lighting (Custom)", price: null, priceLabel: "$800–$1,500", description: "High-end custom cabinet lighting" },
+      { id: "garage-hex-1car", name: "Garage Hex Lights (1-Car)", price: null, priceLabel: "$500–$900", description: "Hexagonal LED garage lighting" },
+      { id: "garage-hex-2car", name: "Garage Hex Lights (2-Car)", price: null, priceLabel: "$800–$1,500", description: "Hexagonal LED for larger garages" },
+      { id: "permanent-led-exterior", name: "Permanent LED (per ft)", price: null, priceLabel: "$20–$35/ft", description: "Permanent exterior LED system" },
+      { id: "permanent-led-home", name: "Permanent LED (Whole Home)", price: null, priceLabel: "$2,500–$6,000", description: "Full-home exterior LED lighting", popular: true },
+      { id: "led-bulb-per-fixture", name: "LED Bulb Swap", price: null, priceLabel: "$10–$25", description: "Per fixture LED upgrade" },
+      { id: "led-bulb-whole-home", name: "Whole-Home LED Conversion", price: null, priceLabel: "$200–$600", description: "Convert all fixtures to LED" },
     ],
   },
   {
     id: "maintenance-cleaning",
-    name: "Maintenance & Cleaning",
-    description: "Fixture cleaning and bulb replacement",
-    icon: "🧹",
+    name: "Maintenance",
+    description: "Cleaning & bulb replacement",
+    icon: Wrench,
+    color: "#34C759",
     services: [
-      { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", price: 150, description: "Professional cleaning of light fixtures and chandeliers" },
-      { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", price: 150, description: "Replace hard-to-reach exterior light bulbs" },
+      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning" },
+      { id: "exterior-bulb-replacement", name: "Exterior Bulb Replacement", price: 150, description: "Hard-to-reach bulb replacement" },
     ],
   },
   {
     id: "additional-fees",
-    name: "Additional Fees",
-    description: "Extra charges for special access requirements",
-    icon: "🪜",
+    name: "Add-Ons",
+    description: "Special access fees",
+    icon: Ladder,
+    color: "#AF52DE",
     services: [
-      { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", price: 400, description: "Required for jobs needing a ladder over 15 feet" },
+      { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", price: 400, description: "Required for jobs needing a tall ladder" },
     ],
   },
 ]
@@ -89,7 +106,7 @@ export default function ServicesPage() {
   const router = useRouter()
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(["installation-replacement"])
+  const [activeCategory, setActiveCategory] = useState<string>("installation-replacement")
 
   useEffect(() => {
     const storedData = localStorage.getItem("estimateData")
@@ -118,12 +135,6 @@ export default function ServicesPage() {
         return [...prev, serviceId]
       }
     })
-  }
-
-  const toggleCategory = (categoryId: string) => {
-    setExpandedCategories((prev) =>
-      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
-    )
   }
 
   const getServiceById = (serviceId: string): ServiceOption | undefined => {
@@ -162,147 +173,169 @@ export default function ServicesPage() {
     localStorage.setItem("estimateData", JSON.stringify(updatedData))
   }, [selectedServices])
 
+  const activeCategoryData = serviceCategories.find((c) => c.id === activeCategory)
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="container mx-auto px-4 py-12 pt-28">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">Choose Your Service</h1>
-            <p className="text-sm text-gray-500 mb-4">Step 1 of 3: Service Selection</p>
-            <Progress value={33} className="w-full md:w-64 mx-auto mb-2 h-1 bg-gray-100 [&>div]:bg-[#FFCB00]" />
+      <div className="pt-24 pb-32">
+        {/* Hero header */}
+        <div className="bg-white border-b">
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                What can we help you with?
+              </h1>
+              <p className="text-gray-500 mb-6">Select the services you need and we&apos;ll handle the rest.</p>
+              <div className="flex items-center justify-center gap-3 text-sm text-gray-400">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-6 h-6 rounded-full bg-[#FFCB00] text-black text-xs font-bold flex items-center justify-center">1</span>
+                  Services
+                </span>
+                <div className="w-8 h-px bg-gray-300" />
+                <span className="flex items-center gap-1.5">
+                  <span className="w-6 h-6 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center">2</span>
+                  Details
+                </span>
+                <div className="w-8 h-px bg-gray-300" />
+                <span className="flex items-center gap-1.5">
+                  <span className="w-6 h-6 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center">3</span>
+                  Payment
+                </span>
+              </div>
+            </div>
           </div>
+        </div>
 
-          {/* Service Categories */}
-          <div className="space-y-4">
-            {serviceCategories.map((category) => {
-              const isExpanded = expandedCategories.includes(category.id)
-              const selectedInCategory = category.services.filter((s) => selectedServices.includes(s.id)).length
+        {/* Category tabs - horizontal scrollable */}
+        <div className="bg-white border-b sticky top-16 z-40">
+          <div className="container mx-auto px-4">
+            <div className="flex gap-1 overflow-x-auto py-3 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:justify-center">
+              {serviceCategories.map((category) => {
+                const isActive = activeCategory === category.id
+                const selectedCount = category.services.filter((s) => selectedServices.includes(s.id)).length
+                const Icon = category.icon
 
-              return (
-                <div key={category.id}>
-                  {/* Category Header */}
+                return (
                   <button
-                    onClick={() => toggleCategory(category.id)}
-                    className="w-full text-left p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-[#FFCB00] transition-colors flex items-center justify-between"
+                    key={category.id}
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap text-sm font-medium transition-all duration-200 flex-shrink-0 ${
+                      isActive
+                        ? "bg-[#FFCB00] text-black shadow-sm"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{category.icon}</span>
-                      <div>
-                        <h2 className="font-semibold text-gray-900">{category.name}</h2>
-                        <p className="text-xs text-gray-500">{category.description}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {selectedInCategory > 0 && (
-                        <span className="bg-[#FFCB00] text-black text-xs font-bold px-2 py-0.5 rounded-full">
-                          {selectedInCategory}
-                        </span>
-                      )}
-                      {isExpanded ? (
-                        <ChevronUp className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <ChevronDown className="h-5 w-5 text-gray-400" />
-                      )}
-                    </div>
+                    <Icon className="w-4 h-4" />
+                    <span>{category.name}</span>
+                    {selectedCount > 0 && (
+                      <span className={`w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
+                        isActive ? "bg-black/20 text-black" : "bg-[#FFCB00] text-black"
+                      }`}>
+                        {selectedCount}
+                      </span>
+                    )}
                   </button>
-
-                  {/* Category Services */}
-                  {isExpanded && (
-                    <div className="mt-2 space-y-2 pl-2">
-                      {category.services.map((service) => {
-                        const isSelected = selectedServices.includes(service.id)
-
-                        return (
-                          <Card
-                            key={service.id}
-                            className={`cursor-pointer transition-all duration-200 border ${
-                              isSelected
-                                ? "border-[#FFCB00] shadow-sm bg-[#FFCB00]/5"
-                                : "border-gray-200 hover:border-gray-300"
-                            }`}
-                            onClick={() => handleServiceToggle(service.id)}
-                          >
-                            <CardContent className="p-3">
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className={`flex-shrink-0 rounded-full border p-0.5 transition-all duration-200 ${
-                                    isSelected ? "border-[#FFCB00] bg-[#FFCB00]" : "border-gray-300 bg-white"
-                                  }`}
-                                >
-                                  <CheckCircle2
-                                    className={`w-3.5 h-3.5 transition-colors duration-200 ${
-                                      isSelected ? "text-black" : "text-transparent"
-                                    }`}
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <h3 className="font-medium text-sm text-gray-900">{service.name}</h3>
-                                  {service.description && (
-                                    <p className="text-xs text-gray-500 mt-0.5">{service.description}</p>
-                                  )}
-                                </div>
-                                <div className="text-right flex-shrink-0">
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {service.price ? `$${service.price.toFixed(2)}` : service.priceLabel}
-                                  </div>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
+        </div>
 
-          {/* Selected Services Summary */}
-          {selectedServices.length > 0 && (
-            <div className="mt-6 space-y-3">
-              <Card className="bg-white border border-[#FFCB00] shadow-md overflow-hidden">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-[#FFCB00] text-black rounded-full p-1 flex-shrink-0">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <h4 className="font-semibold text-sm text-gray-900">
-                        Selected Services ({selectedServices.length})
-                      </h4>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-gray-900">
-                        {calculateTotalPrice() > 0
-                          ? `$${calculateTotalPrice().toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-                          : ""}
-                      </div>
-                      {hasRangeItems && (
-                        <p className="text-[10px] text-gray-500">+ items with variable pricing</p>
-                      )}
-                    </div>
-                  </div>
+        {/* Services grid */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Category description */}
+            {activeCategoryData && (
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900">{activeCategoryData.name}</h2>
+                <p className="text-sm text-gray-500 mt-1">{activeCategoryData.description}</p>
+              </div>
+            )}
 
-                  {/* List selected items */}
-                  <div className="space-y-1 pt-2 border-t border-gray-100">
-                    {selectedServices.map((id) => {
-                      const service = getServiceById(id)
-                      if (!service) return null
-                      return (
-                        <div key={id} className="flex justify-between text-xs text-gray-600">
-                          <span>{service.name}</span>
-                          <span className="font-medium">
-                            {service.price ? `$${service.price.toFixed(2)}` : service.priceLabel}
-                          </span>
+            {/* Service cards grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {activeCategoryData?.services.map((service) => {
+                const isSelected = selectedServices.includes(service.id)
+
+                return (
+                  <Card
+                    key={service.id}
+                    onClick={() => handleServiceToggle(service.id)}
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden group ${
+                      isSelected
+                        ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-md"
+                        : "hover:shadow-md hover:border-gray-300 bg-white"
+                    }`}
+                  >
+                    {service.popular && (
+                      <div className="absolute top-0 right-0">
+                        <div className="bg-[#FFCB00] text-black text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
+                          POPULAR
                         </div>
-                      )
-                    })}
+                      </div>
+                    )}
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <h3 className="font-semibold text-gray-900 text-sm leading-snug pr-2">
+                          {service.name}
+                        </h3>
+                        <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          isSelected
+                            ? "border-[#FFCB00] bg-[#FFCB00]"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}>
+                          {isSelected && <CheckCircle2 className="w-3 h-3 text-black" />}
+                        </div>
+                      </div>
+                      {service.description && (
+                        <p className="text-xs text-gray-500 mb-3 leading-relaxed">{service.description}</p>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-bold text-gray-900">
+                          {service.price ? `$${service.price}` : service.priceLabel}
+                        </span>
+                        <span className={`text-xs font-medium transition-colors ${
+                          isSelected ? "text-[#FFCB00]" : "text-gray-400 group-hover:text-gray-600"
+                        }`}>
+                          {isSelected ? "Selected" : "Add"}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating bottom bar - cart summary */}
+      {selectedServices.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-2xl">
+          <div className="container mx-auto px-4 py-4">
+            <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <ShoppingCart className="w-6 h-6 text-gray-700" />
+                  <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#FFCB00] text-black text-xs font-bold flex items-center justify-center">
+                    {selectedServices.length}
+                  </span>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-gray-900">
+                    {selectedServices.length} service{selectedServices.length > 1 ? "s" : ""} selected
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="text-xs text-gray-500">
+                    {calculateTotalPrice() > 0
+                      ? `$${calculateTotalPrice().toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                      : ""}
+                    {hasRangeItems && calculateTotalPrice() > 0 && " + variable pricing"}
+                    {hasRangeItems && calculateTotalPrice() === 0 && "Variable pricing"}
+                  </div>
+                </div>
+              </div>
 
               <Button
                 onClick={() => {
@@ -317,15 +350,15 @@ export default function ServicesPage() {
                   localStorage.setItem("estimateData", JSON.stringify(updatedData))
                   router.push("/estimate/customer")
                 }}
-                size="lg"
-                className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black shadow-md hover:shadow-lg transition-all duration-300 text-sm font-semibold py-5 rounded-lg"
+                className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 Continue
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       <Footer />
     </div>
