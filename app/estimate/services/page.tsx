@@ -9,13 +9,10 @@ import { Progress } from "@/components/ui/progress"
 import {
   CheckCircle2,
   Lightbulb,
-  Tv,
-  Shield,
   Sparkles,
   Wrench,
-  Ladder,
+  Plus,
   ArrowRight,
-  X,
   ShoppingCart,
 } from "lucide-react"
 
@@ -94,7 +91,7 @@ const serviceCategories: ServiceCategory[] = [
     id: "additional-fees",
     name: "Add-Ons",
     description: "Special access fees",
-    icon: Ladder,
+    icon: Plus,
     color: "#AF52DE",
     services: [
       { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", price: 400, description: "Required for jobs needing a tall ladder" },
