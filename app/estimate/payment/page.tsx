@@ -365,6 +365,27 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
+                  {/* Subscription Discount */}
+                  {bookingData?.services?.isSubscription && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-sm">
+                        <span className="text-green-600">Annual Plan Discount (15%)</span>
+                        <span className="font-medium text-green-600">
+                          -{(() => {
+                            const subtotal = getSelectedServicesWithDetails().reduce((t: number, s: any) => t + s.price, 0)
+                            return `$${Math.round(subtotal * 0.15).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                          })()}
+                        </span>
+                      </div>
+                      <div className="rounded-lg border border-[#FFCB00]/30 bg-[#FFCB00]/5 p-3">
+                        <p className="text-xs text-gray-600">
+                          <span className="font-semibold">Annual Plan:</span> Priority scheduling, annual maintenance visit, and 1-year workmanship warranty included.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
                   {/* Promo Discount */}
                   {promoDiscount > 0 && (
                     <div className="flex justify-between text-sm">

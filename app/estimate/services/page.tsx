@@ -422,7 +422,7 @@ export default function ServicesPage() {
                     },
                   }
                   localStorage.setItem("estimateData", JSON.stringify(updatedData))
-                  router.push("/estimate/customer")
+                  router.push("/estimate/compare")
                 }}
                 className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >

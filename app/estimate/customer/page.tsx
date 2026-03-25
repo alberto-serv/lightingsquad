@@ -925,7 +925,7 @@ export default function CustomerPage() {
 
           {/* Navigation */}
           <div className="flex justify-between items-center mt-8">
-            <Button variant="outline" onClick={() => router.push("/estimate/services")} className="gap-2">
+            <Button variant="outline" onClick={() => router.push("/estimate/compare")} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>

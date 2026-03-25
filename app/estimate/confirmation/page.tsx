@@ -387,6 +387,30 @@ export default function ConfirmationPage() {
                   </div>
                 </div>
 
+                {bookingData?.services?.isSubscription && (
+                  <>
+                    <Separator />
+                    <div className="flex justify-between text-sm gap-2">
+                      <span className="text-green-600 break-words flex-1">Annual Plan Discount (15%)</span>
+                      <span className="font-medium text-green-600 flex-shrink-0">
+                        -{(() => {
+                          const services = bookingData.services.selectedServices || []
+                          const subtotal = services.reduce((t: number, id: string) => {
+                            const svc = availableServices.find((s) => s.id === id)
+                            return t + (svc?.basePrice || 0)
+                          }, 0)
+                          return `$${Math.round(subtotal * 0.15).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                        })()}
+                      </span>
+                    </div>
+                    <div className="rounded-lg border border-[#FFCB00]/30 bg-[#FFCB00]/5 p-3">
+                      <p className="text-xs text-gray-600">
+                        <span className="font-semibold">Annual Plan:</span> Priority scheduling, annual maintenance visit, and 1-year workmanship warranty.
+                      </p>
+                    </div>
+                  </>
+                )}
+
                 {bookingData?.customer?.appliedPromoCode && bookingData?.customer?.promoDiscount > 0 && (
                   <>
                     <Separator />
@@ -412,8 +436,8 @@ export default function ConfirmationPage() {
                     </div>
                     <span className="text-base">
                       $
-                      {((bookingData.services.totalPrice || 0) - (bookingData?.customer?.promoDiscount || 0)).toFixed(
-                        2,
+                      {((bookingData.services.totalPrice || 0) - (bookingData?.customer?.promoDiscount || 0)).toLocaleString(
+                        "en-US", { minimumFractionDigits: 2 },
                       )}
                     </span>
                   </div>
