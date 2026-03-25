@@ -277,7 +277,7 @@ export default function ServicesPage() {
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span>{category.name}</span>
+                    <span>{category.name}: {category.description}</span>
                     {selectedCount > 0 && (
                       <span className={`w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
                         isActive ? "bg-black/20 text-black" : "bg-[#FFCB00] text-black"
@@ -295,13 +295,6 @@ export default function ServicesPage() {
         {/* Services grid */}
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            {activeCategoryData && (
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900">{activeCategoryData.name}</h2>
-                <p className="text-sm text-gray-500 mt-1">{activeCategoryData.description}</p>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {activeCategoryData?.services.map((service) => {
                 const hasSubOptions = !!service.subOptions
