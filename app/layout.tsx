@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     "Professional lighting installation, electrical services, and smart home solutions for homeowners and businesses in Nashville and Middle Tennessee.",
   generator: "v0.app",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.svg",
   },
 }
 
