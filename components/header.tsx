@@ -25,7 +25,7 @@ export function Header() {
             className={`hover:opacity-80 transition-opacity duration-300 ${scrolled ? 'opacity-0' : 'opacity-100'}`}
           >
             <Image
-              src="/logo.svg"
+              src="/lighting-squad-logo.webp"
               alt="The Lighting Squad - Your Electrical Handyman"
               width={360}
               height={80}
