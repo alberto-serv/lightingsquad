@@ -13,6 +13,8 @@ import {
   ChevronDown,
 } from "lucide-react"
 
+import Image from "next/image"
+
 interface SubOption {
   id: string
   label: string
@@ -26,6 +28,7 @@ interface ServiceItem {
   description?: string
   price: number | null
   priceLabel?: string
+  image?: string
   subOptions?: SubOption[]
 }
 
@@ -50,6 +53,7 @@ const serviceCategories: ServiceCategory[] = [
         description: "Permanent exterior LED systems",
         price: null,
         priceLabel: "$20–$6,000",
+        image: "/services/permanent-led.webp",
         subOptions: [
           { id: "permanent-led-exterior", label: "Per Linear Foot", price: null, priceLabel: "$20–$35/ft" },
           { id: "permanent-led-home", label: "Whole Home", price: null, priceLabel: "$2,500–$6,000" },
@@ -61,6 +65,7 @@ const serviceCategories: ServiceCategory[] = [
         description: "Hexagonal LED garage lighting",
         price: null,
         priceLabel: "$500–$1,500",
+        image: "/services/garage-hex.webp",
         subOptions: [
           { id: "garage-hex-1car", label: "1-Car Garage", price: null, priceLabel: "$500–$900" },
           { id: "garage-hex-2car", label: "2-Car Garage", price: null, priceLabel: "$800–$1,500" },
@@ -72,6 +77,7 @@ const serviceCategories: ServiceCategory[] = [
         description: "Upgrade or install per unit",
         price: null,
         priceLabel: "$75–$150",
+        image: "/services/switches-outlets.webp",
         subOptions: [
           { id: "outlet-switch", label: "Outlet / Dimmer Upgrade", price: null, priceLabel: "$75–$125" },
           { id: "smart-switch", label: "Smart Switch / Dimmer", price: null, priceLabel: "$100–$150" },
@@ -83,25 +89,27 @@ const serviceCategories: ServiceCategory[] = [
         description: "Swap to energy-efficient LED",
         price: null,
         priceLabel: "$10–$600",
+        image: "/services/led-bulb-upgrade.webp",
         subOptions: [
           { id: "led-bulb-per-fixture", label: "Per Fixture", price: null, priceLabel: "$10–$25" },
           { id: "led-bulb-whole-home", label: "Whole Home", price: null, priceLabel: "$200–$600" },
         ],
       },
-      { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture" },
-      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning" },
+      { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture", image: "/services/light-fixture.webp" },
+      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning", image: "/services/fixture-cleaning.webp" },
       {
         id: "outdoor-lighting",
         name: "Outdoor Lighting",
         description: "Pathway, garden, and outdoor setups",
         price: null,
         priceLabel: "$500–$3,500+",
+        image: "/services/outdoor-lighting.webp",
         subOptions: [
           { id: "landscape-basic", label: "Basic (5–8 lights)", price: null, priceLabel: "$500–$1,200" },
           { id: "landscape-custom", label: "Custom / Large", price: null, priceLabel: "$1,500–$3,500+" },
         ],
       },
-      { id: "exterior-bulb-replacement", name: "Exterior Bulb Replacement", price: 150, description: "Hard-to-reach bulb replacement" },
+      { id: "exterior-bulb-replacement", name: "Exterior Bulb Replacement", price: 150, description: "Hard-to-reach bulb replacement", image: "/services/exterior-bulb.webp" },
     ],
   },
   {
@@ -116,6 +124,7 @@ const serviceCategories: ServiceCategory[] = [
         description: "Wall mount with cable management",
         price: null,
         priceLabel: "$200–$350",
+        image: "/services/tv-mounting.webp",
         subOptions: [
           { id: "tv-small", label: "Up to 55\"", price: 200 },
           { id: "tv-large", label: "65\" and larger", price: 350 },
@@ -127,18 +136,20 @@ const serviceCategories: ServiceCategory[] = [
         description: "Soundbar or surround sound setup",
         price: null,
         priceLabel: "$150–$800",
+        image: "/services/audio-system.webp",
         subOptions: [
           { id: "soundbar", label: "Soundbar (concealed wiring)", price: null, priceLabel: "$150–$250" },
           { id: "surround-sound", label: "Full Surround (5.1 / 7.1)", price: null, priceLabel: "$400–$800" },
         ],
       },
-      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation" },
+      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation", image: "/services/doorbell.webp" },
       {
         id: "security-cameras",
         name: "Security Cameras",
         description: "Camera installation and setup",
         price: null,
         priceLabel: "$150–$600",
+        image: "/services/security-cameras.webp",
         subOptions: [
           { id: "single-camera", label: "Single Camera", price: null, priceLabel: "$150–$200" },
           { id: "multi-camera", label: "Multi-Camera (3–5)", price: null, priceLabel: "$350–$600" },
@@ -150,12 +161,13 @@ const serviceCategories: ServiceCategory[] = [
         description: "Professional picture and art installation",
         price: null,
         priceLabel: "$100–$300",
+        image: "/services/picture-hanging.webp",
         subOptions: [
           { id: "picture-hanging-standard", label: "1–3 items", price: null, priceLabel: "$100–$150" },
           { id: "picture-hanging-gallery", label: "Gallery Wall", price: null, priceLabel: "$175–$300" },
         ],
       },
-      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan" },
+      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan", image: "/services/ceiling-fan.webp" },
     ],
   },
 ]
@@ -347,6 +359,17 @@ export default function ServicesPage() {
                                 : "hover:shadow-md hover:border-gray-300 bg-white"
                           }`}
                         >
+                          {service.image && (
+                            <div className="relative w-full h-28 overflow-hidden">
+                              <Image
+                                src={service.image}
+                                alt={service.name}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              />
+                            </div>
+                          )}
                           <CardContent className="p-4 flex flex-col justify-between h-full">
                             <div>
                               <div className="flex items-start justify-between">
