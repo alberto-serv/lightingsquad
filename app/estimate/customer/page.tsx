@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Clock,
   User,
@@ -19,7 +18,6 @@ import {
   ArrowLeft,
   ArrowRight,
   MapPin,
-  Wrench,
   DollarSign,
   ChevronLeft,
   ChevronRight,
@@ -50,7 +48,6 @@ interface CustomerData {
   zipCode: string
   preferredDate?: Date
   timeWindow: string
-  additionalNotes?: string
   termsAccepted?: boolean
   appliedPromoCode?: string | null
   promoDiscount?: number
@@ -139,12 +136,9 @@ const availableServices = [
   { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", basePrice: 400, category: "lighting", pricingType: "flat" },
   { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", basePrice: 150, category: "maintenance", pricingType: "flat" },
   { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", basePrice: 150, category: "maintenance", pricingType: "flat" },
-  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", basePrice: 400, category: "additional", pricingType: "flat" },
 ]
 
-const availableAddOns: AddOn[] = [
-  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", description: "Required for jobs needing a ladder over 15 feet", price: 400, pricingType: "flat" },
-]
+const availableAddOns: AddOn[] = []
 
 // Supported service areas - states and major cities/regions
 const SUPPORTED_STATES = ["TN"]
@@ -195,7 +189,6 @@ export default function CustomerPage() {
     state: "",
     zipCode: "",
     timeWindow: "",
-    additionalNotes: "",
     termsAccepted: false,
     phoneVerified: false,
   })
@@ -530,118 +523,6 @@ export default function CustomerPage() {
                 </p>
               </div>
 
-              {estimateData?.services?.selectedServices && estimateData.services.selectedServices.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FFCB00]/10">
-                        <Wrench className="h-5 w-5 text-[#FFCB00]" />
-                      </div>
-                      <span>Selected Services</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="space-y-2">
-                      {getSelectedServicesWithDetails().map((service: any, index: number) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                          <span className="font-medium text-gray-900">{service.name}</span>
-                          <span className="font-semibold text-[#FFCB00]">
-                            {typeof service.price === "string" ? service.price : `$${service.price.toFixed(2)}`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-                    <MapPin className="h-5 w-5 text-[#FFCB00]" />
-                    <span>Service Address</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="streetAddress">Street Address *</Label>
-                    <Input
-                      id="streetAddress"
-                      placeholder="123 Main Street"
-                      value={customerData.streetAddress}
-                      onChange={(e) => handleInputChange("streetAddress", e.target.value)}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <div className="space-y-2 col-span-2 sm:col-span-1">
-                      <Label htmlFor="city">City *</Label>
-                      <Input
-                        id="city"
-                        placeholder="Houston"
-                        value={customerData.city}
-                        onChange={(e) => handleInputChange("city", e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="state">State *</Label>
-                      <Input
-                        id="state"
-                        placeholder="TX"
-                        value={customerData.state}
-                        onChange={(e) => handleInputChange("state", e.target.value)}
-                        maxLength={2}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="zipCode">ZIP Code *</Label>
-                      <Input
-                        id="zipCode"
-                        placeholder="77001"
-                        value={customerData.zipCode}
-                        onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                        maxLength={10}
-                      />
-                    </div>
-                  </div>
-
-                  {addressUnsupported && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                      <p className="text-sm font-medium text-amber-900">
-                        {"We don't serve that area yet."}
-                      </p>
-                      <p className="text-sm text-amber-800 mt-1">
-                        We currently serve Nashville and Middle Tennessee.
-                      </p>
-                    </div>
-                  )}
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <Label htmlFor="additionalNotes" className="text-sm font-medium text-muted-foreground">
-                      Additional Notes (Optional)
-                    </Label>
-                    <Textarea
-                      id="additionalNotes"
-                      placeholder="e.g., Dryer location, vent access instructions, how long since last cleaning, any issues you've noticed, pet information, gate code, etc."
-                      value={customerData.additionalNotes}
-                      onChange={(e) => {
-                        const value = e.target.value.slice(0, 500)
-                        handleInputChange("additionalNotes", value)
-                      }}
-                      className="min-h-[120px] resize-none"
-                      maxLength={500}
-                    />
-                    <div className="flex justify-end">
-                      <span className="text-xs text-muted-foreground">
-                        {customerData.additionalNotes?.length || 0}/500 characters
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
@@ -703,6 +584,64 @@ export default function CustomerPage() {
                       This phone number will be used to communicate with you
                     </p>
                   </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <Label htmlFor="streetAddress" className="flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      Street Address *
+                    </Label>
+                    <Input
+                      id="streetAddress"
+                      placeholder="1234 Music Row, Nashville"
+                      value={customerData.streetAddress}
+                      onChange={(e) => handleInputChange("streetAddress", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div className="space-y-2 col-span-2 sm:col-span-1">
+                      <Label htmlFor="city">City *</Label>
+                      <Input
+                        id="city"
+                        placeholder="Nashville"
+                        value={customerData.city}
+                        onChange={(e) => handleInputChange("city", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="state">State *</Label>
+                      <Input
+                        id="state"
+                        placeholder="TN"
+                        value={customerData.state}
+                        onChange={(e) => handleInputChange("state", e.target.value)}
+                        maxLength={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="zipCode">ZIP Code *</Label>
+                      <Input
+                        id="zipCode"
+                        placeholder="37203"
+                        value={customerData.zipCode}
+                        onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                        maxLength={10}
+                      />
+                    </div>
+                  </div>
+
+                  {addressUnsupported && (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                      <p className="text-sm font-medium text-amber-900">
+                        {"We don't serve that area yet."}
+                      </p>
+                      <p className="text-sm text-amber-800 mt-1">
+                        We currently serve Nashville and Middle Tennessee.
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -914,7 +853,7 @@ export default function CustomerPage() {
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
                               <span className="font-medium flex-shrink-0">
-                                {typeof service.price === "string" ? service.price : `$${service.price.toFixed(2)}`}
+                                {typeof service.price === "string" ? service.price : `$${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
                               </span>
                             </div>
                           ))
@@ -927,71 +866,6 @@ export default function CustomerPage() {
                     </div>
                   </div>
 
-                  {/* Add-On Selection */}
-                  {availableAddOns.length > 0 && (
-                    <>
-                      <Separator />
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Add-Ons</div>
-                        {availableAddOns.map((addOn) => {
-                          const isChecked = estimateData?.services?.selectedAddOns?.includes(addOn.id) || false
-                          return (
-                            <label key={addOn.id} className="flex items-start gap-2 cursor-pointer">
-                              <Checkbox
-                                checked={isChecked}
-                                onCheckedChange={(checked) => {
-                                  const current = estimateData?.services?.selectedAddOns || []
-                                  const updated = checked
-                                    ? [...current, addOn.id]
-                                    : current.filter((id: string) => id !== addOn.id)
-                                  const newData = {
-                                    ...estimateData,
-                                    services: { ...estimateData.services, selectedAddOns: updated },
-                                  }
-                                  setEstimateData(newData)
-                                  localStorage.setItem("estimateData", JSON.stringify(newData))
-                                }}
-                                className="mt-0.5 border-gray-300 data-[state=checked]:bg-[#FFCB00] data-[state=checked]:border-[#FFCB00]"
-                              />
-                              <div className="flex-1">
-                                <div className="flex justify-between text-sm gap-2">
-                                  <span>{addOn.name}</span>
-                                  <span className="font-medium flex-shrink-0">${addOn.price.toFixed(2)}</span>
-                                </div>
-                                <p className="text-xs text-muted-foreground">{addOn.description}</p>
-                              </div>
-                            </label>
-                          )
-                        })}
-                      </div>
-                    </>
-                  )}
-
-                  {/* Add-Ons Summary */}
-                  {getSelectedAddOnsWithDetails().length > 0 && (
-                    <>
-                      <Separator />
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm gap-2">
-                          <span className="text-green-600 break-words flex-1">Add-Ons</span>
-                          <span className="font-medium text-green-600 flex-shrink-0">
-                            ${getTotalAddOnsPrice().toFixed(2)}
-                          </span>
-                        </div>
-                        {getSelectedAddOnsWithDetails().map((addOn: any, index: number) => (
-                          <div key={index} className="flex justify-between text-sm gap-2">
-                            <span className="text-muted-foreground break-words flex-1">
-                              {addOn.name}
-                              {addOn.pricingType === "perUnit" &&
-                                ` (${addOn.quantity} ${addOn.unit}${addOn.quantity > 1 ? "s" : ""})`}
-                            </span>
-                            <span className="font-medium flex-shrink-0">${addOn.price.toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-
                   {/* Discounts */}
                   {estimateData?.services?.isSubscription && getDiscountAmount() > 0 && (
                     <>
@@ -999,7 +873,7 @@ export default function CustomerPage() {
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-green-600 break-words flex-1">Subscribe & Save Discount (15%)</span>
                         <span className="font-medium text-green-600 flex-shrink-0">
-                          -${getDiscountAmount().toFixed(2)}
+                          -${getDiscountAmount().toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                     </>
@@ -1010,7 +884,7 @@ export default function CustomerPage() {
                       <Separator />
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-green-600 break-words flex-1">Promo Code ({appliedPromoCode})</span>
-                        <span className="font-medium text-green-600 flex-shrink-0">-${promoDiscount.toFixed(2)}</span>
+                        <span className="font-medium text-green-600 flex-shrink-0">-${promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                       </div>
                     </>
                   )}
@@ -1026,7 +900,7 @@ export default function CustomerPage() {
                           <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
-                          ${((estimateData.services.totalPrice || 0) - promoDiscount).toFixed(2)}
+                          ${((estimateData.services.totalPrice || 0) - promoDiscount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                     </div>

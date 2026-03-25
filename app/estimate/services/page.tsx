@@ -10,7 +10,6 @@ import {
   Hammer,
   ArrowRight,
   ShoppingCart,
-  ChevronDown,
 } from "lucide-react"
 
 interface SubOption {
@@ -151,12 +150,15 @@ const serviceCategories: ServiceCategory[] = [
   },
 ]
 
+function formatPrice(amount: number): string {
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
 export default function ServicesPage() {
   const router = useRouter()
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
   const [activeCategory, setActiveCategory] = useState<string>("lighting")
-  const [expandedCards, setExpandedCards] = useState<string[]>([])
 
   useEffect(() => {
     const storedData = localStorage.getItem("estimateData")
@@ -180,12 +182,6 @@ export default function ServicesPage() {
   const handleServiceToggle = (serviceId: string) => {
     setSelectedServices((prev) =>
       prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
-    )
-  }
-
-  const toggleCardExpanded = (cardId: string) => {
-    setExpandedCards((prev) =>
-      prev.includes(cardId) ? prev.filter((id) => id !== cardId) : [...prev, cardId]
     )
   }
 
@@ -256,7 +252,7 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        {/* Category tabs - scrolls with page */}
+        {/* Category tabs */}
         <div className="bg-white border-b">
           <div className="container mx-auto px-4">
             <div className="flex gap-1 overflow-x-auto py-3 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:justify-center">
@@ -310,7 +306,6 @@ export default function ServicesPage() {
               {activeCategoryData?.services.map((service) => {
                 const hasSubOptions = !!service.subOptions
                 const selected = isCardSelected(service)
-                const isExpanded = expandedCards.includes(service.id)
 
                 if (hasSubOptions) {
                   return (
@@ -322,50 +317,38 @@ export default function ServicesPage() {
                           : "bg-white hover:shadow-md hover:border-gray-300"
                       }`}
                     >
-                      <CardContent className="p-5">
-                        <button
-                          onClick={() => toggleCardExpanded(service.id)}
-                          className="w-full text-left"
-                        >
-                          <h3 className="font-semibold text-gray-900 text-sm leading-snug">
-                            {service.name}
-                          </h3>
-                          {service.description && (
-                            <p className="text-xs text-gray-500 mt-1 leading-relaxed">{service.description}</p>
-                          )}
-                          <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
-                            <span>{service.subOptions!.length} options</span>
-                            <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
-                          </div>
-                        </button>
-
-                        {isExpanded && (
-                          <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
-                            {service.subOptions!.map((sub) => {
-                              const subSelected = selectedServices.includes(sub.id)
-                              return (
-                                <button
-                                  key={sub.id}
-                                  onClick={() => handleServiceToggle(sub.id)}
-                                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all ${
-                                    subSelected
-                                      ? "bg-[#FFCB00]/15 border border-[#FFCB00]"
-                                      : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
-                                  }`}
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <span className={`font-medium ${subSelected ? "text-gray-900" : "text-gray-700"}`}>
-                                      {sub.label}
-                                    </span>
-                                    <span className="font-bold text-gray-900 text-sm">
-                                      {sub.price ? `$${sub.price}` : sub.priceLabel}
-                                    </span>
-                                  </div>
-                                </button>
-                              )
-                            })}
-                          </div>
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                          {service.name}
+                        </h3>
+                        {service.description && (
+                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{service.description}</p>
                         )}
+                        <div className="mt-2.5 space-y-1.5">
+                          {service.subOptions!.map((sub) => {
+                            const subSelected = selectedServices.includes(sub.id)
+                            return (
+                              <button
+                                key={sub.id}
+                                onClick={() => handleServiceToggle(sub.id)}
+                                className={`w-full text-left px-2.5 py-2 rounded-md text-sm transition-all ${
+                                  subSelected
+                                    ? "bg-[#FFCB00]/15 border border-[#FFCB00]"
+                                    : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className={`text-xs font-medium ${subSelected ? "text-gray-900" : "text-gray-700"}`}>
+                                    {sub.label}
+                                  </span>
+                                  <span className="font-bold text-gray-900 text-xs">
+                                    {sub.price ? `$${formatPrice(sub.price)}` : sub.priceLabel}
+                                  </span>
+                                </div>
+                              </button>
+                            )
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
                   )
@@ -381,15 +364,17 @@ export default function ServicesPage() {
                         : "hover:shadow-md hover:border-gray-300 bg-white"
                     }`}
                   >
-                    <CardContent className="p-5">
-                      <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-1">
-                        {service.name}
-                      </h3>
-                      {service.description && (
-                        <p className="text-xs text-gray-500 mb-3 leading-relaxed">{service.description}</p>
-                      )}
-                      <span className="text-lg font-bold text-gray-900">
-                        {service.price ? `$${service.price}` : service.priceLabel}
+                    <CardContent className="p-4 flex flex-col justify-between h-full">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                          {service.name}
+                        </h3>
+                        {service.description && (
+                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{service.description}</p>
+                        )}
+                      </div>
+                      <span className="text-base font-bold text-gray-900 mt-2.5">
+                        {service.price ? `$${formatPrice(service.price)}` : service.priceLabel}
                       </span>
                     </CardContent>
                   </Card>
@@ -418,7 +403,7 @@ export default function ServicesPage() {
                   </div>
                   <div className="text-xs text-gray-500">
                     {calculateTotalPrice() > 0
-                      ? `$${calculateTotalPrice().toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                      ? `$${formatPrice(calculateTotalPrice())}`
                       : ""}
                     {hasRangeItems && calculateTotalPrice() > 0 && " + variable pricing"}
                     {hasRangeItems && calculateTotalPrice() === 0 && "Variable pricing"}
