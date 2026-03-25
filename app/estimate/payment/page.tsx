@@ -17,6 +17,8 @@ import {
   Calendar,
   CheckCircle,
   DollarSign,
+  Zap,
+  Check,
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -60,8 +62,10 @@ const availableServices = [
   { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", basePrice: 400 },
   { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", basePrice: 150 },
   { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", basePrice: 150 },
-  { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", basePrice: 400 },
 ]
+
+const SUBSCRIPTION_DISCOUNT = 0.15
+const MONTHLY_MEMBERSHIP_FEE = 29.99
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -70,6 +74,7 @@ export default function PaymentPage() {
   const [promoCode, setPromoCode] = useState("")
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null)
   const [promoDiscount, setPromoDiscount] = useState(0)
+  const [isSubscription, setIsSubscription] = useState(false)
 
   // Payment form state
   const [cardNumber, setCardNumber] = useState("")
@@ -83,15 +88,31 @@ export default function PaymentPage() {
     const confirmationData = localStorage.getItem("bookingConfirmation")
 
     if (confirmationData) {
-      // Use bookingConfirmation if available (has customer data)
-      setBookingData(JSON.parse(confirmationData))
+      const parsed = JSON.parse(confirmationData)
+      setBookingData(parsed)
+      setIsSubscription(parsed.services?.isSubscription || false)
     } else if (storedData) {
-      // Fall back to estimateData
-      setBookingData(JSON.parse(storedData))
+      const parsed = JSON.parse(storedData)
+      setBookingData(parsed)
+      setIsSubscription(parsed.services?.isSubscription || false)
     } else {
       router.push("/estimate/services")
     }
   }, [router])
+
+  // Persist subscription choice to localStorage
+  useEffect(() => {
+    if (!bookingData) return
+    const updatedData = {
+      ...bookingData,
+      services: {
+        ...bookingData.services,
+        isSubscription,
+      },
+    }
+    setBookingData(updatedData)
+    localStorage.setItem("estimateData", JSON.stringify(updatedData))
+  }, [isSubscription])
 
   const getSelectedServicesWithDetails = () => {
     if (!bookingData?.services?.selectedServices) {
@@ -117,12 +138,16 @@ export default function PaymentPage() {
     return services.reduce((total: number, service: any) => total + service.price, 0)
   }
 
+  const getSubscriptionDiscount = () => {
+    if (!isSubscription) return 0
+    return Math.round(getSubtotal() * SUBSCRIPTION_DISCOUNT)
+  }
+
   const getTotal = () => {
-    return getSubtotal() - promoDiscount
+    return getSubtotal() - getSubscriptionDiscount() - promoDiscount
   }
 
   const handleApplyPromo = () => {
-    // Simple promo code logic - in production this would validate against a backend
     if (promoCode.toUpperCase() === "SAVE10") {
       const discount = Math.round(getSubtotal() * 0.1)
       setPromoDiscount(discount)
@@ -172,10 +197,16 @@ export default function PaymentPage() {
     // Store confirmation data
     const confirmationData = {
       ...bookingData,
+      services: {
+        ...bookingData.services,
+        isSubscription,
+        totalPrice: getTotal(),
+      },
       payment: {
         last4: cardNumber.slice(-4),
         promoCode: appliedPromo,
         promoDiscount: promoDiscount,
+        subscriptionDiscount: getSubscriptionDiscount(),
         total: getTotal(),
       },
       customer: {
@@ -201,6 +232,9 @@ export default function PaymentPage() {
     )
   }
 
+  const subtotal = getSubtotal()
+  const savings = getSubscriptionDiscount()
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -208,8 +242,61 @@ export default function PaymentPage() {
       <div className="container mx-auto px-4 py-8 pt-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column - Payment Form */}
+            {/* Left Column - Membership + Payment Form */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Membership Option */}
+              <Card className={`overflow-hidden transition-all duration-200 ${isSubscription ? "ring-2 ring-[#FFCB00]" : ""}`}>
+                <CardContent className="p-0">
+                  <div
+                    className="cursor-pointer p-5"
+                    onClick={() => setIsSubscription(!isSubscription)}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+                        isSubscription
+                          ? "border-[#FFCB00] bg-[#FFCB00]"
+                          : "border-gray-300"
+                      }`}>
+                        {isSubscription && <Check className="w-3 h-3 text-black" />}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Zap className="w-4 h-4 text-[#FFCB00]" />
+                          <h3 className="font-semibold text-gray-900">Join the Lighting Squad</h3>
+                          <span className="text-xs font-bold bg-[#FFCB00] text-black px-2 py-0.5 rounded-full">SAVE 15%</span>
+                        </div>
+                        <p className="text-sm text-gray-500 mb-3">
+                          ${MONTHLY_MEMBERSHIP_FEE}/month — Save on every service call with priority scheduling and more.
+                        </p>
+
+                        {/* Perks */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                          {[
+                            "15% off all services",
+                            "Priority scheduling",
+                            "Annual maintenance visit",
+                            "1-year workmanship warranty",
+                          ].map((perk) => (
+                            <div key={perk} className="flex items-center gap-1.5 text-xs text-gray-600">
+                              <Check className="w-3.5 h-3.5 text-[#FFCB00] flex-shrink-0" />
+                              {perk}
+                            </div>
+                          ))}
+                        </div>
+
+                        {isSubscription && subtotal > 0 && (
+                          <div className="mt-3 p-2.5 bg-green-50 rounded-lg border border-green-100">
+                            <p className="text-sm text-green-700 font-medium">
+                              You save ${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })} on today&apos;s order
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Payment Information Card */}
               <Card>
                 <CardHeader>
@@ -365,23 +452,19 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
-                  {/* Subscription Discount */}
-                  {bookingData?.services?.isSubscription && (
+                  {/* Membership Discount */}
+                  {isSubscription && (
                     <>
                       <Separator />
                       <div className="flex justify-between text-sm">
-                        <span className="text-green-600">Annual Plan Discount (15%)</span>
+                        <span className="text-green-600">Member Discount (15%)</span>
                         <span className="font-medium text-green-600">
-                          -{(() => {
-                            const subtotal = getSelectedServicesWithDetails().reduce((t: number, s: any) => t + s.price, 0)
-                            return `$${Math.round(subtotal * 0.15).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
-                          })()}
+                          -${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       </div>
-                      <div className="rounded-lg border border-[#FFCB00]/30 bg-[#FFCB00]/5 p-3">
-                        <p className="text-xs text-gray-600">
-                          <span className="font-semibold">Annual Plan:</span> Priority scheduling, annual maintenance visit, and 1-year workmanship warranty included.
-                        </p>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Monthly membership</span>
+                        <span className="font-medium text-muted-foreground">${MONTHLY_MEMBERSHIP_FEE}/mo</span>
                       </div>
                     </>
                   )}
