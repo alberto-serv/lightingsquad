@@ -1,34 +1,34 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Home, Building2, Flame, Wind } from "lucide-react"
+import { Lightbulb, Tv, Shield, Plug } from "lucide-react"
 
 const services = [
   {
-    icon: Home,
-    title: "Residential Dryer Vents",
+    icon: Lightbulb,
+    title: "Light Fixture Installation",
     description:
-      "Complete dryer vent cleaning for homes. Prevent fires and improve dryer efficiency with our thorough cleaning service.",
-    features: ["Vent Inspection", "Lint Removal", "Duct Cleaning", "Safety Check"],
+      "Professional installation of light fixtures, ceiling fans, and chandeliers. Transform any room with expert lighting.",
+    features: ["Chandeliers & Pendants", "Ceiling Fans", "Recessed Lighting", "Sconces & Flush Mounts"],
   },
   {
-    icon: Building2,
-    title: "Commercial Services",
+    icon: Tv,
+    title: "TV & Entertainment",
     description:
-      "Professional dryer vent cleaning for laundromats, hotels, and multi-unit buildings. Keep your business safe and compliant.",
-    features: ["Multi-Unit Buildings", "Laundromats", "Hotels & Resorts", "Apartment Complexes"],
+      "TV wall mounting, soundbar installation, and full surround sound systems with clean, concealed wiring.",
+    features: ["TV Wall Mounting", "Soundbar Install", "Surround Sound", "Cable Management"],
   },
   {
-    icon: Flame,
-    title: "Fire Prevention",
+    icon: Shield,
+    title: "Security & Smart Home",
     description:
-      "Specialized fire prevention services including dryer vent inspections and safety assessments to protect your property.",
-    features: ["Fire Risk Assessment", "Code Compliance", "Safety Inspections", "Prevention Plans"],
+      "Ring doorbell and camera installations, smart switches, dimmers, and outlet upgrades for a modern home.",
+    features: ["Ring Doorbells", "Security Cameras", "Smart Switches", "Outlet Upgrades"],
   },
   {
-    icon: Wind,
-    title: "Airflow Optimization",
+    icon: Plug,
+    title: "Specialized Lighting",
     description:
-      "Improve dryer performance and reduce energy costs with our airflow optimization and vent system upgrades.",
-    features: ["Efficiency Testing", "Vent Upgrades", "Airflow Analysis", "Energy Savings"],
+      "Landscape lighting, cabinet lighting, garage hex lighting, permanent LED systems, and whole-home LED conversions.",
+    features: ["Landscape Lighting", "Cabinet LEDs", "Garage Hex Lights", "LED Conversions"],
   },
 ]
 
@@ -39,7 +39,7 @@ export function Services() {
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl font-bold text-balance">Our Professional Services</h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            We provide comprehensive dryer vent cleaning solutions for residential and commercial properties
+            Comprehensive lighting and electrical solutions for homeowners and businesses
           </p>
         </div>
 

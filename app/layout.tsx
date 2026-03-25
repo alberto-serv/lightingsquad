@@ -1,20 +1,26 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Lora, Urbanist } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { ScrollToTop } from "@/components/scroll-to-top"
 
-const inter = Inter({
+const lora = Lora({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-lora",
+  display: "swap",
+})
+
+const urbanist = Urbanist({
+  subsets: ["latin"],
+  variable: "--font-urbanist",
   display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "Dryer Vent Superheroes - Professional Dryer Vent Cleaning Services",
+  title: "The Lighting Squad - Your Electrical Handyman",
   description:
-    "Protect your home from fire hazards with professional dryer vent cleaning services. Clean dryers prevent fires.",
+    "Professional lighting installation, electrical services, and smart home solutions for homeowners and businesses in Nashville and Middle Tennessee.",
   generator: "v0.app",
   icons: {
     icon: "/favicon.ico",
@@ -28,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} antialiased`}>
+      <body className={`font-sans ${lora.variable} ${urbanist.variable} antialiased`}>
         <ScrollToTop />
         <Suspense fallback={null}>{children}</Suspense>
       </body>

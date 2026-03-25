@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Phone, Calendar, Wind, CheckCircle } from "lucide-react"
+import { Phone, Calendar, Lightbulb, CheckCircle } from "lucide-react"
 
 const steps = [
   {
@@ -7,7 +7,7 @@ const steps = [
     number: "01",
     title: "Get Your Quote",
     description:
-      "Contact us for a free, no-obligation quote. We'll assess your dryer vent system and provide transparent pricing.",
+      "Contact us for a free, no-obligation quote. We'll discuss your lighting or electrical needs and provide transparent pricing.",
   },
   {
     icon: Calendar,
@@ -17,18 +17,18 @@ const steps = [
       "Choose a convenient time that works for you. We offer flexible scheduling to fit your busy lifestyle.",
   },
   {
-    icon: Wind,
+    icon: Lightbulb,
     number: "03",
-    title: "Professional Cleaning",
+    title: "Professional Installation",
     description:
-      "Our experienced technicians arrive with professional equipment to thoroughly clean your dryer vents and remove all lint buildup.",
+      "Our skilled technicians arrive with all the right tools and equipment to complete your lighting or electrical project.",
   },
   {
     icon: CheckCircle,
     number: "04",
-    title: "Safety Inspection",
+    title: "Final Walkthrough",
     description:
-      "We conduct a thorough safety inspection and airflow test to ensure your dryer vent system is operating safely and efficiently.",
+      "We do a thorough walkthrough with you to make sure everything works perfectly and you're completely satisfied.",
   },
 ]
 
@@ -39,7 +39,7 @@ export function Process() {
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl font-bold text-balance">Our Simple Process</h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            From initial contact to final inspection, we make dryer vent cleaning hassle-free
+            From initial contact to final walkthrough, we make every project hassle-free
           </p>
         </div>
 

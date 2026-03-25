@@ -2,33 +2,33 @@ import { Card } from "@/components/ui/card"
 
 const galleryItems = [
   {
-    title: "Residential Dryer Vent",
-    description: "Complete home dryer vent cleaning",
+    title: "Light Fixture Installation",
+    description: "Beautiful chandelier and pendant installations",
     image: "/placeholder.svg?height=400&width=600",
   },
   {
-    title: "Lint Removal",
-    description: "Heavy lint buildup removal",
+    title: "TV Wall Mounting",
+    description: "Clean TV mounting with concealed wiring",
     image: "/placeholder.svg?height=400&width=600",
   },
   {
-    title: "Commercial Laundromat",
-    description: "Multi-unit dryer vent cleaning",
+    title: "Landscape Lighting",
+    description: "Outdoor pathway and garden lighting",
     image: "/placeholder.svg?height=400&width=600",
   },
   {
-    title: "Vent Inspection",
-    description: "Professional safety inspection",
+    title: "Cabinet Lighting",
+    description: "Under-cabinet LED lighting installation",
     image: "/placeholder.svg?height=400&width=600",
   },
   {
-    title: "Exterior Vent Cleaning",
-    description: "Outside vent cap cleaning",
+    title: "Smart Home Setup",
+    description: "Smart switches and dimmer installations",
     image: "/placeholder.svg?height=400&width=600",
   },
   {
-    title: "Apartment Complex",
-    description: "Multi-family building service",
+    title: "Security Cameras",
+    description: "Ring doorbell and camera installations",
     image: "/placeholder.svg?height=400&width=600",
   },
 ]
@@ -38,9 +38,9 @@ export function Gallery() {
     <section id="gallery" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl font-bold text-balance">See Our Results</h2>
+          <h2 className="text-4xl font-bold text-balance">See Our Work</h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            Real transformations from our professional dryer vent cleaning services
+            Real projects from our professional lighting and electrical services
           </p>
         </div>
 

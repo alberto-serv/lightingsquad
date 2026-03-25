@@ -4,11 +4,10 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Fan, CheckCircle2, Wind, Home, Phone } from "lucide-react"
+import { ArrowRight, CheckCircle2, Sun, Phone } from "lucide-react"
 
-export default function BathroomFanPage() {
+export default function SpecializedLightingPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -18,188 +17,105 @@ export default function BathroomFanPage() {
           {/* Hero Section */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-balance">Bathroom Fan Cleaning</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-balance">Specialized Lighting Systems</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Professional cleaning of bathroom exhaust fans to improve ventilation, reduce noise, and prevent
-                moisture problems. Keep your bathroom fresh and mold-free.
+                From landscape and outdoor pathway lighting to under-cabinet LEDs, garage hex grids, and permanent exterior LED systems—we design and install it all.
               </p>
-              <div className="bg-blue-50 border-2 border-[#2A75AE] rounded-lg p-4">
-                <p className="text-3xl font-bold text-[#2A75AE]">$175</p>
-                <p className="text-sm text-muted-foreground mt-1">Per bathroom fan</p>
+              <div className="bg-yellow-50 border-2 border-[#FFCB00] rounded-lg p-4">
+                <p className="text-3xl font-bold text-[#112337]">Starting at $300</p>
+                <p className="text-sm text-muted-foreground mt-1">Custom systems available</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-[#2A75AE] hover:bg-[#2A75AE]/90" asChild>
+                <Button size="lg" className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black" asChild>
                   <Link href="/estimate/services">
                     Book Service
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <a href="tel:6156322980">
+                  <a href="tel:6158806701">
                     <Phone className="mr-2 h-5 w-5" />
-                    (615) 632-2980
+                    (615) 880-6701
                   </a>
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <Image
-                src="/placeholder.svg?height=400&width=600"
-                alt="Bathroom fan cleaning service"
-                width={600}
-                height={400}
-                className="rounded-2xl shadow-2xl bg-gray-200"
-              />
+            <div className="relative bg-yellow-50 rounded-2xl p-12 flex items-center justify-center">
+              <Sun className="h-48 w-48 text-[#FFCB00]" />
             </div>
           </div>
 
-          {/* Why Clean Your Bathroom Fan */}
+          {/* Services & Pricing */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">Why Clean Your Bathroom Fan?</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card>
-                <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Wind className="h-6 w-6 text-[#2A75AE]" />
-                  </div>
-                  <h3 className="font-bold text-lg">Better Ventilation</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Remove dust and debris that blocks airflow and reduces fan effectiveness
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Home className="h-6 w-6 text-[#2A75AE]" />
-                  </div>
-                  <h3 className="font-bold text-lg">Prevent Mold</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Proper ventilation prevents moisture buildup that leads to mold and mildew
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6 space-y-3">
-                  <div className="bg-[#2A75AE]/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Fan className="h-6 w-6 text-[#2A75AE]" />
-                  </div>
-                  <h3 className="font-bold text-lg">Quieter Operation</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Clean fans run more smoothly and quietly without the rattle of accumulated debris
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* What's Included */}
-          <div className="mb-16 bg-gradient-to-b from-blue-50 to-white rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold mb-8 text-center">Our Bathroom Fan Cleaning Service</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-[#2A75AE] text-white rounded-full flex items-center justify-center font-bold">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-2">Fan Cover Removal</h3>
-                    <p className="text-muted-foreground">Carefully remove and clean the fan cover and grille</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-[#2A75AE] text-white rounded-full flex items-center justify-center font-bold">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-2">Deep Cleaning</h3>
-                    <p className="text-muted-foreground">Thoroughly clean fan blades, motor housing, and ductwork</p>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-[#2A75AE] text-white rounded-full flex items-center justify-center font-bold">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-2">Performance Check</h3>
-                    <p className="text-muted-foreground">
-                      Test fan operation and airflow to ensure optimal performance
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-[#2A75AE] text-white rounded-full flex items-center justify-center font-bold">
-                    4
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-2">Reassembly</h3>
-                    <p className="text-muted-foreground">Reinstall all components and verify proper operation</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Service Photos */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">Professional Fan Cleaning</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Specialized Lighting Options</h2>
             <div className="grid md:grid-cols-2 gap-6">
-              <Image
-                src="/placeholder.svg?height=400&width=600"
-                alt="Dirty bathroom fan before cleaning"
-                width={600}
-                height={400}
-                className="rounded-xl shadow-lg w-full h-80 object-cover bg-gray-200"
-              />
-              <Image
-                src="/placeholder.svg?height=400&width=600"
-                alt="Clean bathroom fan after service"
-                width={600}
-                height={400}
-                className="rounded-xl shadow-lg w-full h-80 object-cover bg-gray-200"
-              />
+              <Card className="border-2 border-[#FFCB00]">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-xl font-bold">Landscape & Outdoor</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Basic pathway (5-8 lights): $500-$1,200</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Larger custom systems: $1,500-$3,500+</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-2 border-[#FFCB00]">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-xl font-bold">Cabinet Lighting</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Standard kitchen: $300-$800</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">High-end/custom: $800-$1,500</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-2 border-[#FFCB00]">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-xl font-bold">Garage Hex Lighting</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">1-car garage: $500-$900</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">2-car garage: $800-$1,500</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-2 border-[#FFCB00]">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-xl font-bold">Permanent LED & Conversions</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Exterior LED: $20-$35/ft (typical home $2,500-$6,000)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Whole-home LED conversion: $200-$600</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </div>
-
-          {/* Signs You Need Service */}
-          <Card className="mb-16 border-2 border-[#2A75AE]">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold mb-6">Signs Your Bathroom Fan Needs Cleaning</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Fan is noticeably louder than usual</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Reduced airflow or suction</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Visible dust on fan cover</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Bathroom stays humid after showers</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Mold or mildew growth in bathroom</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#D3331D] flex-shrink-0 mt-0.5" />
-                  <span>Fan hasn't been cleaned in over a year</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* CTA */}
-          <div className="text-center bg-[#2A75AE] text-white rounded-2xl p-12">
-            <h2 className="text-3xl font-bold mb-4">Keep Your Bathroom Fresh</h2>
-            <p className="text-lg mb-8 text-white/90">Professional bathroom fan cleaning for just $175</p>
+          <div className="text-center bg-[#FFCB00] text-black rounded-2xl p-12">
+            <h2 className="text-3xl font-bold mb-4">Transform Your Space with Light</h2>
+            <p className="text-lg mb-8 text-black/80">Custom lighting solutions designed and installed by professionals</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
                 <Link href="/estimate/services">
@@ -210,10 +126,10 @@ export default function BathroomFanPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white hover:text-[#2A75AE]"
+                className="bg-transparent border-black text-black hover:bg-black hover:text-[#FFCB00]"
                 asChild
               >
-                <a href="tel:6156322980">
+                <a href="tel:6158806701">
                   <Phone className="mr-2 h-5 w-5" />
                   Call Now
                 </a>

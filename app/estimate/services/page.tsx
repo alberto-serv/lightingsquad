@@ -6,63 +6,82 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Input } from "@/components/ui/input"
-import { CheckCircle2, Minus, Plus } from "lucide-react"
+import { CheckCircle2, ChevronDown, ChevronUp } from "lucide-react"
 
-interface Service {
+interface ServiceOption {
+  id: string
+  name: string
+  price: number | null
+  priceLabel?: string
+  description?: string
+}
+
+interface ServiceCategory {
   id: string
   name: string
   description: string
-  price: number
-  image: string
-  dotPosition: { x: number; y: number }
+  icon: string
+  services: ServiceOption[]
 }
 
-const availableServices: Service[] = [
+const serviceCategories: ServiceCategory[] = [
   {
-    id: "dryer-vent-cleaning",
-    name: "Dryer Vent Cleaning",
-    description:
-      "Full deep cleaning of dryer vent including vent inspection camera scope cleaning using professional tools and a years guarantee",
-    price: 159.0,
-    image: "",
-    dotPosition: { x: 23, y: 75 },
+    id: "installation-replacement",
+    name: "Installation & Replacement",
+    description: "Light fixtures, ceiling fans, TVs, and more",
+    icon: "💡",
+    services: [
+      { id: "light-fixture", name: "Light Fixture Installation / Replacement", price: 150, description: "Install or replace any standard light fixture" },
+      { id: "ceiling-fan", name: "Ceiling Fan Installation", price: 185, description: "Install a new ceiling fan or replace an existing one" },
+      { id: "tv-small", name: "TV Installation (up to 55\")", price: 200, description: "Wall mount and cable management for TVs up to 55\"" },
+      { id: "tv-large", name: "TV Installation (65\" and larger)", price: 350, description: "Wall mount and cable management for large TVs 65\"+", },
+      { id: "soundbar", name: "Soundbar Installation (concealed wiring)", price: null, priceLabel: "$150–$250", description: "Soundbar mounting with concealed wiring" },
+      { id: "surround-sound", name: "Full Surround System (5.1 / 7.1)", price: null, priceLabel: "$400–$800", description: "Complete surround sound system installation" },
+      { id: "doorbell", name: "Ring Doorbell Installation", price: null, priceLabel: "$125–$175", description: "Install Ring or smart doorbell" },
+      { id: "single-camera", name: "Single Camera Installation", price: null, priceLabel: "$150–$200", description: "Install a single security camera" },
+      { id: "multi-camera", name: "Multi-Camera System (3–5 cams)", price: null, priceLabel: "$350–$600", description: "Install a multi-camera security system" },
+      { id: "outlet-switch", name: "Outlet / Dimmer Switch Upgrade (per unit)", price: null, priceLabel: "$75–$125", description: "Replace or upgrade a single outlet or switch" },
+      { id: "smart-switch", name: "Smart Switch / Dimmer Install (per unit)", price: null, priceLabel: "$100–$150", description: "Install a smart switch or dimmer" },
+      { id: "picture-hanging-standard", name: "Picture & Art Hanging (1–3 items)", price: null, priceLabel: "$100–$150", description: "Hang 1-3 pictures or art pieces" },
+      { id: "picture-hanging-gallery", name: "Gallery Walls / Multi-Piece Installs", price: null, priceLabel: "$175–$300", description: "Gallery wall or multi-piece art installation" },
+    ],
   },
   {
-    id: "dryer-vent-special",
-    name: "Dryer Vent Cleaning Special",
-    description:
-      "Our full, professional deep clean of your dryer vent, a new, fire resistant and high flow transition hose, a new magnetic and bird-proof exterior vent door and new braided washer hoses - save on upgrades with this bundle!",
-    price: 350.0,
-    image: "",
-    dotPosition: { x: 23, y: 75 },
+    id: "specialized-lighting",
+    name: "Specialized Lighting Systems",
+    description: "Landscape, cabinet, garage, and permanent LED lighting",
+    icon: "✨",
+    services: [
+      { id: "landscape-basic", name: "Landscape & Outdoor Lighting (basic, 5–8 lights)", price: null, priceLabel: "$500–$1,200", description: "Basic pathway or garden lighting setup" },
+      { id: "landscape-custom", name: "Landscape & Outdoor Lighting (larger custom)", price: null, priceLabel: "$1,500–$3,500+", description: "Larger custom outdoor lighting systems" },
+      { id: "cabinet-standard", name: "Cabinet Lighting (standard kitchen)", price: null, priceLabel: "$300–$800", description: "Under-cabinet lighting for a standard kitchen" },
+      { id: "cabinet-custom", name: "Cabinet Lighting (high-end / custom)", price: null, priceLabel: "$800–$1,500", description: "High-end or custom cabinet lighting installation" },
+      { id: "garage-hex-1car", name: "Garage Hex Lighting (1-car garage)", price: null, priceLabel: "$500–$900", description: "Hexagonal LED lighting for a 1-car garage" },
+      { id: "garage-hex-2car", name: "Garage Hex Lighting (2-car garage)", price: null, priceLabel: "$800–$1,500", description: "Hexagonal LED lighting for a 2-car garage" },
+      { id: "permanent-led-exterior", name: "Permanent LED Lighting (exterior, per linear ft)", price: null, priceLabel: "$20–$35/ft", description: "Permanent exterior LED lighting system" },
+      { id: "permanent-led-home", name: "Permanent LED Lighting (typical home total)", price: null, priceLabel: "$2,500–$6,000", description: "Full-home permanent exterior LED lighting" },
+      { id: "led-bulb-per-fixture", name: "LED Bulb Upgrade (per fixture swap)", price: null, priceLabel: "$10–$25", description: "Swap a single fixture to LED" },
+      { id: "led-bulb-whole-home", name: "LED Bulb Whole-Home Conversion", price: null, priceLabel: "$200–$600", description: "Convert all fixtures in your home to LED" },
+    ],
   },
   {
-    id: "bathroom-fan",
-    name: "Bathroom Fan Cleaning",
-    description:
-      "Remove dust and debris from bathroom exhaust fans for better ventilation and air quality. Reduces moisture and prevents mold.",
-    price: 175.0,
-    image: "",
-    dotPosition: { x: 37, y: 23 },
+    id: "maintenance-cleaning",
+    name: "Maintenance & Cleaning",
+    description: "Fixture cleaning and bulb replacement",
+    icon: "🧹",
+    services: [
+      { id: "fixture-cleaning", name: "Light Fixture / Chandelier Cleaning", price: 150, description: "Professional cleaning of light fixtures and chandeliers" },
+      { id: "exterior-bulb-replacement", name: "Exterior Light Bulb Replacement", price: 150, description: "Replace hard-to-reach exterior light bulbs" },
+    ],
   },
   {
-    id: "coil-cleaning",
-    name: "Coil Cleaning",
-    description:
-      "Deep cleaning of AC coils for maximum efficiency and performance. Improves cooling capacity and reduces energy costs.",
-    price: 385.0,
-    image: "",
-    dotPosition: { x: 96, y: 75 },
-  },
-  {
-    id: "ac-duct-cleaning",
-    name: "AC Duct Cleaning",
-    description:
-      "AC Duct Cleaning - Pricing depends on the amount of ducts in your home. Most single family homes have 8-10 air ducts. Please list how many ducts are in your home in your booking.",
-    price: 500.0,
-    image: "",
-    dotPosition: { x: 78, y: 32 },
+    id: "additional-fees",
+    name: "Additional Fees",
+    description: "Extra charges for special access requirements",
+    icon: "🪜",
+    services: [
+      { id: "large-ladder-fee", name: "Large Ladder Fee (15'+)", price: 400, description: "Required for jobs needing a ladder over 15 feet" },
+    ],
   },
 ]
 
@@ -70,34 +89,24 @@ export default function ServicesPage() {
   const router = useRouter()
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
-  const [ductCount, setDuctCount] = useState(10)
-  const [dryerVentAccessType, setDryerVentAccessType] = useState("1st-floor")
-  const [isSubscription, setIsSubscription] = useState(true)
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(["installation-replacement"])
 
   useEffect(() => {
     const storedData = localStorage.getItem("estimateData")
     if (!storedData) {
-      // Initialize with default data and dryer-vent-cleaning selected
       const initialData = {
         services: {
-          selectedServices: ["dryer-vent-cleaning"],
-          ductCount: 10,
-          isSubscription: true,
-          dryerVentAccessType: "1st-floor",
+          selectedServices: [],
+          isSubscription: false,
         },
       }
       localStorage.setItem("estimateData", JSON.stringify(initialData))
       setEstimateData(initialData)
-      setSelectedServices(["dryer-vent-cleaning"])
     } else {
       const parsedData = JSON.parse(storedData)
       setEstimateData(parsedData)
-      // If no services selected, default to dryer-vent-cleaning
-      const services = parsedData.services?.selectedServices || ["dryer-vent-cleaning"]
-      setSelectedServices(services.length > 0 ? services : ["dryer-vent-cleaning"])
-      setDuctCount(parsedData.services?.ductCount || 10)
-      setIsSubscription(parsedData.services?.isSubscription ?? true)
-      setDryerVentAccessType(parsedData.services?.dryerVentAccessType || "1st-floor")
+      const services = parsedData.services?.selectedServices || []
+      setSelectedServices(services)
     }
   }, [router])
 
@@ -111,371 +120,210 @@ export default function ServicesPage() {
     })
   }
 
-  const calculateAcDuctPrice = () => {
-    const basePrice = 500
-    const extraDucts = Math.max(0, ductCount - 10)
-    return basePrice + extraDucts * 30
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories((prev) =>
+      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
+    )
   }
 
-  const getDryerVentCleaningPrice = () => {
-    if (dryerVentAccessType === "roof") return 249 // Fixed to return proper prices without adding .65
-    if (dryerVentAccessType === "2nd-floor") return 189 // Fixed to return proper prices without adding .65
-    return 159 // Fixed to return proper prices without adding .65
+  const getServiceById = (serviceId: string): ServiceOption | undefined => {
+    for (const category of serviceCategories) {
+      const service = category.services.find((s) => s.id === serviceId)
+      if (service) return service
+    }
+    return undefined
   }
 
   const calculateTotalPrice = () => {
-    const baseTotal = selectedServices.reduce((total, id) => {
-      const service = availableServices.find((s) => s.id === id)
-      if (!service) return total
-      if (id === "ac-duct-cleaning") {
-        return total + calculateAcDuctPrice()
-      }
-      if (id === "dryer-vent-cleaning") {
-        return total + getDryerVentCleaningPrice()
-      }
+    return selectedServices.reduce((total, id) => {
+      const service = getServiceById(id)
+      if (!service || !service.price) return total
       return total + service.price
     }, 0)
-
-    return baseTotal
   }
 
-  const getSubscriptionPrice = () => {
-    return Math.round(calculateTotalPrice() * 0.85) // 15% discount
-  }
+  const hasRangeItems = selectedServices.some((id) => {
+    const service = getServiceById(id)
+    return service && !service.price
+  })
 
   useEffect(() => {
-    // Only update if selectedServices has been set
     if (selectedServices.length === 0 && !estimateData) return
-    
-    const finalTotal = isSubscription ? getSubscriptionPrice() : calculateTotalPrice()
+
     const updatedData = {
       ...estimateData,
       services: {
         selectedServices,
-        totalPrice: finalTotal,
-        ductCount: selectedServices.includes("ac-duct-cleaning") ? ductCount : undefined,
-        isSubscription,
-        dryerVentAccessType: selectedServices.includes("dryer-vent-cleaning")
-          ? dryerVentAccessType
-          : undefined,
+        totalPrice: calculateTotalPrice(),
+        isSubscription: false,
       },
     }
     setEstimateData(updatedData)
     localStorage.setItem("estimateData", JSON.stringify(updatedData))
-  }, [selectedServices, ductCount, isSubscription, dryerVentAccessType])
+  }, [selectedServices])
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
       <div className="container mx-auto px-4 py-12 pt-28">
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="mb-8 text-center">
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">Choose Your Service</h1>
             <p className="text-sm text-gray-500 mb-4">Step 1 of 3: Service Selection</p>
-            <Progress value={33} className="w-full md:w-64 mx-auto mb-2 h-1 bg-gray-100 [&>div]:bg-[#2A75AE]" />
+            <Progress value={33} className="w-full md:w-64 mx-auto mb-2 h-1 bg-gray-100 [&>div]:bg-[#FFCB00]" />
           </div>
 
-          <div className="max-w-2xl mx-auto">
-            {/* Service Cards Section */}
-            <div className="space-y-3">
-              {availableServices.map((service) => {
-                const isSelected = selectedServices.includes(service.id)
-                const isSpecial = service.id === "dryer-vent-special"
-                const isFree = service.price === 0
-                const isAcDuct = service.id === "ac-duct-cleaning"
-                const isDryerVent = service.id === "dryer-vent-cleaning"
-                const displayPrice = isAcDuct
-                  ? calculateAcDuctPrice()
-                  : isDryerVent
-                    ? getDryerVentCleaningPrice()
-                    : service.price
+          {/* Service Categories */}
+          <div className="space-y-4">
+            {serviceCategories.map((category) => {
+              const isExpanded = expandedCategories.includes(category.id)
+              const selectedInCategory = category.services.filter((s) => selectedServices.includes(s.id)).length
 
-                return (
-                  <Card
-                    key={service.id}
-                    className={`cursor-pointer transition-all duration-300 relative overflow-hidden group border ${
-                      isSelected
-                        ? "border-[#2A75AE] shadow-md"
-                        : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                    }`}
-                    onClick={(e) => {
-                      if (
-                        (e.target as HTMLElement).closest(".duct-counter") ||
-                        (e.target as HTMLElement).closest(".access-type-selector")
-                      ) {
-                        return
-                      }
-                      handleServiceToggle(service.id)
-                    }}
+              return (
+                <div key={category.id}>
+                  {/* Category Header */}
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full text-left p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-[#FFCB00] transition-colors flex items-center justify-between"
                   >
-                    <CardContent className="p-3">
-                      <div className="flex gap-3">
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <div className="flex items-start gap-2 flex-1 min-w-0">
-                              <div
-                                className={`flex-shrink-0 rounded-full border p-0.5 transition-all duration-300 mt-0.5 ${
-                                  isSelected ? "border-[#2A75AE] bg-[#2A75AE]" : "border-gray-300 bg-white"
-                                }`}
-                              >
-                                <CheckCircle2
-                                  className={`w-3 h-3 transition-colors duration-300 ${
-                                    isSelected ? "text-white" : "text-transparent"
-                                  }`}
-                                />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-sm leading-tight text-gray-900 mb-0.5">
-                                  {service.name}
-                                </h3>
-                                {isSpecial && (
-                                  <div className="bg-[#D3331D] text-white px-2 py-0.5 rounded-full font-bold text-[10px] inline-block">
-                                    BEST VALUE
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              <div className="text-lg font-bold text-[#2A75AE]">
-                                ${displayPrice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                              </div>
-                            </div>
-                          </div>
-
-                          <p className="text-gray-600 leading-snug text-xs">{service.description}</p>
-
-                          {isDryerVent && isSelected && (
-                            <div className="access-type-selector mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                              <div className="p-2 bg-gray-50 rounded border border-gray-200">
-                                <span className="text-xs font-semibold text-gray-900 mb-2 block">Access Type</span>
-                                <div className="grid grid-cols-3 gap-1.5">
-                                  {[
-                                    { type: "1st-floor", label: "1st floor", price: 159 },
-                                    { type: "2nd-floor", label: "2nd floor", price: 189 },
-                                    { type: "roof", label: "Roof", price: 249 },
-                                  ].map((option) => (
-                                    <button
-                                      key={option.type}
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        setDryerVentAccessType(option.type as any)
-                                      }}
-                                      className={`px-2 py-1.5 text-xs font-semibold rounded border ${
-                                        dryerVentAccessType === option.type
-                                          ? "bg-[#2A75AE] text-white border-[#2A75AE]"
-                                          : "bg-white text-gray-700 border-gray-200 hover:border-[#2A75AE]"
-                                      }`}
-                                    >
-                                      <div>{option.label}</div>
-                                      <div className="text-[10px] opacity-80">${option.price.toFixed(2)}</div>
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {isAcDuct && isSelected && (
-                            <div className="duct-counter mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                              <div className="p-2 bg-gray-50 rounded border border-gray-200">
-                                <div className="flex items-center justify-between mb-2">
-                                  <span className="text-xs font-semibold text-gray-900">Ducts</span>
-                                  <span className="text-[10px] text-gray-500">Min 10</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-7 w-7 p-0 rounded border border-gray-200 hover:border-[#2A75AE] hover:bg-white bg-transparent"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setDuctCount(Math.max(10, ductCount - 1))
-                                    }}
-                                  >
-                                    <Minus className="h-3 w-3" />
-                                  </Button>
-                                  <Input
-                                    type="number"
-                                    min="10"
-                                    value={ductCount}
-                                    onChange={(e) => {
-                                      e.stopPropagation()
-                                      setDuctCount(Math.max(10, Number.parseInt(e.target.value) || 10))
-                                    }}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="text-center flex-1 h-7 text-sm font-semibold rounded border border-gray-200"
-                                  />
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-7 w-7 p-0 rounded border border-gray-200 hover:border-[#2A75AE] hover:bg-white bg-transparent"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setDuctCount(ductCount + 1)
-                                    }}
-                                  >
-                                    <Plus className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                                {ductCount > 10 && (
-                                  <p className="text-[10px] text-gray-600 mt-1.5 text-right">
-                                    +${((ductCount - 10) * 30).toFixed(2)} for {ductCount - 10} extra
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{category.icon}</span>
+                      <div>
+                        <h2 className="font-semibold text-gray-900">{category.name}</h2>
+                        <p className="text-xs text-gray-500">{category.description}</p>
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-
-            {/* Selected Services Summary - Made much more compact */}
-            {selectedServices.length > 0 && (
-              <div className="space-y-3">
-                <Card className="bg-white border border-[#2A75AE] shadow-md overflow-hidden">
-                  <CardContent className="p-3 space-y-3">
-                    {/* Selected count and total */}
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="bg-[#2A75AE] text-white rounded-full p-1 flex-shrink-0">
-                            <CheckCircle2 className="w-4 h-4" />
-                          </div>
-                          <h4 className="font-semibold text-sm text-gray-900">
-                            Selected Services ({selectedServices.length})
-                          </h4>
-                        </div>
-                        <div className="text-2xl font-bold text-[#2A75AE]">
-                          $
-                          {(isSubscription ? getSubscriptionPrice() : calculateTotalPrice())
-                            .toFixed(2)
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                        </div>
-                      </div>
-                      {isSubscription && (
-                        <div className="text-right mt-1">
-                          <span className="text-xs text-green-600 font-semibold bg-green-50 rounded py-0.5 px-2 inline-block">
-                            Save $
-                            {(calculateTotalPrice() - getSubscriptionPrice())
-                              .toFixed(2)
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {selectedInCategory > 0 && (
+                        <span className="bg-[#FFCB00] text-black text-xs font-bold px-2 py-0.5 rounded-full">
+                          {selectedInCategory}
+                        </span>
+                      )}
+                      {isExpanded ? (
+                        <ChevronUp className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-gray-400" />
                       )}
                     </div>
+                  </button>
 
-                    {/* Service Frequency integrated into same card */}
-                    <div className="pt-2 border-t border-gray-100">
-                      <h3 className="font-semibold text-xs mb-2 text-gray-900">Service Frequency</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {/* Annual Subscription Option */}
-                        <button
-                          onClick={() => setIsSubscription(true)}
-                          className={`text-left p-2 rounded border transition-all duration-200 relative ${
-                            isSubscription ? "border-[#2A75AE] bg-blue-50" : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="absolute top-1 right-1 bg-green-600 text-white px-1.5 py-0.5 rounded-full font-bold text-[9px]">
-                            15% OFF
-                          </div>
-                          <div className="flex items-start gap-1.5">
-                            <div
-                              className={`flex-shrink-0 rounded-full w-3.5 h-3.5 border flex items-center justify-center transition-all duration-200 mt-0.5 ${
-                                isSubscription ? "border-[#2A75AE] bg-white" : "border-gray-300 bg-white"
-                              }`}
-                            >
-                              {isSubscription && <div className="w-1.5 h-1.5 rounded-full bg-[#2A75AE]" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-xs mb-0.5 text-gray-900">Annual</h4>
-                              <div className="flex items-baseline gap-1 mb-0.5">
-                                <span className="text-sm font-bold text-[#2A75AE]">
-                                  $
-                                  {getSubscriptionPrice()
-                                    .toFixed(2)
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </span>
-                                <span className="text-[9px] text-gray-400 line-through">
-                                  $
-                                  {calculateTotalPrice()
-                                    .toFixed(2)
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </span>
-                              </div>
-                              <p className="text-[9px] text-gray-500 leading-tight">Card on file</p>
-                            </div>
-                          </div>
-                        </button>
+                  {/* Category Services */}
+                  {isExpanded && (
+                    <div className="mt-2 space-y-2 pl-2">
+                      {category.services.map((service) => {
+                        const isSelected = selectedServices.includes(service.id)
 
-                        {/* One-Time Service Option */}
-                        <button
-                          onClick={() => setIsSubscription(false)}
-                          className={`text-left p-2 rounded border transition-all duration-200 ${
-                            !isSubscription ? "border-[#2A75AE] bg-blue-50" : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-start gap-1.5">
-                            <div
-                              className={`flex-shrink-0 rounded-full w-3.5 h-3.5 border flex items-center justify-center transition-all duration-200 mt-0.5 ${
-                                !isSubscription ? "border-[#2A75AE] bg-white" : "border-gray-300 bg-white"
-                              }`}
-                            >
-                              {!isSubscription && <div className="w-1.5 h-1.5 rounded-full bg-[#2A75AE]" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-xs mb-0.5 text-gray-900">One-Time</h4>
-                              <div className="text-sm font-bold text-[#2A75AE] mb-0.5">
-                                $
-                                {calculateTotalPrice()
-                                  .toFixed(2)
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        return (
+                          <Card
+                            key={service.id}
+                            className={`cursor-pointer transition-all duration-200 border ${
+                              isSelected
+                                ? "border-[#FFCB00] shadow-sm bg-[#FFCB00]/5"
+                                : "border-gray-200 hover:border-gray-300"
+                            }`}
+                            onClick={() => handleServiceToggle(service.id)}
+                          >
+                            <CardContent className="p-3">
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={`flex-shrink-0 rounded-full border p-0.5 transition-all duration-200 ${
+                                    isSelected ? "border-[#FFCB00] bg-[#FFCB00]" : "border-gray-300 bg-white"
+                                  }`}
+                                >
+                                  <CheckCircle2
+                                    className={`w-3.5 h-3.5 transition-colors duration-200 ${
+                                      isSelected ? "text-black" : "text-transparent"
+                                    }`}
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-medium text-sm text-gray-900">{service.name}</h3>
+                                  {service.description && (
+                                    <p className="text-xs text-gray-500 mt-0.5">{service.description}</p>
+                                  )}
+                                </div>
+                                <div className="text-right flex-shrink-0">
+                                  <div className="text-sm font-bold text-gray-900">
+                                    {service.price ? `$${service.price.toFixed(2)}` : service.priceLabel}
+                                  </div>
+                                </div>
                               </div>
-                              <p className="text-[9px] text-gray-500 leading-tight">No commitment</p>
-                            </div>
-                          </div>
-                        </button>
-                      </div>
+                            </CardContent>
+                          </Card>
+                        )
+                      })}
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* CTA Button */}
-                <Button
-                  onClick={() => {
-                    const finalTotal = isSubscription ? getSubscriptionPrice() : calculateTotalPrice()
-
-                    const updatedData = {
-                      ...estimateData,
-                      services: {
-                        selectedServices,
-                        totalPrice: finalTotal,
-                        ductCount: selectedServices.includes("ac-duct-cleaning") ? ductCount : undefined,
-                        isSubscription,
-                        dryerVentAccessType: selectedServices.includes("dryer-vent-cleaning")
-                          ? dryerVentAccessType
-                          : undefined,
-                      },
-                    }
-                    localStorage.setItem("estimateData", JSON.stringify(updatedData))
-                    router.push("/estimate/customer")
-                  }}
-                  size="lg"
-                  className="w-full bg-[#2A75AE] hover:bg-[#1e5a8a] shadow-md hover:shadow-lg transition-all duration-300 text-sm font-semibold py-5 rounded-lg"
-                >
-                  Continue
-                </Button>
-              </div>
-            )}
+                  )}
+                </div>
+              )
+            })}
           </div>
+
+          {/* Selected Services Summary */}
+          {selectedServices.length > 0 && (
+            <div className="mt-6 space-y-3">
+              <Card className="bg-white border border-[#FFCB00] shadow-md overflow-hidden">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-[#FFCB00] text-black rounded-full p-1 flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <h4 className="font-semibold text-sm text-gray-900">
+                        Selected Services ({selectedServices.length})
+                      </h4>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-gray-900">
+                        {calculateTotalPrice() > 0
+                          ? `$${calculateTotalPrice().toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                          : ""}
+                      </div>
+                      {hasRangeItems && (
+                        <p className="text-[10px] text-gray-500">+ items with variable pricing</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* List selected items */}
+                  <div className="space-y-1 pt-2 border-t border-gray-100">
+                    {selectedServices.map((id) => {
+                      const service = getServiceById(id)
+                      if (!service) return null
+                      return (
+                        <div key={id} className="flex justify-between text-xs text-gray-600">
+                          <span>{service.name}</span>
+                          <span className="font-medium">
+                            {service.price ? `$${service.price.toFixed(2)}` : service.priceLabel}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button
+                onClick={() => {
+                  const updatedData = {
+                    ...estimateData,
+                    services: {
+                      selectedServices,
+                      totalPrice: calculateTotalPrice(),
+                      isSubscription: false,
+                    },
+                  }
+                  localStorage.setItem("estimateData", JSON.stringify(updatedData))
+                  router.push("/estimate/customer")
+                }}
+                size="lg"
+                className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black shadow-md hover:shadow-lg transition-all duration-300 text-sm font-semibold py-5 rounded-lg"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

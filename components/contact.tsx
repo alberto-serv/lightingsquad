@@ -16,8 +16,7 @@ export function Contact() {
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl font-bold text-balance">Get Your Free Quote Today</h2>
           <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            Ready to protect your home from fire hazards? Contact us for a free estimate and see the difference
-            professional dryer vent cleaning makes.
+            Ready to upgrade your lighting or need electrical work done? Contact us for a free estimate and see the difference professional service makes.
           </p>
         </div>
 
@@ -51,14 +50,14 @@ export function Contact() {
                   <label htmlFor="phone" className="text-sm font-medium">
                     Phone Number
                   </label>
-                  <Input id="phone" type="tel" placeholder="(555) 123-4567" />
+                  <Input id="phone" type="tel" placeholder="(615) 555-1234" />
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="service" className="text-sm font-medium">
                     Service Needed
                   </label>
-                  <Input id="service" placeholder="Residential cleaning, commercial service, etc." />
+                  <Input id="service" placeholder="Light fixture installation, TV mounting, etc." />
                 </div>
 
                 <div className="space-y-2">
@@ -67,12 +66,12 @@ export function Contact() {
                   </label>
                   <Textarea
                     id="message"
-                    placeholder="Tell us about your dryer vent system and cleaning needs..."
+                    placeholder="Tell us about your lighting or electrical project..."
                     rows={4}
                   />
                 </div>
 
-                <Button size="lg" className="w-full" type="button" onClick={() => router.push("/estimate")}>
+                <Button size="lg" className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black" type="button" onClick={() => router.push("/estimate")}>
                   Get Free Estimate
                 </Button>
               </form>
@@ -86,38 +85,38 @@ export function Contact() {
 
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Phone className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 bg-[#FFCB00]/10 rounded-lg flex items-center justify-center">
+                      <Phone className="h-6 w-6 text-[#FFCB00]" />
                     </div>
                     <div>
                       <div className="font-medium">Phone</div>
-                      <div className="text-muted-foreground">(615) 632-2980</div>
+                      <div className="text-muted-foreground">(615) 880-6701</div>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Mail className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 bg-[#FFCB00]/10 rounded-lg flex items-center justify-center">
+                      <Mail className="h-6 w-6 text-[#FFCB00]" />
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
-                      <div className="text-muted-foreground">anaramos@homerunfranchises.com</div>
+                      <div className="text-muted-foreground">info@thelightingsquad.com</div>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <MapPin className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 bg-[#FFCB00]/10 rounded-lg flex items-center justify-center">
+                      <MapPin className="h-6 w-6 text-[#FFCB00]" />
                     </div>
                     <div>
                       <div className="font-medium">Service Area</div>
-                      <div className="text-muted-foreground">Metro Area & Surrounding Cities</div>
+                      <div className="text-muted-foreground">Nashville & Middle Tennessee</div>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 bg-[#FFCB00]/10 rounded-lg flex items-center justify-center">
+                      <Clock className="h-6 w-6 text-[#FFCB00]" />
                     </div>
                     <div>
                       <div className="font-medium">Business Hours</div>
@@ -128,15 +127,14 @@ export function Contact() {
               </CardContent>
             </Card>
 
-            <Card className="bg-primary text-primary-foreground">
+            <Card className="bg-[#FFCB00] text-black">
               <CardContent className="p-8 text-center space-y-4">
-                <h3 className="text-2xl font-semibold">Emergency Services Available</h3>
-                <p className="text-primary-foreground/90">
-                  Need urgent dryer vent cleaning? We offer emergency services for fire hazards, dryer malfunctions, and
-                  other urgent situations.
+                <h3 className="text-2xl font-semibold">Same-Day Service Available</h3>
+                <p className="text-black/80">
+                  Need a light fixture installed or a quick electrical fix today? We offer same-day service for many of our most popular jobs.
                 </p>
                 <Button variant="secondary" size="lg">
-                  Call for Emergency Service
+                  Call for Same-Day Service
                 </Button>
               </CardContent>
             </Card>

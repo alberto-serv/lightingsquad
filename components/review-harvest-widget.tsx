@@ -39,10 +39,10 @@ export function ReviewHarvestWidget({ embedCode }: ReviewHarvestWidgetProps) {
   // If no embed code is provided, show instructions
   if (!embedCode) {
     return (
-      <Card className="border-2 border-dashed border-[#2A75AE]">
+      <Card className="border-2 border-dashed border-[#FFCB00]">
         <CardContent className="p-8">
           <div className="flex items-start gap-4">
-            <AlertCircle className="h-6 w-6 text-[#2A75AE] flex-shrink-0 mt-1" />
+            <AlertCircle className="h-6 w-6 text-[#FFCB00] flex-shrink-0 mt-1" />
             <div className="space-y-4">
               <h3 className="text-xl font-bold">Review Harvest Integration Instructions</h3>
               <div className="space-y-3 text-muted-foreground">
