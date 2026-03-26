@@ -45,7 +45,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 TARGET_WIDTH = 600
 TARGET_HEIGHT = 400
 
-MODEL = "gemini-2.0-flash-exp"  # Nano Banana model with image generation
+MODEL = "gemini-2.5-flash-preview-04-17"  # Nano Banana - Gemini image generation model
 
 # Style prefix for consistency across all images
 STYLE = (
@@ -123,13 +123,17 @@ def generate_image(client: genai.Client, prompt: str) -> bytes | None:
             contents=prompt,
             config=genai.types.GenerateContentConfig(
                 response_modalities=["IMAGE", "TEXT"],
+                image_config=genai.types.ImageConfig(
+                    aspect_ratio="3:2",
+                ),
             ),
         )
 
         # Extract image data from response
-        for part in response.candidates[0].content.parts:
-            if part.inline_data is not None:
-                return part.inline_data.data
+        if response.candidates and response.candidates[0].content and response.candidates[0].content.parts:
+            for part in response.candidates[0].content.parts:
+                if part.inline_data is not None:
+                    return part.inline_data.data
 
         print("  Warning: No image in response, retrying...")
         return None
