@@ -12,9 +12,9 @@ Usage:
 Images are saved to public/services/ as WebP files, 600x400px, under 2MB each.
 """
 
+import base64
 import os
 import sys
-import base64
 import time
 from pathlib import Path
 
@@ -25,8 +25,9 @@ except ImportError:
     sys.exit(1)
 
 try:
-    from PIL import Image
     import io
+
+    from PIL import Image
 except ImportError:
     print("Missing dependency. Run: pip install Pillow")
     sys.exit(1)
@@ -45,7 +46,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 TARGET_WIDTH = 600
 TARGET_HEIGHT = 400
 
-MODEL = "gemini-2.5-flash-preview-04-17"  # Nano Banana - Gemini image generation model
+MODEL = "gemini-3.1-flash-image-preview"  # Nano Banana - Gemini image generation model
 
 # Style prefix for consistency across all images
 STYLE = (
@@ -130,7 +131,11 @@ def generate_image(client: genai.Client, prompt: str) -> bytes | None:
         )
 
         # Extract image data from response
-        if response.candidates and response.candidates[0].content and response.candidates[0].content.parts:
+        if (
+            response.candidates
+            and response.candidates[0].content
+            and response.candidates[0].content.parts
+        ):
             for part in response.candidates[0].content.parts:
                 if part.inline_data is not None:
                     return part.inline_data.data
@@ -165,7 +170,9 @@ def process_image(image_bytes: bytes, output_path: Path) -> bool:
             if size < 2 * 1024 * 1024:  # Under 2MB
                 with open(output_path, "wb") as f:
                     f.write(buffer.getvalue())
-                print(f"  Saved: {output_path.name} ({size / 1024:.0f} KB, q={quality})")
+                print(
+                    f"  Saved: {output_path.name} ({size / 1024:.0f} KB, q={quality})"
+                )
                 return True
 
             quality -= 10
