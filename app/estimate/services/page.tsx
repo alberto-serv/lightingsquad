@@ -350,7 +350,7 @@ export default function ServicesPage() {
                         <Card
                           key={service.id}
                           onClick={() => handleCardClick(service)}
-                          className={`cursor-pointer transition-all duration-200 overflow-hidden rounded-xl ${
+                          className={`cursor-pointer transition-all duration-200 overflow-hidden rounded-xl !p-0 !gap-0 ${
                             isPopped
                               ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-lg -translate-y-1"
                               : selected
