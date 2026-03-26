@@ -10,7 +10,6 @@ import {
   Hammer,
   ArrowRight,
   ShoppingCart,
-  ChevronDown,
 } from "lucide-react"
 
 import Image from "next/image"
@@ -351,7 +350,7 @@ export default function ServicesPage() {
                         <Card
                           key={service.id}
                           onClick={() => handleCardClick(service)}
-                          className={`cursor-pointer transition-all duration-200 overflow-hidden ${
+                          className={`cursor-pointer transition-all duration-200 overflow-hidden rounded-xl ${
                             isPopped
                               ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-lg -translate-y-1"
                               : selected
@@ -360,7 +359,7 @@ export default function ServicesPage() {
                           }`}
                         >
                           {service.image && (
-                            <div className="relative w-full h-28 overflow-hidden">
+                            <div className="relative w-full aspect-[3/2] overflow-hidden">
                               <Image
                                 src={service.image}
                                 alt={service.name}
@@ -370,25 +369,14 @@ export default function ServicesPage() {
                               />
                             </div>
                           )}
-                          <CardContent className="p-4 flex flex-col justify-between h-full">
+                          <CardContent className="p-3.5">
                             <div>
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <h3 className="font-semibold text-gray-900 text-sm leading-snug">
-                                    {service.name}
-                                  </h3>
-                                  {service.description && (
-                                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{service.description}</p>
-                                  )}
-                                </div>
-                                {hasSubOptions && (
-                                  <ChevronDown
-                                    className={`w-4 h-4 text-gray-400 flex-shrink-0 ml-2 mt-0.5 transition-transform duration-200 ${
-                                      isExpanded ? "rotate-180" : ""
-                                    }`}
-                                  />
-                                )}
-                              </div>
+                              <h3 className="font-semibold text-gray-900 text-sm leading-snug">
+                                {service.name}
+                              </h3>
+                              {service.description && (
+                                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{service.description}</p>
+                              )}
 
                               {/* Expanded sub-options */}
                               {hasSubOptions && isExpanded && (
@@ -422,9 +410,9 @@ export default function ServicesPage() {
 
                             {/* Price at bottom */}
                             {!isExpanded && (
-                              <span className="text-base font-bold text-gray-900 mt-2.5">
+                              <p className="text-base font-bold text-gray-900 mt-2">
                                 {service.price ? `$${formatPrice(service.price)}` : service.priceLabel}
-                              </span>
+                              </p>
                             )}
                           </CardContent>
                         </Card>
