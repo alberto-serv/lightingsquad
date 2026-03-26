@@ -5,11 +5,15 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
   Zap,
   Hammer,
   ArrowRight,
   ShoppingCart,
+  Search,
+  Send,
+  MessageSquare,
 } from "lucide-react"
 
 import Image from "next/image"
@@ -172,7 +176,7 @@ const serviceCategories: ServiceCategory[] = [
 ]
 
 function formatPrice(amount: number): string {
-  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return amount.toLocaleString("en-US")
 }
 
 export default function ServicesPage() {
@@ -180,6 +184,10 @@ export default function ServicesPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
+  const [searchQuery, setSearchQuery] = useState("")
+  const [requestMessage, setRequestMessage] = useState("")
+  const [requestEmail, setRequestEmail] = useState("")
+  const [requestSent, setRequestSent] = useState(false)
 
   useEffect(() => {
     const storedData = localStorage.getItem("estimateData")
@@ -276,6 +284,28 @@ export default function ServicesPage() {
     return service.subOptions.some((sub) => selectedServices.includes(sub.id))
   }
 
+  // Filter services by search query
+  const filterServices = (services: ServiceItem[]) => {
+    if (!searchQuery.trim()) return services
+    const q = searchQuery.toLowerCase()
+    return services.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.description?.toLowerCase().includes(q) ||
+        s.subOptions?.some((sub) => sub.label.toLowerCase().includes(q))
+    )
+  }
+
+  const handleRequestSubmit = () => {
+    if (!requestMessage.trim() || !requestEmail.trim()) return
+    // Build mailto link
+    const subject = encodeURIComponent("Service Request - The Lighting Squad")
+    const body = encodeURIComponent(`Message:\n${requestMessage}\n\nFrom: ${requestEmail}`)
+    window.location.href = `mailto:info@thelightingsquad.com?subject=${subject}&body=${body}`
+    setRequestSent(true)
+    setTimeout(() => setRequestSent(false), 5000)
+  }
+
   useEffect(() => {
     if (selectedServices.length === 0 && !estimateData) return
 
@@ -308,17 +338,35 @@ export default function ServicesPage() {
           </div>
         </div>
 
+        {/* Search bar */}
+        <div className="container mx-auto px-4 pt-6 pb-2">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search services..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-11 rounded-full border-gray-200 bg-white shadow-sm focus-visible:ring-[#FFCB00]"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* All services with section dividers */}
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4">
           <div className="max-w-4xl mx-auto space-y-10">
             {serviceCategories.map((category) => {
               const Icon = category.icon
+              const filteredServices = filterServices(category.services)
               const selectedCount = category.services.reduce((count, s) => {
                 if (s.subOptions) {
                   return count + s.subOptions.filter((sub) => selectedServices.includes(sub.id)).length
                 }
                 return count + (selectedServices.includes(s.id) ? 1 : 0)
               }, 0)
+
+              if (filteredServices.length === 0) return null
 
               return (
                 <div key={category.id}>
@@ -339,7 +387,7 @@ export default function ServicesPage() {
 
                   {/* Services grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {category.services.map((service) => {
+                    {filteredServices.map((service) => {
                       const hasSubOptions = !!service.subOptions
                       const selected = isCardSelected(service)
                       const isExpanded = expandedCards.has(service.id)
@@ -422,6 +470,59 @@ export default function ServicesPage() {
                 </div>
               )
             })}
+
+            {/* No results */}
+            {searchQuery.trim() && serviceCategories.every((c) => filterServices(c.services).length === 0) && (
+              <div className="text-center py-12 text-gray-500">
+                <Search className="w-8 h-8 mx-auto mb-3 text-gray-300" />
+                <p className="font-medium">No services match &quot;{searchQuery}&quot;</p>
+                <p className="text-sm mt-1">Try a different search or request a custom service below.</p>
+              </div>
+            )}
+
+            {/* Request Another Service */}
+            <div className="border-t border-gray-200 pt-10">
+              <div className="max-w-xl mx-auto text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <MessageSquare className="w-5 h-5 text-[#FFCB00]" />
+                  <h2 className="text-lg font-semibold text-gray-900">Request Another Service?</h2>
+                </div>
+                <p className="text-sm text-gray-500 mb-5">
+                  Don&apos;t see what you need? Let us know and we&apos;ll get back to you.
+                </p>
+
+                <div className="space-y-3 text-left">
+                  <Input
+                    type="email"
+                    placeholder="Your email address"
+                    value={requestEmail}
+                    onChange={(e) => setRequestEmail(e.target.value)}
+                    className="h-11 rounded-lg border-gray-200 bg-white"
+                  />
+                  <textarea
+                    placeholder="Describe the service you're looking for..."
+                    value={requestMessage}
+                    onChange={(e) => setRequestMessage(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#FFCB00] focus:border-transparent"
+                  />
+                  <Button
+                    onClick={handleRequestSubmit}
+                    disabled={!requestMessage.trim() || !requestEmail.trim() || requestSent}
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-lg h-11"
+                  >
+                    {requestSent ? (
+                      "Opening email client..."
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Request
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
