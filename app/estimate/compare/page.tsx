@@ -40,7 +40,7 @@ const availableServices = [
 const SUBSCRIPTION_DISCOUNT = 0.15
 
 function fmt(n: number) {
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return n.toLocaleString("en-US")
 }
 
 export default function ComparePage() {

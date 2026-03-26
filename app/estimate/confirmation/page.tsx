@@ -370,7 +370,7 @@ export default function ConfirmationPage() {
                         ? servicesWithDetails.map((service: any, index: number) => (
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
-                              <span className="font-medium flex-shrink-0">${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                              <span className="font-medium flex-shrink-0">${service.price.toLocaleString("en-US")}</span>
                             </div>
                           ))
                         : bookingData.services.selectedServices.map((serviceId: string) => {
@@ -399,7 +399,7 @@ export default function ConfirmationPage() {
                             const svc = availableServices.find((s) => s.id === id)
                             return t + (svc?.basePrice || 0)
                           }, 0)
-                          return `$${Math.round(subtotal * 0.15).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                          return `$${Math.round(subtotal * 0.15).toLocaleString("en-US")}`
                         })()}
                       </span>
                     </div>
@@ -419,7 +419,7 @@ export default function ConfirmationPage() {
                         Promo Code ({bookingData.customer.appliedPromoCode})
                       </span>
                       <span className="font-medium text-green-600 flex-shrink-0">
-                        -${bookingData.customer.promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        -${bookingData.customer.promoDiscount.toLocaleString("en-US")}
                       </span>
                     </div>
                   </>

@@ -790,7 +790,7 @@ export default function CustomerPage() {
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
                               <span className="font-medium flex-shrink-0">
-                                {typeof service.price === "string" ? service.price : `$${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                                {typeof service.price === "string" ? service.price : `$${service.price.toLocaleString("en-US")}`}
                               </span>
                             </div>
                           ))
@@ -810,7 +810,7 @@ export default function CustomerPage() {
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-green-600 break-words flex-1">Subscribe & Save Discount (15%)</span>
                         <span className="font-medium text-green-600 flex-shrink-0">
-                          -${getDiscountAmount().toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          -${getDiscountAmount().toLocaleString("en-US")}
                         </span>
                       </div>
                     </>
@@ -821,7 +821,7 @@ export default function CustomerPage() {
                       <Separator />
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-green-600 break-words flex-1">Promo Code ({appliedPromoCode})</span>
-                        <span className="font-medium text-green-600 flex-shrink-0">-${promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                        <span className="font-medium text-green-600 flex-shrink-0">-${promoDiscount.toLocaleString("en-US")}</span>
                       </div>
                     </>
                   )}
@@ -837,7 +837,7 @@ export default function CustomerPage() {
                           <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
-                          ${(getTotalServicesPrice() + getTotalAddOnsPrice() - getDiscountAmount() - promoDiscount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          ${(getTotalServicesPrice() + getTotalAddOnsPrice() - getDiscountAmount() - promoDiscount).toLocaleString("en-US")}
                         </span>
                       </div>
                     </div>

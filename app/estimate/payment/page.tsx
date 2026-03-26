@@ -262,7 +262,7 @@ export default function PaymentPage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-bold text-gray-900 mb-1">
-                          Save ${potentialSavings.toLocaleString("en-US", { minimumFractionDigits: 2 })} on this order?
+                          Save ${potentialSavings.toLocaleString("en-US")} on this order?
                         </h3>
                         <div className="flex items-center gap-2 mb-2">
                           <Zap className="w-4 h-4 text-[#FFCB00]" />
@@ -288,7 +288,7 @@ export default function PaymentPage() {
                         {isSubscription && subtotal > 0 && (
                           <div className="mt-3 p-2.5 bg-[#FFCB00]/10 rounded-lg border border-[#FFCB00]/30">
                             <p className="text-sm text-[#b8920a] font-semibold">
-                              You save ${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })} on today&apos;s order
+                              You save ${savings.toLocaleString("en-US")} on today&apos;s order
                             </p>
                           </div>
                         )}
@@ -409,7 +409,7 @@ export default function PaymentPage() {
                   className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                   size="lg"
                 >
-                  {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                  {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US")}`}
                 </Button>
               </div>
             </div>
@@ -447,7 +447,7 @@ export default function PaymentPage() {
                       {getSelectedServicesWithDetails().map((service: any) => (
                         <div key={service.id} className="flex justify-between text-sm">
                           <span className="text-muted-foreground">{service.name}</span>
-                          <span className="font-medium">${service.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                          <span className="font-medium">${service.price.toLocaleString("en-US")}</span>
                         </div>
                       ))}
                     </div>
@@ -460,7 +460,7 @@ export default function PaymentPage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-[#b8920a] font-medium">Member Discount (15%)</span>
                         <span className="font-medium text-[#b8920a]">
-                          -${savings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          -${savings.toLocaleString("en-US")}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -474,7 +474,7 @@ export default function PaymentPage() {
                   {promoDiscount > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-green-600">Promo Code ({appliedPromo})</span>
-                      <span className="font-medium text-green-600">-${promoDiscount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                      <span className="font-medium text-green-600">-${promoDiscount.toLocaleString("en-US")}</span>
                     </div>
                   )}
 
@@ -486,7 +486,7 @@ export default function PaymentPage() {
                       <DollarSign className="h-4 w-4 text-[#FFCB00]" />
                       <span>Total</span>
                     </div>
-                    <span className="text-xl font-bold">${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                    <span className="text-xl font-bold">${getTotal().toLocaleString("en-US")}</span>
                   </div>
 
                   {/* Submit Button - Desktop */}
@@ -497,7 +497,7 @@ export default function PaymentPage() {
                       className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                       size="lg"
                     >
-                      {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                      {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US")}`}
                     </Button>
                   </div>
                 </CardContent>
