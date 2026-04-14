@@ -481,7 +481,7 @@ export default function ServicesPage() {
                                 className="mt-2.5 pt-2.5 border-t border-gray-100"
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <label className="flex items-start gap-2 cursor-pointer group">
+                                <label className="flex items-center gap-2 cursor-pointer group">
                                   <input
                                     type="checkbox"
                                     checked={ladderFeeServices.has(service.id)}
@@ -493,15 +493,15 @@ export default function ServicesPage() {
                                         return next
                                       })
                                     }}
-                                    className="mt-0.5 w-3.5 h-3.5 accent-[#FFCB00] cursor-pointer flex-shrink-0"
+                                    className="w-3.5 h-3.5 accent-[#FFCB00] cursor-pointer flex-shrink-0"
                                   />
-                                  <div>
-                                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900">
-                                      Large ladder fee (+$400)
-                                    </span>
-                                    <p className="text-xs text-gray-400 leading-tight">Interior over 15&apos; tall</p>
-                                  </div>
+                                  <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900 leading-none">
+                                    Large ladder fee (+$400)
+                                  </span>
                                 </label>
+                                <p className="text-xs text-gray-400 leading-tight ml-[22px] mt-1">
+                                  Interior over 15&apos; tall
+                                </p>
                               </div>
                             )}
                           </CardContent>
