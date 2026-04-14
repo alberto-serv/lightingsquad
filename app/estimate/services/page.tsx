@@ -32,6 +32,7 @@ interface ServiceItem {
   price: number | null
   priceLabel?: string
   image?: string
+  hasLadderFee?: boolean
   subOptions?: SubOption[]
 }
 
@@ -99,7 +100,7 @@ const serviceCategories: ServiceCategory[] = [
         ],
       },
       { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture", image: "/services/light-fixture.webp" },
-      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning", image: "/services/fixture-cleaning.webp" },
+      { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning", image: "/services/fixture-cleaning.webp", hasLadderFee: true },
       {
         id: "outdoor-lighting",
         name: "Outdoor Lighting",
@@ -128,6 +129,7 @@ const serviceCategories: ServiceCategory[] = [
         price: null,
         priceLabel: "$200–$350",
         image: "/services/tv-mounting.webp",
+        hasLadderFee: true,
         subOptions: [
           { id: "tv-small", label: "Up to 55\"", price: 200 },
           { id: "tv-large", label: "65\" and larger", price: 350 },
@@ -140,12 +142,13 @@ const serviceCategories: ServiceCategory[] = [
         price: null,
         priceLabel: "$150–$800",
         image: "/services/audio-system.webp",
+        hasLadderFee: true,
         subOptions: [
           { id: "soundbar", label: "Soundbar (concealed wiring)", price: null, priceLabel: "$150–$250" },
           { id: "surround-sound", label: "Full Surround (5.1 / 7.1)", price: null, priceLabel: "$400–$800" },
         ],
       },
-      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation", image: "/services/doorbell.webp" },
+      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation", image: "/services/doorbell.webp", hasLadderFee: true },
       {
         id: "security-cameras",
         name: "Security Cameras",
@@ -153,6 +156,7 @@ const serviceCategories: ServiceCategory[] = [
         price: null,
         priceLabel: "$150–$600",
         image: "/services/security-cameras.webp",
+        hasLadderFee: true,
         subOptions: [
           { id: "single-camera", label: "Single Camera", price: null, priceLabel: "$150–$200" },
           { id: "multi-camera", label: "Multi-Camera (3–5)", price: null, priceLabel: "$350–$600" },
@@ -165,12 +169,13 @@ const serviceCategories: ServiceCategory[] = [
         price: null,
         priceLabel: "$100–$300",
         image: "/services/picture-hanging.webp",
+        hasLadderFee: true,
         subOptions: [
           { id: "picture-hanging-standard", label: "1–3 items", price: null, priceLabel: "$100–$150" },
           { id: "picture-hanging-gallery", label: "Gallery Wall", price: null, priceLabel: "$175–$300" },
         ],
       },
-      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan", image: "/services/ceiling-fan.webp" },
+      { id: "ceiling-fan", name: "Ceiling Fan Install", price: 185, description: "Install or replace a ceiling fan", image: "/services/ceiling-fan.webp", hasLadderFee: true },
     ],
   },
 ]
@@ -184,10 +189,13 @@ export default function ServicesPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [estimateData, setEstimateData] = useState<any>(null)
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
+  const [ladderFeeServices, setLadderFeeServices] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState("")
   const [requestMessage, setRequestMessage] = useState("")
   const [requestEmail, setRequestEmail] = useState("")
   const [requestSent, setRequestSent] = useState(false)
+
+  const LADDER_FEE = 400
 
   useEffect(() => {
     const storedData = localStorage.getItem("estimateData")
@@ -223,13 +231,12 @@ export default function ServicesPage() {
       setExpandedCards((prev) => {
         const next = new Set(prev)
         if (next.has(service.id)) {
-          // Deselect sub-options and collapse
           next.delete(service.id)
           const subIds = service.subOptions!.map((s) => s.id)
           setSelectedServices((prev) => prev.filter((id) => !subIds.includes(id)))
+          setLadderFeeServices((prev) => { const n = new Set(prev); n.delete(service.id); return n })
         } else {
           next.add(service.id)
-          // Auto-select first variant
           const firstSubId = service.subOptions![0].id
           const siblingIds = service.subOptions!.map((s) => s.id)
           setSelectedServices((prev) => [...prev.filter((id) => !siblingIds.includes(id)), firstSubId])
@@ -237,6 +244,10 @@ export default function ServicesPage() {
         return next
       })
     } else {
+      // Clear ladder fee if deselecting a simple card
+      if (selectedServices.includes(service.id)) {
+        setLadderFeeServices((prev) => { const n = new Set(prev); n.delete(service.id); return n })
+      }
       handleServiceToggle(service.id)
     }
   }
@@ -267,11 +278,12 @@ export default function ServicesPage() {
   }
 
   const calculateTotalPrice = () => {
-    return selectedServices.reduce((total, id) => {
+    const servicesTotal = selectedServices.reduce((total, id) => {
       const service = getServiceById(id)
       if (!service || !service.price) return total
       return total + service.price
     }, 0)
+    return servicesTotal + ladderFeeServices.size * LADDER_FEE
   }
 
   const hasRangeItems = selectedServices.some((id) => {
@@ -313,13 +325,14 @@ export default function ServicesPage() {
       ...estimateData,
       services: {
         selectedServices,
+        ladderFeeServices: Array.from(ladderFeeServices),
         totalPrice: calculateTotalPrice(),
         isSubscription: false,
       },
     }
     setEstimateData(updatedData)
     localStorage.setItem("estimateData", JSON.stringify(updatedData))
-  }, [selectedServices])
+  }, [selectedServices, ladderFeeServices])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -461,6 +474,36 @@ export default function ServicesPage() {
                               <p className="text-base font-bold text-gray-900 mt-2">
                                 {service.price ? `$${formatPrice(service.price)}` : service.priceLabel}
                               </p>
+                            )}
+
+                            {/* Large ladder fee checkbox — shown when card is selected or expanded */}
+                            {service.hasLadderFee && (selected || isExpanded) && (
+                              <div
+                                className="mt-2.5 pt-2.5 border-t border-gray-100"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <label className="flex items-start gap-2 cursor-pointer group">
+                                  <input
+                                    type="checkbox"
+                                    checked={ladderFeeServices.has(service.id)}
+                                    onChange={(e) => {
+                                      setLadderFeeServices((prev) => {
+                                        const next = new Set(prev)
+                                        if (e.target.checked) next.add(service.id)
+                                        else next.delete(service.id)
+                                        return next
+                                      })
+                                    }}
+                                    className="mt-0.5 w-3.5 h-3.5 accent-[#FFCB00] cursor-pointer flex-shrink-0"
+                                  />
+                                  <div>
+                                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900">
+                                      Large ladder fee (+$400)
+                                    </span>
+                                    <p className="text-xs text-gray-400 leading-tight">Interior over 15&apos; tall</p>
+                                  </div>
+                                </label>
+                              </div>
                             )}
                           </CardContent>
                         </Card>
