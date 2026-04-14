@@ -212,6 +212,9 @@ export default function ServicesPage() {
       setEstimateData(parsedData)
       const services = parsedData.services?.selectedServices || []
       setSelectedServices(services)
+      // Restore ladder fee selections
+      const storedLadderFees = parsedData.services?.ladderFeeServices || []
+      setLadderFeeServices(new Set(storedLadderFees))
       // Expand cards that have selected sub-options
       const expanded = new Set<string>()
       for (const category of serviceCategories) {
