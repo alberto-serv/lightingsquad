@@ -138,13 +138,21 @@ export default function PaymentPage() {
     return services.reduce((total: number, service: any) => total + service.price, 0)
   }
 
+  const getLadderFeeCount = () => {
+    return bookingData?.services?.ladderFeeServices?.length || 0
+  }
+
+  const getLadderFeeTotal = () => {
+    return getLadderFeeCount() > 0 ? 400 : 0
+  }
+
   const getSubscriptionDiscount = () => {
     if (!isSubscription) return 0
-    return Math.round(getSubtotal() * SUBSCRIPTION_DISCOUNT)
+    return Math.round((getSubtotal() + getLadderFeeTotal()) * SUBSCRIPTION_DISCOUNT)
   }
 
   const getTotal = () => {
-    return getSubtotal() - getSubscriptionDiscount() - promoDiscount
+    return getSubtotal() + getLadderFeeTotal() - getSubscriptionDiscount() - promoDiscount
   }
 
   const handleApplyPromo = () => {
@@ -233,8 +241,10 @@ export default function PaymentPage() {
   }
 
   const subtotal = getSubtotal()
+  const ladderFeeCount = getLadderFeeCount()
+  const ladderFeeTotal = getLadderFeeTotal()
   const savings = getSubscriptionDiscount()
-  const potentialSavings = Math.round(subtotal * SUBSCRIPTION_DISCOUNT)
+  const potentialSavings = Math.round((subtotal + ladderFeeTotal) * SUBSCRIPTION_DISCOUNT)
 
   return (
     <div className="min-h-screen bg-background">
@@ -452,6 +462,19 @@ export default function PaymentPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Large Ladder Fee */}
+                  {ladderFeeCount > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          Large Ladder Fee
+                        </span>
+                        <span className="font-medium">${ladderFeeTotal.toLocaleString("en-US")}</span>
+                      </div>
+                    </>
+                  )}
 
                   {/* Membership Discount */}
                   {isSubscription && (

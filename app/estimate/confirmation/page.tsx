@@ -387,6 +387,24 @@ export default function ConfirmationPage() {
                   </div>
                 </div>
 
+                {(() => {
+                  const ladderFeeCount = bookingData?.services?.ladderFeeServices?.length || 0
+                  if (ladderFeeCount === 0) return null
+                  return (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-sm gap-2">
+                        <span className="text-muted-foreground break-words flex-1">
+                          Large Ladder Fee
+                        </span>
+                        <span className="font-medium flex-shrink-0">
+                          $400
+                        </span>
+                      </div>
+                    </>
+                  )
+                })()}
+
                 {bookingData?.services?.isSubscription && (
                   <>
                     <Separator />
@@ -399,7 +417,9 @@ export default function ConfirmationPage() {
                             const svc = availableServices.find((s) => s.id === id)
                             return t + (svc?.basePrice || 0)
                           }, 0)
-                          return `$${Math.round(subtotal * 0.15).toLocaleString("en-US")}`
+                          const ladderFeeCount = bookingData?.services?.ladderFeeServices?.length || 0
+                          const ladderFeeTotal = ladderFeeCount > 0 ? 400 : 0
+                          return `$${Math.round((subtotal + ladderFeeTotal) * 0.15).toLocaleString("en-US")}`
                         })()}
                       </span>
                     </div>

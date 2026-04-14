@@ -99,7 +99,7 @@ const serviceCategories: ServiceCategory[] = [
           { id: "led-bulb-whole-home", label: "Whole Home", price: null, priceLabel: "$200–$600" },
         ],
       },
-      { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture", image: "/services/light-fixture.webp" },
+      { id: "light-fixture", name: "Light Fixture Install", price: 150, description: "Install or replace any standard light fixture", image: "/services/light-fixture.webp", hasLadderFee: true },
       { id: "fixture-cleaning", name: "Fixture / Chandelier Cleaning", price: 150, description: "Professional deep cleaning", image: "/services/fixture-cleaning.webp", hasLadderFee: true },
       {
         id: "outdoor-lighting",
@@ -129,7 +129,6 @@ const serviceCategories: ServiceCategory[] = [
         price: null,
         priceLabel: "$200–$350",
         image: "/services/tv-mounting.webp",
-        hasLadderFee: true,
         subOptions: [
           { id: "tv-small", label: "Up to 55\"", price: 200 },
           { id: "tv-large", label: "65\" and larger", price: 350 },
@@ -148,7 +147,7 @@ const serviceCategories: ServiceCategory[] = [
           { id: "surround-sound", label: "Full Surround (5.1 / 7.1)", price: null, priceLabel: "$400–$800" },
         ],
       },
-      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation", image: "/services/doorbell.webp", hasLadderFee: true },
+      { id: "doorbell", name: "Ring Doorbell Install", price: null, priceLabel: "$125–$175", description: "Smart doorbell installation", image: "/services/doorbell.webp" },
       {
         id: "security-cameras",
         name: "Security Cameras",
@@ -283,7 +282,7 @@ export default function ServicesPage() {
       if (!service || !service.price) return total
       return total + service.price
     }, 0)
-    return servicesTotal + ladderFeeServices.size * LADDER_FEE
+    return servicesTotal + (ladderFeeServices.size > 0 ? LADDER_FEE : 0)
   }
 
   const hasRangeItems = selectedServices.some((id) => {
