@@ -604,6 +604,7 @@ export default function ServicesPage() {
                     ...estimateData,
                     services: {
                       selectedServices,
+                      ladderFeeServices: Array.from(ladderFeeServices),
                       totalPrice: calculateTotalPrice(),
                       isSubscription: false,
                     },
