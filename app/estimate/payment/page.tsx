@@ -143,7 +143,7 @@ export default function PaymentPage() {
   }
 
   const getLadderFeeTotal = () => {
-    return getLadderFeeCount() * 400
+    return getLadderFeeCount() > 0 ? 400 : 0
   }
 
   const getSubscriptionDiscount = () => {
@@ -469,7 +469,7 @@ export default function PaymentPage() {
                       <Separator />
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">
-                          Large Ladder Fee{ladderFeeCount > 1 ? ` (×${ladderFeeCount})` : ""}
+                          Large Ladder Fee
                         </span>
                         <span className="font-medium">${ladderFeeTotal.toLocaleString("en-US")}</span>
                       </div>

@@ -282,7 +282,7 @@ export default function ServicesPage() {
       if (!service || !service.price) return total
       return total + service.price
     }, 0)
-    return servicesTotal + ladderFeeServices.size * LADDER_FEE
+    return servicesTotal + (ladderFeeServices.size > 0 ? LADDER_FEE : 0)
   }
 
   const hasRangeItems = selectedServices.some((id) => {

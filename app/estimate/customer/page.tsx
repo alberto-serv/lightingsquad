@@ -413,7 +413,7 @@ export default function CustomerPage() {
   }
 
   const getLadderFeeTotal = () => {
-    return getLadderFeeCount() * 400
+    return getLadderFeeCount() > 0 ? 400 : 0
   }
 
   const getDiscountAmount = () => {
@@ -818,7 +818,7 @@ export default function CustomerPage() {
                       <Separator />
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-muted-foreground break-words flex-1">
-                          Large Ladder Fee{getLadderFeeCount() > 1 ? ` (×${getLadderFeeCount()})` : ""}
+                          Large Ladder Fee
                         </span>
                         <span className="font-medium flex-shrink-0">
                           ${getLadderFeeTotal().toLocaleString("en-US")}

@@ -390,16 +390,15 @@ export default function ConfirmationPage() {
                 {(() => {
                   const ladderFeeCount = bookingData?.services?.ladderFeeServices?.length || 0
                   if (ladderFeeCount === 0) return null
-                  const ladderFeeTotal = ladderFeeCount * 400
                   return (
                     <>
                       <Separator />
                       <div className="flex justify-between text-sm gap-2">
                         <span className="text-muted-foreground break-words flex-1">
-                          Large Ladder Fee{ladderFeeCount > 1 ? ` (×${ladderFeeCount})` : ""}
+                          Large Ladder Fee
                         </span>
                         <span className="font-medium flex-shrink-0">
-                          ${ladderFeeTotal.toLocaleString("en-US")}
+                          $400
                         </span>
                       </div>
                     </>
@@ -419,7 +418,7 @@ export default function ConfirmationPage() {
                             return t + (svc?.basePrice || 0)
                           }, 0)
                           const ladderFeeCount = bookingData?.services?.ladderFeeServices?.length || 0
-                          const ladderFeeTotal = ladderFeeCount * 400
+                          const ladderFeeTotal = ladderFeeCount > 0 ? 400 : 0
                           return `$${Math.round((subtotal + ladderFeeTotal) * 0.15).toLocaleString("en-US")}`
                         })()}
                       </span>
