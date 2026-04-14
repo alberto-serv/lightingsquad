@@ -408,11 +408,20 @@ export default function CustomerPage() {
     }, 0)
   }
 
+  const getLadderFeeCount = () => {
+    return estimateData?.services?.ladderFeeServices?.length || 0
+  }
+
+  const getLadderFeeTotal = () => {
+    return getLadderFeeCount() * 400
+  }
+
   const getDiscountAmount = () => {
     if (!estimateData?.services?.isSubscription) return 0
     const servicesTotal = getTotalServicesPrice()
     const addOnsTotal = getTotalAddOnsPrice()
-    const subtotal = servicesTotal + addOnsTotal
+    const ladderFeeTotal = getLadderFeeTotal()
+    const subtotal = servicesTotal + addOnsTotal + ladderFeeTotal
     return Math.round(subtotal * 0.15) // 15% subscription discount
   }
 
@@ -803,6 +812,21 @@ export default function CustomerPage() {
                     </div>
                   </div>
 
+                  {/* Large Ladder Fee */}
+                  {getLadderFeeCount() > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-sm gap-2">
+                        <span className="text-muted-foreground break-words flex-1">
+                          Large Ladder Fee{getLadderFeeCount() > 1 ? ` (×${getLadderFeeCount()})` : ""}
+                        </span>
+                        <span className="font-medium flex-shrink-0">
+                          ${getLadderFeeTotal().toLocaleString("en-US")}
+                        </span>
+                      </div>
+                    </>
+                  )}
+
                   {/* Discounts */}
                   {estimateData?.services?.isSubscription && getDiscountAmount() > 0 && (
                     <>
@@ -837,7 +861,7 @@ export default function CustomerPage() {
                           <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
-                          ${(getTotalServicesPrice() + getTotalAddOnsPrice() - getDiscountAmount() - promoDiscount).toLocaleString("en-US")}
+                          ${(getTotalServicesPrice() + getTotalAddOnsPrice() + getLadderFeeTotal() - getDiscountAmount() - promoDiscount).toLocaleString("en-US")}
                         </span>
                       </div>
                     </div>
