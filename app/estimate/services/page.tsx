@@ -602,6 +602,7 @@ export default function ServicesPage() {
                 onClick={() => {
                   const updatedData = {
                     ...estimateData,
+                    source: "services",
                     services: {
                       selectedServices,
                       ladderFeeServices: Array.from(ladderFeeServices),

@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { formatServicePrice } from "@/lib/estimate-pricing"
 import {
   Clock,
   User,
@@ -756,7 +757,7 @@ export default function CustomerPage() {
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
                               <span className="font-medium flex-shrink-0">
-                                {typeof service.price === "string" ? service.price : `$${service.price.toLocaleString("en-US")}`}
+                                {typeof service.price === "string" ? service.price : formatServicePrice(service.id, service.price)}
                               </span>
                             </div>
                           ))
@@ -843,7 +844,11 @@ export default function CustomerPage() {
 
           {/* Navigation */}
           <div className="flex justify-between items-center mt-8">
-            <Button variant="outline" onClick={() => router.push("/estimate/services")} className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push(estimateData?.source === "services2" ? "/estimate/services2" : "/estimate/services")}
+              className="gap-2"
+            >
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>

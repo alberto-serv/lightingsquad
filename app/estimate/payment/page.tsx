@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { formatServicePrice } from "@/lib/estimate-pricing"
 import {
   CreditCard,
   Lock,
@@ -514,7 +515,7 @@ export default function PaymentPage() {
                       {getSelectedServicesWithDetails().map((service: any) => (
                         <div key={service.id} className="flex justify-between text-sm">
                           <span className="text-muted-foreground">{service.name}</span>
-                          <span className="font-medium">${service.price.toLocaleString("en-US")}</span>
+                          <span className="font-medium">{formatServicePrice(service.id, service.price)}</span>
                         </div>
                       ))}
                     </div>

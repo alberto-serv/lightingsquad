@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { formatServicePrice } from "@/lib/estimate-pricing"
 import {
   CheckCircle,
   User,
@@ -370,7 +371,7 @@ export default function ConfirmationPage() {
                         ? servicesWithDetails.map((service: any, index: number) => (
                             <div key={index} className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">{service.name}</span>
-                              <span className="font-medium flex-shrink-0">${service.price.toLocaleString("en-US")}</span>
+                              <span className="font-medium flex-shrink-0">{formatServicePrice(service.id, service.price)}</span>
                             </div>
                           ))
                         : bookingData.services.selectedServices.map((serviceId: string) => {

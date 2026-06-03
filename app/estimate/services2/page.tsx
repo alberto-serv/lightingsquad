@@ -214,17 +214,6 @@ const catalog: Service2[] = [
         { id: "tv-75", label: '56" – 75"', canonicalId: "tv-large", price: 350 },
         { id: "tv-76", label: '76" and larger', canonicalId: "tv-large", price: 350 },
       ],
-      attributes: [
-        {
-          id: "wall",
-          label: "Wall Type",
-          options: [
-            { id: "drywall", label: "Drywall" },
-            { id: "brick", label: "Brick", note: "May require a quick technician review" },
-            { id: "stone", label: "Stone", note: "May require a quick technician review" },
-          ],
-        },
-      ],
     },
     reviewNote: "Existing power outlet behind the TV assumed.",
   },
@@ -509,6 +498,7 @@ export default function Services2Page() {
     }
     const updated = {
       ...estimateData,
+      source: "services2",
       services: {
         ...estimateData?.services,
         selectedServices,
@@ -557,10 +547,10 @@ export default function Services2Page() {
 
         <CardContent className="flex flex-1 flex-col p-4">
           <h3 className="font-semibold text-gray-900 text-[15px] leading-snug">{service.name}</h3>
-          <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-2">{service.description}</p>
+          <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-2 min-h-[2.25rem]">{service.description}</p>
 
           {/* Value bullets */}
-          <ul className="mt-2.5 space-y-1">
+          <ul className="mt-2.5 space-y-1 min-h-[3.5rem]">
             {service.benefits.map((b) => (
               <li key={b} className="flex items-center gap-1.5 text-xs text-gray-600">
                 <Check className="w-3.5 h-3.5 text-[#FFCB00] flex-shrink-0" />
@@ -621,35 +611,36 @@ export default function Services2Page() {
             </div>
           )}
 
-          {/* Ladder fee */}
+          {/* Large ladder fee — separated module */}
           {service.hasLadderFee && (inCart || showConfig) && (
-            <label className="mt-3 flex items-start gap-2 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={cfg.ladderFee}
-                onChange={(e) => updateConfig(service, { ladderFee: e.target.checked })}
-                className="mt-0.5 w-3.5 h-3.5 accent-[#FFCB00] cursor-pointer flex-shrink-0"
-              />
-              <span className="text-xs text-gray-600 group-hover:text-gray-900 leading-tight">
-                Large ladder fee (+${LADDER_FEE}) — interior over 15&apos; tall
-              </span>
-            </label>
+            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={cfg.ladderFee}
+                  onChange={(e) => updateConfig(service, { ladderFee: e.target.checked })}
+                  className="w-4 h-4 accent-[#FFCB00] cursor-pointer flex-shrink-0"
+                />
+                <span className="text-xs font-semibold text-gray-800">
+                  Add large ladder fee <span className="text-[#8a6d00]">+${LADDER_FEE}</span>
+                </span>
+              </label>
+              <p className="mt-1 pl-[26px] text-[11px] text-gray-500 leading-tight">
+                For interior ceilings over 15&apos; tall.
+              </p>
+            </div>
           )}
 
           {/* Price + action pinned to the bottom */}
           <div className="mt-auto pt-3">
             <div className="flex items-baseline justify-between">
               <div>
-                {inCart ? (
-                  <span className="text-lg font-bold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
-                ) : service.pricing.kind === "fixed" ? (
-                  <span className="text-lg font-bold text-gray-900">${formatPrice(startingPrice(service))}</span>
-                ) : (
-                  <span className="text-lg font-bold text-gray-900">
-                    <span className="text-xs font-medium text-gray-500">from </span>$
-                    {formatPrice(startingPrice(service))}
-                  </span>
-                )}
+                <span className="text-lg font-bold text-gray-900">
+                  {service.pricing.kind !== "fixed" && (
+                    <span className="text-xs font-medium text-gray-500">from </span>
+                  )}
+                  ${formatPrice(inCart ? linePrice(service, cfg) : startingPrice(service))}
+                </span>
                 {service.reviewNote && !inCart && (
                   <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">{service.reviewNote}</p>
                 )}
@@ -745,7 +736,7 @@ export default function Services2Page() {
                     <span className="text-sm text-gray-400">{section.subtitle}</span>
                     <div className="flex-1 h-px bg-gray-200" />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                     {services.map(renderCard)}
                   </div>
                 </div>
@@ -786,6 +777,9 @@ export default function Services2Page() {
                           </div>
                           <div className="flex items-center gap-3 flex-shrink-0">
                             <span className="font-semibold text-gray-900">
+                              {service.pricing.kind !== "fixed" && (
+                                <span className="text-xs font-normal text-gray-400">from </span>
+                              )}
                               ${formatPrice(linePrice(service, cfg))}
                             </span>
                             <button
