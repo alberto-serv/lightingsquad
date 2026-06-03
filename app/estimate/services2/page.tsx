@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import {
   Zap,
   Calculator,
-  Home,
   ArrowRight,
   ShoppingCart,
   Search,
@@ -21,7 +20,7 @@ import {
   ChevronUp,
   ChevronDown,
   X,
-  CalendarClock,
+  Trash2,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -36,7 +35,7 @@ import Image from "next/image"
 /*  it (mirrors the existing pages).                                            */
 /* -------------------------------------------------------------------------- */
 
-type ServiceType = "instant" | "quote" | "consultation"
+type ServiceType = "instant" | "quote"
 
 interface Variant {
   id: string
@@ -69,7 +68,6 @@ type Pricing =
       default: number
     }
   | { kind: "variant"; groupLabel: string; variants: Variant[]; attributes?: AttributeGroup[] }
-  | { kind: "consultation" }
 
 interface Service2 {
   id: string
@@ -92,7 +90,7 @@ const catalog: Service2[] = [
     description: "Professional wall mounting with clean cable management.",
     image: "/services/tv-mounting.webp",
     type: "instant",
-    benefits: ["Licensed technician", "Cable concealment", "Level & secure mount"],
+    benefits: ["Cable concealment", "Level & secure mount"],
     pricing: {
       kind: "variant",
       groupLabel: "TV Size",
@@ -131,7 +129,7 @@ const catalog: Service2[] = [
     description: "Install or replace a standard ceiling fan.",
     image: "/services/ceiling-fan.webp",
     type: "instant",
-    benefits: ["Licensed technician", "Balance & test", "Cleanup included"],
+    benefits: ["Balance & test", "Cleanup included"],
     hasLadderFee: true,
     pricing: { kind: "fixed", canonicalId: "ceiling-fan", price: 185 },
   },
@@ -141,7 +139,7 @@ const catalog: Service2[] = [
     description: "Install or replace any standard light fixture.",
     image: "/services/light-fixture.webp",
     type: "instant",
-    benefits: ["Licensed technician", "Hardware check included", "Cleanup included"],
+    benefits: ["Hardware check included", "Cleanup included"],
     hasLadderFee: true,
     pricing: { kind: "fixed", canonicalId: "light-fixture", price: 150 },
   },
@@ -151,7 +149,7 @@ const catalog: Service2[] = [
     description: "Smart switch or dimmer install and app pairing.",
     image: "/services/switches-outlets.webp",
     type: "instant",
-    benefits: ["Licensed technician", "App pairing included", "Per device"],
+    benefits: ["App pairing included", "Per device"],
     pricing: { kind: "fixed", canonicalId: "smart-switch", price: 125 },
   },
   {
@@ -160,7 +158,7 @@ const catalog: Service2[] = [
     description: "Upgrade or replace an outlet or dimmer switch.",
     image: "/services/switches-outlets.webp",
     type: "instant",
-    benefits: ["Licensed technician", "Per device", "Safety tested"],
+    benefits: ["Per device", "Safety tested"],
     pricing: { kind: "fixed", canonicalId: "outlet-switch", price: 100 },
   },
   {
@@ -224,7 +222,7 @@ const catalog: Service2[] = [
     description: "Camera installation, mounting, and app setup.",
     image: "/services/security-cameras.webp",
     type: "quote",
-    benefits: ["Licensed technician", "App + recording setup", "Cable management"],
+    benefits: ["App + recording setup", "Cable management"],
     hasLadderFee: true,
     pricing: {
       kind: "variant",
@@ -252,7 +250,7 @@ const catalog: Service2[] = [
     description: "Soundbar or full surround sound setup.",
     image: "/services/audio-system.webp",
     type: "quote",
-    benefits: ["Concealed wiring", "Calibration included", "Licensed technician"],
+    benefits: ["Concealed wiring", "Calibration included"],
     hasLadderFee: true,
     pricing: {
       kind: "variant",
@@ -269,7 +267,7 @@ const catalog: Service2[] = [
     description: "Pathway, garden, and accent lighting design.",
     image: "/services/outdoor-lighting.webp",
     type: "quote",
-    benefits: ["Custom layout", "Weatherproof fixtures", "Licensed technician"],
+    benefits: ["Custom layout", "Weatherproof fixtures"],
     pricing: {
       kind: "variant",
       groupLabel: "Project size",
@@ -285,7 +283,7 @@ const catalog: Service2[] = [
     description: "Hexagonal LED garage lighting system.",
     image: "/services/garage-hex.webp",
     type: "quote",
-    benefits: ["Modular layout", "Energy efficient", "Licensed technician"],
+    benefits: ["Modular layout", "Energy efficient"],
     pricing: {
       kind: "variant",
       groupLabel: "Garage size",
@@ -296,45 +294,31 @@ const catalog: Service2[] = [
     },
   },
 
-  /* ------------------------- Consultation Required ----------------------- */
   {
     id: "permanent-led",
     name: "Permanent LED Lighting",
-    description: "Year-round permanent exterior LED systems, designed to your home.",
+    description: "Year-round permanent exterior LED, priced by your area size at $30 / linear foot.",
     image: "/services/permanent-led.webp",
-    type: "consultation",
-    benefits: ["Custom design", "App-controlled scenes", "Professional install"],
-    pricing: { kind: "consultation" },
-  },
-  {
-    id: "whole-home-smart",
-    name: "Whole-Home Smart Home",
-    description: "Lighting, switches, and devices integrated across your home.",
-    type: "consultation",
-    benefits: ["System design", "Multi-room integration", "Dedicated specialist"],
-    pricing: { kind: "consultation" },
-  },
-  {
-    id: "custom-electrical",
-    name: "Custom Electrical Work",
-    description: "Panels, dedicated circuits, and custom electrical projects.",
-    type: "consultation",
-    benefits: ["Licensed electrician", "Permitting handled", "On-site assessment"],
-    pricing: { kind: "consultation" },
+    type: "quote",
+    benefits: ["Custom layout & design", "App-controlled scenes", "Weatherproof, year-round"],
+    reviewNote: "$30 per linear foot · final footage confirmed on site.",
+    pricing: {
+      kind: "variant",
+      groupLabel: "Area size",
+      variants: [
+        { id: "pled-s", label: "S · 50 ft", canonicalId: "permanent-led-s", price: 1500 },
+        { id: "pled-m", label: "M · 100 ft", canonicalId: "permanent-led-m", price: 3000 },
+        { id: "pled-l", label: "L · 150 ft", canonicalId: "permanent-led-l", price: 4500 },
+        { id: "pled-xl", label: "XL · 200 ft", canonicalId: "permanent-led-xl", price: 6000 },
+      ],
+    },
   },
 ]
 
 const sections: { type: ServiceType; icon: React.ElementType; title: string; subtitle: string }[] = [
   { type: "instant", icon: Zap, title: "Book Instantly", subtitle: "Book and pay online in minutes" },
   { type: "quote", icon: Calculator, title: "Get an Instant Quote", subtitle: "Answer a couple of questions for a live price" },
-  { type: "consultation", icon: Home, title: "Consultation Required", subtitle: "Custom projects, scheduled with a specialist" },
 ]
-
-const chipConfig: Record<ServiceType, { icon: React.ElementType; text: string; classes: string }> = {
-  instant: { icon: Zap, text: "Instant Booking", classes: "bg-[#FFCB00]/15 text-[#8a6d00]" },
-  quote: { icon: Calculator, text: "Instant Estimate", classes: "bg-blue-50 text-blue-700" },
-  consultation: { icon: Home, text: "Design Service", classes: "bg-gray-100 text-gray-600" },
-}
 
 const LADDER_FEE = 400
 
@@ -416,7 +400,6 @@ export default function Services2Page() {
   const [requestMessage, setRequestMessage] = useState("")
   const [requestEmail, setRequestEmail] = useState("")
   const [requestSent, setRequestSent] = useState(false)
-  const [consultationSent, setConsultationSent] = useState<string | null>(null)
 
   /* ----------------------------- persistence ---------------------------- */
   useEffect(() => {
@@ -521,16 +504,6 @@ export default function Services2Page() {
     )
   }
 
-  const handleConsultation = (service: Service2) => {
-    const subject = encodeURIComponent(`Consultation Request: ${service.name} - The Lighting Squad`)
-    const body = encodeURIComponent(
-      `I'd like to schedule a consultation for: ${service.name}.\n\nTell us a little about your project:\n`
-    )
-    window.location.href = `mailto:info@thelightingsquad.com?subject=${subject}&body=${body}`
-    setConsultationSent(service.id)
-    setTimeout(() => setConsultationSent((cur) => (cur === service.id ? null : cur)), 5000)
-  }
-
   const handleRequestSubmit = () => {
     if (!requestMessage.trim() || !requestEmail.trim()) return
     const subject = encodeURIComponent("Service Request - The Lighting Squad")
@@ -567,8 +540,6 @@ export default function Services2Page() {
 
   /* --------------------------- card rendering ---------------------------- */
   const renderCard = (service: Service2) => {
-    const chip = chipConfig[service.type]
-    const ChipIcon = chip.icon
     const inCart = isInCart(service.id)
     const cfg = cart[service.id] ?? defaultConfig(service)
     const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
@@ -581,8 +552,8 @@ export default function Services2Page() {
           inCart ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-md" : "bg-white hover:shadow-md hover:border-gray-300"
         }`}
       >
-        {/* Image / placeholder */}
-        {service.image ? (
+        {/* Image */}
+        {service.image && (
           <div className="relative w-full aspect-[3/2] overflow-hidden">
             <Image
               src={service.image}
@@ -592,30 +563,16 @@ export default function Services2Page() {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
             {inCart && (
-              <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[#FFCB00] flex items-center justify-center shadow">
-                <Check className="w-4 h-4 text-black" />
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="relative w-full aspect-[3/2] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <ChipIcon className="w-10 h-10 text-gray-300" />
-            {inCart && (
-              <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[#FFCB00] flex items-center justify-center shadow">
-                <Check className="w-4 h-4 text-black" />
+              <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-[#FFCB00] pl-2 pr-2.5 py-1 shadow">
+                <Check className="w-3.5 h-3.5 text-black" />
+                <span className="text-[11px] font-bold text-black">Added</span>
               </div>
             )}
           </div>
         )}
 
         <CardContent className="flex flex-1 flex-col p-4">
-          {/* Status chip */}
-          <span className={`inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${chip.classes}`}>
-            <ChipIcon className="w-3 h-3" />
-            {chip.text}
-          </span>
-
-          <h3 className="mt-2 font-semibold text-gray-900 text-[15px] leading-snug">{service.name}</h3>
+          <h3 className="font-semibold text-gray-900 text-[15px] leading-snug">{service.name}</h3>
           <p className="mt-1 text-xs text-gray-500 leading-relaxed">{service.description}</p>
 
           {/* Value bullets */}
@@ -697,73 +654,53 @@ export default function Services2Page() {
 
           {/* Price + action pinned to the bottom */}
           <div className="mt-auto pt-3">
-            {service.type === "consultation" ? (
-              <>
-                <p className="text-sm font-semibold text-gray-900">Custom Project</p>
-                <Button
-                  onClick={() => handleConsultation(service)}
-                  variant="outline"
-                  className="mt-2 w-full rounded-lg border-gray-300 h-10 text-sm"
-                >
-                  {consultationSent === service.id ? (
-                    "Opening email…"
-                  ) : (
-                    <>
-                      <CalendarClock className="w-4 h-4 mr-1.5" />
-                      Schedule Consultation
-                    </>
-                  )}
-                </Button>
-              </>
-            ) : (
-              <>
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    {inCart ? (
-                      <span className="text-lg font-bold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
-                    ) : (
-                      <>
-                        {service.pricing.kind === "fixed" ? (
-                          <span className="text-lg font-bold text-gray-900">${formatPrice(startingPrice(service))}</span>
-                        ) : (
-                          <span className="text-lg font-bold text-gray-900">
-                            <span className="text-xs font-medium text-gray-500">from </span>$
-                            {formatPrice(startingPrice(service))}
-                          </span>
-                        )}
-                      </>
-                    )}
-                    {service.reviewNote && !inCart && (
-                      <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">{service.reviewNote}</p>
-                    )}
-                  </div>
-                </div>
-
+            <div className="flex items-baseline justify-between">
+              <div>
                 {inCart ? (
-                  <Button
-                    onClick={() => removeFromCart(service.id)}
-                    variant="outline"
-                    className="mt-2 w-full rounded-lg border-gray-300 h-10 text-sm text-gray-700"
-                  >
-                    Remove
-                  </Button>
-                ) : configurable && !expanded.has(service.id) ? (
-                  <Button
-                    onClick={() => toggleExpanded(service.id)}
-                    className="mt-2 w-full rounded-lg bg-gray-900 hover:bg-gray-800 text-white h-10 text-sm"
-                  >
-                    {service.type === "quote" ? "Get Instant Quote" : "Choose Options"}
-                  </Button>
+                  <span className="text-lg font-bold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
+                ) : service.pricing.kind === "fixed" ? (
+                  <span className="text-lg font-bold text-gray-900">${formatPrice(startingPrice(service))}</span>
                 ) : (
-                  <Button
-                    onClick={() => addToCart(service)}
-                    className="mt-2 w-full rounded-lg bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-10 text-sm"
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    {service.type === "instant" && !configurable ? "Book Now" : "Add to Cart"}
-                  </Button>
+                  <span className="text-lg font-bold text-gray-900">
+                    <span className="text-xs font-medium text-gray-500">from </span>$
+                    {formatPrice(startingPrice(service))}
+                  </span>
                 )}
-              </>
+                {service.reviewNote && !inCart && (
+                  <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">{service.reviewNote}</p>
+                )}
+              </div>
+            </div>
+
+            {inCart ? (
+              <div className="mt-2 flex items-center gap-2">
+                <div className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#FFCB00]/15 h-10 text-sm font-semibold text-[#8a6d00]">
+                  <Check className="w-4 h-4" />
+                  Added to cart
+                </div>
+                <button
+                  onClick={() => removeFromCart(service.id)}
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 h-10 text-sm text-gray-500 hover:text-red-600 hover:border-red-200 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove
+                </button>
+              </div>
+            ) : configurable && !expanded.has(service.id) ? (
+              <Button
+                onClick={() => toggleExpanded(service.id)}
+                className="mt-2 w-full rounded-lg bg-gray-900 hover:bg-gray-800 text-white h-10 text-sm"
+              >
+                {service.type === "quote" ? "Get Instant Quote" : "Choose Options"}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => addToCart(service)}
+                className="mt-2 w-full rounded-lg bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-10 text-sm"
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                {service.type === "instant" && !configurable ? "Book Now" : "Add to Cart"}
+              </Button>
             )}
           </div>
         </CardContent>
@@ -786,7 +723,7 @@ export default function Services2Page() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Build your service order</h1>
               <p className="text-gray-500">
-                Book fixed-price jobs instantly, get a live quote on custom work, or schedule a consultation.
+                Book fixed-price jobs instantly or get a live quote on custom work — build your order and check out online.
               </p>
             </div>
           </div>
