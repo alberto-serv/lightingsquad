@@ -33,6 +33,23 @@ export function isEstimatePrice(id: string): boolean {
   return ESTIMATE_PRICE_IDS.has(id)
 }
 
+/**
+ * Split selected line items into the ones charged at checkout (fixed price)
+ * and the ones quoted on-site ("from" / estimate). Only the payable bucket
+ * (plus membership) is paid online.
+ */
+export function splitByPayment<T extends { id: string }>(items: T[]): { payable: T[]; estimate: T[] } {
+  return {
+    payable: items.filter((i) => !ESTIMATE_PRICE_IDS.has(i.id)),
+    estimate: items.filter((i) => ESTIMATE_PRICE_IDS.has(i.id)),
+  }
+}
+
+/** The flat ladder fee is charged today only when it applies to a fixed-price service. */
+export function ladderAppliesToPayable(ladderIds: string[] | undefined | null): boolean {
+  return !!ladderIds?.some((id) => !ESTIMATE_PRICE_IDS.has(id))
+}
+
 /** Format a line price as "$X" or "from $X" depending on whether the id is an estimate. */
 export function formatServicePrice(id: string, price: number): string {
   const formatted = `$${price.toLocaleString("en-US")}`

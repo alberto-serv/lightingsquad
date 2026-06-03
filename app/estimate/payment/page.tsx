@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { formatServicePrice } from "@/lib/estimate-pricing"
+import { formatServicePrice, splitByPayment, ladderAppliesToPayable } from "@/lib/estimate-pricing"
 import {
   CreditCard,
   Lock,
@@ -146,35 +146,45 @@ export default function PaymentPage() {
       .filter(Boolean)
   }
 
-  const getSubtotal = () => {
-    const services = getSelectedServicesWithDetails()
-    return services.reduce((total: number, service: any) => total + service.price, 0)
-  }
+  // Fixed-price services are charged today; "from" services are quoted on-site.
+  const getPayableServices = () => splitByPayment(getSelectedServicesWithDetails()).payable
+  const getEstimateServices = () => splitByPayment(getSelectedServicesWithDetails()).estimate
 
-  const getLadderFeeCount = () => {
-    return bookingData?.services?.ladderFeeServices?.length || 0
-  }
+  const getPayableSubtotal = () =>
+    getPayableServices().reduce((total: number, service: any) => total + service.price, 0)
+  const getEstimateSubtotal = () =>
+    getEstimateServices().reduce((total: number, service: any) => total + service.price, 0)
 
-  const getLadderFeeTotal = () => {
-    return getLadderFeeCount() > 0 ? 400 : 0
-  }
+  const ladderIds = (): string[] => bookingData?.services?.ladderFeeServices || []
+  // The flat ladder fee is charged today only if it's attached to a fixed-price service.
+  const getLadderFeeTotal = () => (ladderAppliesToPayable(ladderIds()) ? 400 : 0)
+  const hasEstimateLadder = () => ladderIds().length > 0 && !ladderAppliesToPayable(ladderIds())
 
   const getSubscriptionDiscount = () => {
     if (!isSubscription) return 0
-    return Math.round((getSubtotal() + getLadderFeeTotal()) * SUBSCRIPTION_DISCOUNT)
+    return Math.round((getPayableSubtotal() + getLadderFeeTotal()) * SUBSCRIPTION_DISCOUNT)
   }
 
+  const getMembershipFee = () => (isSubscription ? MONTHLY_MEMBERSHIP_FEE : 0)
+
+  // Amount actually charged today: fixed services (+ payable ladder) − discounts + membership.
   const getTotal = () => {
-    return getSubtotal() + getLadderFeeTotal() - getSubscriptionDiscount() - promoDiscount
+    return (
+      getPayableSubtotal() +
+      getLadderFeeTotal() -
+      getSubscriptionDiscount() -
+      promoDiscount +
+      getMembershipFee()
+    )
   }
 
   const handleApplyPromo = () => {
     if (promoCode.toUpperCase() === "SAVE10") {
-      const discount = Math.round(getSubtotal() * 0.1)
+      const discount = Math.round(getPayableSubtotal() * 0.1)
       setPromoDiscount(discount)
       setAppliedPromo(promoCode.toUpperCase())
     } else if (promoCode.toUpperCase() === "FIRST20") {
-      const discount = Math.round(getSubtotal() * 0.2)
+      const discount = Math.round(getPayableSubtotal() * 0.2)
       setPromoDiscount(discount)
       setAppliedPromo(promoCode.toUpperCase())
     } else {
@@ -232,6 +242,10 @@ export default function PaymentPage() {
         promoCode: appliedPromo,
         promoDiscount: promoDiscount,
         subscriptionDiscount: getSubscriptionDiscount(),
+        membershipFee: getMembershipFee(),
+        ladderFeePaid: getLadderFeeTotal(),
+        estimateSubtotal: getEstimateSubtotal(),
+        paidToday: getTotal(),
         total: getTotal(),
       },
       customer: {
@@ -258,11 +272,18 @@ export default function PaymentPage() {
     )
   }
 
-  const subtotal = getSubtotal()
-  const ladderFeeCount = getLadderFeeCount()
+  const payableServices = getPayableServices()
+  const estimateServices = getEstimateServices()
+  const payableSubtotal = getPayableSubtotal()
   const ladderFeeTotal = getLadderFeeTotal()
   const savings = getSubscriptionDiscount()
-  const potentialSavings = Math.round((subtotal + ladderFeeTotal) * SUBSCRIPTION_DISCOUNT)
+  const membershipFee = getMembershipFee()
+  const payToday = getTotal()
+  // Headline reflects 15% off the whole order (fixed + estimated); estimated savings apply on-site.
+  const anyLadderTotal = ladderIds().length > 0 ? 400 : 0
+  const potentialSavings = Math.round(
+    (payableSubtotal + getEstimateSubtotal() + anyLadderTotal) * SUBSCRIPTION_DISCOUNT,
+  )
 
   return (
     <div className="min-h-screen bg-background">
@@ -313,7 +334,7 @@ export default function PaymentPage() {
                           ))}
                         </div>
 
-                        {isSubscription && subtotal > 0 && (
+                        {isSubscription && savings > 0 && (
                           <div className="mt-3 p-2.5 bg-[#FFCB00]/10 rounded-lg border border-[#FFCB00]/30">
                             <p className="text-sm text-[#b8920a] font-semibold">
                               You save ${savings.toLocaleString("en-US")} on today&apos;s order
@@ -326,7 +347,8 @@ export default function PaymentPage() {
                 </CardContent>
               </Card>
 
-              {/* Payment Information Card */}
+              {/* Payment Information Card — shown only when there's a charge today */}
+              {payToday > 0 ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -396,6 +418,21 @@ export default function PaymentPage() {
                   </form>
                 </CardContent>
               </Card>
+              ) : (
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-[#FFCB00] flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">No payment due today</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Your selected services are quoted on-site. We&apos;ll confirm exact pricing during your visit and collect payment then.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Promo Code Card */}
               <Card>
@@ -483,7 +520,11 @@ export default function PaymentPage() {
                   className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                   size="lg"
                 >
-                  {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US")}`}
+                  {isLoading
+                    ? "Processing..."
+                    : payToday > 0
+                      ? `Pay $${payToday.toLocaleString("en-US")}`
+                      : "Confirm booking"}
                 </Button>
               </div>
             </div>
@@ -511,72 +552,99 @@ export default function PaymentPage() {
 
                   <Separator />
 
-                  {/* Selected Services */}
+                  {/* Paid today: fixed-price services + membership */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
-                      <span>Selected Services</span>
+                      <span>Paid today</span>
                     </div>
                     <div className="space-y-2 pl-6">
-                      {getSelectedServicesWithDetails().map((service: any) => (
-                        <div key={service.id} className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
-                          </span>
-                          <span className="font-medium">{formatServicePrice(service.id, service.price)}</span>
+                      {payableServices.length > 0 ? (
+                        payableServices.map((service: any) => (
+                          <div key={service.id} className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">
+                              {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
+                            </span>
+                            <span className="font-medium">${service.price.toLocaleString("en-US")}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No set-price services selected</p>
+                      )}
+
+                      {ladderFeeTotal > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Large ladder fee</span>
+                          <span className="font-medium">${ladderFeeTotal.toLocaleString("en-US")}</span>
                         </div>
-                      ))}
+                      )}
+
+                      {isSubscription && (
+                        <>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Membership (first month)</span>
+                            <span className="font-medium">${MONTHLY_MEMBERSHIP_FEE}</span>
+                          </div>
+                          {savings > 0 && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-[#b8920a] font-medium">Member discount (15%)</span>
+                              <span className="font-medium text-[#b8920a]">-${savings.toLocaleString("en-US")}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {promoDiscount > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-green-600">Promo Code ({appliedPromo})</span>
+                          <span className="font-medium text-green-600">-${promoDiscount.toLocaleString("en-US")}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  {/* Large Ladder Fee */}
-                  {ladderFeeCount > 0 && (
-                    <>
-                      <Separator />
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Large Ladder Fee
-                        </span>
-                        <span className="font-medium">${ladderFeeTotal.toLocaleString("en-US")}</span>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Membership Discount */}
-                  {isSubscription && (
-                    <>
-                      <Separator />
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#b8920a] font-medium">Member Discount (15%)</span>
-                        <span className="font-medium text-[#b8920a]">
-                          -${savings.toLocaleString("en-US")}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Monthly membership</span>
-                        <span className="font-medium text-muted-foreground">${MONTHLY_MEMBERSHIP_FEE}/mo</span>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Promo Discount */}
-                  {promoDiscount > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-green-600">Promo Code ({appliedPromo})</span>
-                      <span className="font-medium text-green-600">-${promoDiscount.toLocaleString("en-US")}</span>
-                    </div>
-                  )}
 
                   <Separator />
 
-                  {/* Total */}
+                  {/* Total due today */}
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2 font-semibold">
                       <DollarSign className="h-4 w-4 text-[#FFCB00]" />
-                      <span>Total</span>
+                      <span>Total due today</span>
                     </div>
-                    <span className="text-xl font-bold">${getTotal().toLocaleString("en-US")}</span>
+                    <span className="text-xl font-bold">${payToday.toLocaleString("en-US")}</span>
                   </div>
+
+                  {/* Estimated services — quoted on-site, not charged today */}
+                  {(estimateServices.length > 0 || hasEstimateLadder()) && (
+                    <>
+                      <Separator />
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span>Estimated — confirmed on-site</span>
+                        </div>
+                        <div className="space-y-2 pl-6">
+                          {estimateServices.map((service: any) => (
+                            <div key={service.id} className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">
+                                {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
+                              </span>
+                              <span className="font-medium">{formatServicePrice(service.id, service.price)}</span>
+                            </div>
+                          ))}
+                          {hasEstimateLadder() && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Large ladder fee</span>
+                              <span className="font-medium">from $400</span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground pl-6">
+                          These are estimates. We&apos;ll confirm exact pricing on-site — you won&apos;t be charged for them today.
+                        </p>
+                      </div>
+                    </>
+                  )}
 
                   {/* Submit Button - Desktop */}
                   <div className="hidden lg:block pt-2">
@@ -586,7 +654,11 @@ export default function PaymentPage() {
                       className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                       size="lg"
                     >
-                      {isLoading ? "Processing..." : `Pay $${getTotal().toLocaleString("en-US")}`}
+                      {isLoading
+                    ? "Processing..."
+                    : payToday > 0
+                      ? `Pay $${payToday.toLocaleString("en-US")}`
+                      : "Confirm booking"}
                     </Button>
                   </div>
                 </CardContent>
