@@ -547,14 +547,14 @@ export default function Services2Page() {
 
         <CardContent className="flex flex-1 flex-col p-4">
           <h3 className="font-semibold text-gray-900 text-[15px] leading-snug">{service.name}</h3>
-          <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-2 min-h-[2.25rem]">{service.description}</p>
+          <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-2 min-h-[2.5rem]">{service.description}</p>
 
-          {/* Value bullets */}
-          <ul className="mt-2.5 space-y-1 min-h-[3.5rem]">
+          {/* Value bullets — fixed reserve so 2- and 3-item cards match height */}
+          <ul className="mt-2.5 space-y-1 min-h-[3.75rem]">
             {service.benefits.map((b) => (
-              <li key={b} className="flex items-center gap-1.5 text-xs text-gray-600">
+              <li key={b} className="flex items-center gap-1.5 text-xs text-gray-600 min-w-0">
                 <Check className="w-3.5 h-3.5 text-[#FFCB00] flex-shrink-0" />
-                {b}
+                <span className="truncate">{b}</span>
               </li>
             ))}
           </ul>
