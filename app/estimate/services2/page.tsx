@@ -8,12 +8,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
   Zap,
-  Calculator,
+  Hammer,
   ArrowRight,
   ShoppingCart,
   Search,
-  Send,
-  MessageSquare,
   Plus,
   Minus,
   Check,
@@ -35,7 +33,7 @@ import Image from "next/image"
 /*  it (mirrors the existing pages).                                            */
 /* -------------------------------------------------------------------------- */
 
-type ServiceType = "instant" | "quote"
+type ServiceType = "lighting" | "installation"
 
 interface Variant {
   id: string
@@ -83,13 +81,130 @@ interface Service2 {
 }
 
 const catalog: Service2[] = [
-  /* ---------------------------- Book Instantly --------------------------- */
+  /* -------------------------------- Lighting ----------------------------- */
+  {
+    id: "light-fixture",
+    name: "Light Fixture Install",
+    description: "Install or replace any standard light fixture.",
+    image: "/services/light-fixture.webp",
+    type: "lighting",
+    benefits: ["Hardware check included", "Cleanup included"],
+    hasLadderFee: true,
+    pricing: { kind: "fixed", canonicalId: "light-fixture", price: 150 },
+  },
+  {
+    id: "smart-switch",
+    name: "Smart Switch / Dimmer",
+    description: "Smart switch or dimmer install and app pairing.",
+    image: "/services/switches-outlets.webp",
+    type: "lighting",
+    benefits: ["App pairing included", "Per device"],
+    pricing: { kind: "fixed", canonicalId: "smart-switch", price: 125 },
+  },
+  {
+    id: "outlet-switch",
+    name: "Outlet / Dimmer Upgrade",
+    description: "Upgrade or replace an outlet or dimmer switch.",
+    image: "/services/switches-outlets.webp",
+    type: "lighting",
+    benefits: ["Per device", "Safety tested"],
+    pricing: { kind: "fixed", canonicalId: "outlet-switch", price: 100 },
+  },
+  {
+    id: "led-bulb",
+    name: "LED Bulb Upgrade",
+    description: "Swap existing bulbs to energy-efficient LEDs.",
+    image: "/services/led-bulb-upgrade.webp",
+    type: "lighting",
+    benefits: ["Energy efficient", "Per fixture pricing", "Bulbs not included"],
+    pricing: {
+      kind: "quantity",
+      canonicalId: "led-bulb-per-fixture",
+      unitPrice: 17,
+      unitLabel: "fixtures",
+      min: 1,
+      max: 40,
+      default: 4,
+    },
+  },
+  {
+    id: "fixture-cleaning",
+    name: "Fixture / Chandelier Cleaning",
+    description: "Professional deep cleaning of fixtures and chandeliers.",
+    image: "/services/fixture-cleaning.webp",
+    type: "lighting",
+    benefits: ["Detailed hand cleaning", "Bulb check included", "Cleanup included"],
+    hasLadderFee: true,
+    pricing: { kind: "fixed", canonicalId: "fixture-cleaning", price: 150 },
+  },
+  {
+    id: "exterior-bulb",
+    name: "Exterior Bulb Replacement",
+    description: "Hard-to-reach exterior bulb replacement.",
+    image: "/services/exterior-bulb.webp",
+    type: "lighting",
+    benefits: ["Tall-reach equipment", "Per visit", "Bulbs not included"],
+    pricing: { kind: "fixed", canonicalId: "exterior-bulb-replacement", price: 150 },
+  },
+  {
+    id: "outdoor-lighting",
+    name: "Outdoor Lighting",
+    description: "Pathway, garden, and accent lighting design.",
+    image: "/services/outdoor-lighting.webp",
+    type: "lighting",
+    benefits: ["Custom layout", "Weatherproof fixtures"],
+    pricing: {
+      kind: "variant",
+      groupLabel: "Project size",
+      variants: [
+        { id: "outdoor-basic", label: "Basic (5 – 8 lights)", canonicalId: "landscape-basic", price: 850 },
+        { id: "outdoor-custom", label: "Custom / large", canonicalId: "landscape-custom", price: 2500 },
+      ],
+    },
+  },
+  {
+    id: "garage-hex",
+    name: "Garage Hex Lighting",
+    description: "Hexagonal LED garage lighting system.",
+    image: "/services/garage-hex.webp",
+    type: "lighting",
+    benefits: ["Modular layout", "Energy efficient"],
+    pricing: {
+      kind: "variant",
+      groupLabel: "Garage size",
+      variants: [
+        { id: "garage-1", label: "1-car garage", canonicalId: "garage-hex-1car", price: 700 },
+        { id: "garage-2", label: "2-car garage", canonicalId: "garage-hex-2car", price: 1150 },
+      ],
+    },
+  },
+  {
+    id: "permanent-led",
+    name: "Permanent LED Lighting",
+    description: "Year-round permanent exterior LED, priced by your area size at $30 / linear foot.",
+    image: "/services/permanent-led.webp",
+    type: "lighting",
+    benefits: ["Custom layout & design", "App-controlled scenes", "Weatherproof, year-round"],
+    reviewNote: "$30 per linear foot · final footage confirmed on site.",
+    pricing: {
+      kind: "variant",
+      groupLabel: "Area size",
+      variants: [
+        { id: "pled-s", label: "S · 50 ft", canonicalId: "permanent-led-s", price: 1500 },
+        { id: "pled-m", label: "M · 100 ft", canonicalId: "permanent-led-m", price: 3000 },
+        { id: "pled-l", label: "L · 150 ft", canonicalId: "permanent-led-l", price: 4500 },
+        { id: "pled-xl", label: "XL · 200 ft", canonicalId: "permanent-led-xl", price: 6000 },
+      ],
+    },
+  },
+
+  /* ------------------------------ Installation --------------------------- */
   {
     id: "tv-mounting",
     name: "TV Mounting",
     description: "Professional wall mounting with clean cable management.",
     image: "/services/tv-mounting.webp",
-    type: "instant",
+    type: "installation",
     benefits: ["Cable concealment", "Level & secure mount"],
     pricing: {
       kind: "variant",
@@ -114,114 +229,31 @@ const catalog: Service2[] = [
     reviewNote: "Existing power outlet behind the TV assumed.",
   },
   {
-    id: "doorbell",
-    name: "Ring Doorbell Install",
-    description: "Smart video doorbell installation and app setup.",
-    image: "/services/doorbell.webp",
-    type: "instant",
-    benefits: ["Existing wiring", "App + chime setup", "Same-day available"],
-    pricing: { kind: "fixed", canonicalId: "doorbell", price: 150 },
-    reviewNote: "New wiring may require a technician review.",
-  },
-  {
     id: "ceiling-fan",
     name: "Ceiling Fan Install",
     description: "Install or replace a standard ceiling fan.",
     image: "/services/ceiling-fan.webp",
-    type: "instant",
+    type: "installation",
     benefits: ["Balance & test", "Cleanup included"],
     hasLadderFee: true,
     pricing: { kind: "fixed", canonicalId: "ceiling-fan", price: 185 },
   },
   {
-    id: "light-fixture",
-    name: "Light Fixture Install",
-    description: "Install or replace any standard light fixture.",
-    image: "/services/light-fixture.webp",
-    type: "instant",
-    benefits: ["Hardware check included", "Cleanup included"],
-    hasLadderFee: true,
-    pricing: { kind: "fixed", canonicalId: "light-fixture", price: 150 },
+    id: "doorbell",
+    name: "Ring Doorbell Install",
+    description: "Smart video doorbell installation and app setup.",
+    image: "/services/doorbell.webp",
+    type: "installation",
+    benefits: ["Existing wiring", "App + chime setup", "Same-day available"],
+    pricing: { kind: "fixed", canonicalId: "doorbell", price: 150 },
+    reviewNote: "New wiring may require a technician review.",
   },
-  {
-    id: "smart-switch",
-    name: "Smart Switch / Dimmer",
-    description: "Smart switch or dimmer install and app pairing.",
-    image: "/services/switches-outlets.webp",
-    type: "instant",
-    benefits: ["App pairing included", "Per device"],
-    pricing: { kind: "fixed", canonicalId: "smart-switch", price: 125 },
-  },
-  {
-    id: "outlet-switch",
-    name: "Outlet / Dimmer Upgrade",
-    description: "Upgrade or replace an outlet or dimmer switch.",
-    image: "/services/switches-outlets.webp",
-    type: "instant",
-    benefits: ["Per device", "Safety tested"],
-    pricing: { kind: "fixed", canonicalId: "outlet-switch", price: 100 },
-  },
-  {
-    id: "picture-hanging",
-    name: "Picture & Art Hanging",
-    description: "Professional picture and art installation.",
-    image: "/services/picture-hanging.webp",
-    type: "instant",
-    benefits: ["Precise leveling", "Wall-safe anchors", "Cleanup included"],
-    hasLadderFee: true,
-    pricing: {
-      kind: "variant",
-      groupLabel: "How much?",
-      variants: [
-        { id: "pic-standard", label: "1 – 3 items", canonicalId: "picture-hanging-standard", price: 125 },
-        { id: "pic-gallery", label: "Gallery wall", canonicalId: "picture-hanging-gallery", price: 237 },
-      ],
-    },
-  },
-  {
-    id: "led-bulb",
-    name: "LED Bulb Upgrade",
-    description: "Swap existing bulbs to energy-efficient LEDs.",
-    image: "/services/led-bulb-upgrade.webp",
-    type: "instant",
-    benefits: ["Energy efficient", "Per fixture pricing", "Bulbs not included"],
-    pricing: {
-      kind: "quantity",
-      canonicalId: "led-bulb-per-fixture",
-      unitPrice: 17,
-      unitLabel: "fixtures",
-      min: 1,
-      max: 40,
-      default: 4,
-    },
-  },
-  {
-    id: "fixture-cleaning",
-    name: "Fixture / Chandelier Cleaning",
-    description: "Professional deep cleaning of fixtures and chandeliers.",
-    image: "/services/fixture-cleaning.webp",
-    type: "instant",
-    benefits: ["Detailed hand cleaning", "Bulb check included", "Cleanup included"],
-    hasLadderFee: true,
-    pricing: { kind: "fixed", canonicalId: "fixture-cleaning", price: 150 },
-  },
-  {
-    id: "exterior-bulb",
-    name: "Exterior Bulb Replacement",
-    description: "Hard-to-reach exterior bulb replacement.",
-    image: "/services/exterior-bulb.webp",
-    type: "instant",
-    benefits: ["Tall-reach equipment", "Per visit", "Bulbs not included"],
-    pricing: { kind: "fixed", canonicalId: "exterior-bulb-replacement", price: 150 },
-  },
-
-  /* --------------------------- Get Instant Quote ------------------------- */
   {
     id: "security-cameras",
     name: "Security Cameras",
     description: "Camera installation, mounting, and app setup.",
     image: "/services/security-cameras.webp",
-    type: "quote",
+    type: "installation",
     benefits: ["App + recording setup", "Cable management"],
     hasLadderFee: true,
     pricing: {
@@ -249,7 +281,7 @@ const catalog: Service2[] = [
     name: "Audio System Install",
     description: "Soundbar or full surround sound setup.",
     image: "/services/audio-system.webp",
-    type: "quote",
+    type: "installation",
     benefits: ["Concealed wiring", "Calibration included"],
     hasLadderFee: true,
     pricing: {
@@ -262,62 +294,27 @@ const catalog: Service2[] = [
     },
   },
   {
-    id: "outdoor-lighting",
-    name: "Outdoor Lighting",
-    description: "Pathway, garden, and accent lighting design.",
-    image: "/services/outdoor-lighting.webp",
-    type: "quote",
-    benefits: ["Custom layout", "Weatherproof fixtures"],
+    id: "picture-hanging",
+    name: "Picture & Art Hanging",
+    description: "Professional picture and art installation.",
+    image: "/services/picture-hanging.webp",
+    type: "installation",
+    benefits: ["Precise leveling", "Wall-safe anchors", "Cleanup included"],
+    hasLadderFee: true,
     pricing: {
       kind: "variant",
-      groupLabel: "Project size",
+      groupLabel: "How much?",
       variants: [
-        { id: "outdoor-basic", label: "Basic (5 – 8 lights)", canonicalId: "landscape-basic", price: 850 },
-        { id: "outdoor-custom", label: "Custom / large", canonicalId: "landscape-custom", price: 2500 },
-      ],
-    },
-  },
-  {
-    id: "garage-hex",
-    name: "Garage Hex Lighting",
-    description: "Hexagonal LED garage lighting system.",
-    image: "/services/garage-hex.webp",
-    type: "quote",
-    benefits: ["Modular layout", "Energy efficient"],
-    pricing: {
-      kind: "variant",
-      groupLabel: "Garage size",
-      variants: [
-        { id: "garage-1", label: "1-car garage", canonicalId: "garage-hex-1car", price: 700 },
-        { id: "garage-2", label: "2-car garage", canonicalId: "garage-hex-2car", price: 1150 },
-      ],
-    },
-  },
-
-  {
-    id: "permanent-led",
-    name: "Permanent LED Lighting",
-    description: "Year-round permanent exterior LED, priced by your area size at $30 / linear foot.",
-    image: "/services/permanent-led.webp",
-    type: "quote",
-    benefits: ["Custom layout & design", "App-controlled scenes", "Weatherproof, year-round"],
-    reviewNote: "$30 per linear foot · final footage confirmed on site.",
-    pricing: {
-      kind: "variant",
-      groupLabel: "Area size",
-      variants: [
-        { id: "pled-s", label: "S · 50 ft", canonicalId: "permanent-led-s", price: 1500 },
-        { id: "pled-m", label: "M · 100 ft", canonicalId: "permanent-led-m", price: 3000 },
-        { id: "pled-l", label: "L · 150 ft", canonicalId: "permanent-led-l", price: 4500 },
-        { id: "pled-xl", label: "XL · 200 ft", canonicalId: "permanent-led-xl", price: 6000 },
+        { id: "pic-standard", label: "1 – 3 items", canonicalId: "picture-hanging-standard", price: 125 },
+        { id: "pic-gallery", label: "Gallery wall", canonicalId: "picture-hanging-gallery", price: 237 },
       ],
     },
   },
 ]
 
 const sections: { type: ServiceType; icon: React.ElementType; title: string; subtitle: string }[] = [
-  { type: "instant", icon: Zap, title: "Book Instantly", subtitle: "Book and pay online in minutes" },
-  { type: "quote", icon: Calculator, title: "Get an Instant Quote", subtitle: "Answer a couple of questions for a live price" },
+  { type: "lighting", icon: Zap, title: "Lighting", subtitle: "LED, fixtures, outdoor & maintenance" },
+  { type: "installation", icon: Hammer, title: "Installation", subtitle: "TVs, audio, security & more" },
 ]
 
 const LADDER_FEE = 400
@@ -396,10 +393,6 @@ export default function Services2Page() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState("")
   const [cartOpen, setCartOpen] = useState(false)
-
-  const [requestMessage, setRequestMessage] = useState("")
-  const [requestEmail, setRequestEmail] = useState("")
-  const [requestSent, setRequestSent] = useState(false)
 
   /* ----------------------------- persistence ---------------------------- */
   useEffect(() => {
@@ -504,15 +497,6 @@ export default function Services2Page() {
     )
   }
 
-  const handleRequestSubmit = () => {
-    if (!requestMessage.trim() || !requestEmail.trim()) return
-    const subject = encodeURIComponent("Service Request - The Lighting Squad")
-    const body = encodeURIComponent(`Message:\n${requestMessage}\n\nFrom: ${requestEmail}`)
-    window.location.href = `mailto:info@thelightingsquad.com?subject=${subject}&body=${body}`
-    setRequestSent(true)
-    setTimeout(() => setRequestSent(false), 5000)
-  }
-
   const handleCheckout = () => {
     const selectedServices: string[] = []
     const ladderFeeServices: string[] = []
@@ -573,7 +557,7 @@ export default function Services2Page() {
 
         <CardContent className="flex flex-1 flex-col p-4">
           <h3 className="font-semibold text-gray-900 text-[15px] leading-snug">{service.name}</h3>
-          <p className="mt-1 text-xs text-gray-500 leading-relaxed">{service.description}</p>
+          <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-2">{service.description}</p>
 
           {/* Value bullets */}
           <ul className="mt-2.5 space-y-1">
@@ -691,7 +675,7 @@ export default function Services2Page() {
                 onClick={() => toggleExpanded(service.id)}
                 className="mt-2 w-full rounded-lg bg-gray-900 hover:bg-gray-800 text-white h-10 text-sm"
               >
-                {service.type === "quote" ? "Get Instant Quote" : "Choose Options"}
+                Choose options
               </Button>
             ) : (
               <Button
@@ -699,7 +683,7 @@ export default function Services2Page() {
                 className="mt-2 w-full rounded-lg bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-10 text-sm"
               >
                 <Plus className="w-4 h-4 mr-1" />
-                {service.type === "instant" && !configurable ? "Book Now" : "Add to Cart"}
+                {configurable ? "Add to cart" : "Book"}
               </Button>
             )}
           </div>
@@ -761,7 +745,7 @@ export default function Services2Page() {
                     <span className="text-sm text-gray-400">{section.subtitle}</span>
                     <div className="flex-1 h-px bg-gray-200" />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {services.map(renderCard)}
                   </div>
                 </div>
@@ -772,52 +756,9 @@ export default function Services2Page() {
               <div className="text-center py-12 text-gray-500">
                 <Search className="w-8 h-8 mx-auto mb-3 text-gray-300" />
                 <p className="font-medium">No services match &quot;{searchQuery}&quot;</p>
-                <p className="text-sm mt-1">Try a different search or request a custom service below.</p>
+                <p className="text-sm mt-1">Try a different search term.</p>
               </div>
             )}
-
-            {/* Request another service */}
-            <div className="border-t border-gray-200 pt-10">
-              <div className="max-w-xl mx-auto text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <MessageSquare className="w-5 h-5 text-[#FFCB00]" />
-                  <h2 className="text-lg font-semibold text-gray-900">Request Another Service?</h2>
-                </div>
-                <p className="text-sm text-gray-500 mb-5">
-                  Don&apos;t see what you need? Let us know and we&apos;ll get back to you.
-                </p>
-                <div className="space-y-3 text-left">
-                  <Input
-                    type="email"
-                    placeholder="Your email address"
-                    value={requestEmail}
-                    onChange={(e) => setRequestEmail(e.target.value)}
-                    className="h-11 rounded-lg border-gray-200 bg-white"
-                  />
-                  <textarea
-                    placeholder="Describe the service you're looking for..."
-                    value={requestMessage}
-                    onChange={(e) => setRequestMessage(e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#FFCB00] focus:border-transparent"
-                  />
-                  <Button
-                    onClick={handleRequestSubmit}
-                    disabled={!requestMessage.trim() || !requestEmail.trim() || requestSent}
-                    className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-lg h-11"
-                  >
-                    {requestSent ? (
-                      "Opening email client..."
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 mr-2" />
-                        Send Request
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
