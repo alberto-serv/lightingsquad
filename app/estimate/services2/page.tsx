@@ -512,6 +512,14 @@ export default function Services2Page() {
     router.push("/estimate/customer")
   }
 
+  // Clicking anywhere on a card (outside the controls) runs its primary action.
+  const handleCardClick = (service: Service2) => {
+    if (isInCart(service.id)) return
+    const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
+    if (configurable && !expanded.has(service.id)) toggleExpanded(service.id)
+    else addToCart(service)
+  }
+
   /* --------------------------- card rendering ---------------------------- */
   const renderCard = (service: Service2) => {
     const inCart = isInCart(service.id)
@@ -522,7 +530,8 @@ export default function Services2Page() {
     return (
       <Card
         key={service.id}
-        className={`flex flex-col overflow-hidden rounded-xl !p-0 !gap-0 transition-all duration-200 ${
+        onClick={() => handleCardClick(service)}
+        className={`flex flex-col overflow-hidden rounded-xl !p-0 !gap-0 transition-all duration-200 cursor-pointer ${
           inCart ? "ring-2 ring-[#FFCB00] bg-[#FFCB00]/5 shadow-md" : "bg-white hover:shadow-md hover:border-gray-300"
         }`}
       >
@@ -561,7 +570,7 @@ export default function Services2Page() {
 
           {/* Inline configurator */}
           {showConfig && service.pricing.kind === "variant" && (
-            <div className="mt-3 space-y-3">
+            <div className="mt-3 space-y-3" onClick={(e) => e.stopPropagation()}>
               <ConfigGroup label={service.pricing.groupLabel}>
                 {service.pricing.variants.map((v) => (
                   <OptionPill
@@ -597,7 +606,7 @@ export default function Services2Page() {
           )}
 
           {showConfig && service.pricing.kind === "quantity" && (
-            <div className="mt-3">
+            <div className="mt-3" onClick={(e) => e.stopPropagation()}>
               <p className="text-xs font-medium text-gray-700 mb-1.5">How many {service.pricing.unitLabel}?</p>
               <div className="flex items-center gap-3">
                 <Stepper
@@ -613,7 +622,7 @@ export default function Services2Page() {
 
           {/* Large ladder fee — separated module */}
           {service.hasLadderFee && (inCart || showConfig) && (
-            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
@@ -632,17 +641,20 @@ export default function Services2Page() {
           )}
 
           {/* Price + action pinned to the bottom */}
-          <div className="mt-auto pt-3">
+          <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-baseline justify-between">
-              <div>
+              <div className="w-full">
                 <span className="text-lg font-bold text-gray-900">
                   {service.pricing.kind !== "fixed" && (
                     <span className="text-xs font-medium text-gray-500">from </span>
                   )}
                   ${formatPrice(inCart ? linePrice(service, cfg) : startingPrice(service))}
                 </span>
-                {service.reviewNote && !inCart && (
-                  <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">{service.reviewNote}</p>
+                {/* Reserve two lines so cards with and without a note match height */}
+                {!inCart && (
+                  <p className="text-[11px] text-gray-400 mt-0.5 leading-tight line-clamp-2 min-h-[1.75rem]">
+                    {service.reviewNote ?? ""}
+                  </p>
                 )}
               </div>
             </div>
