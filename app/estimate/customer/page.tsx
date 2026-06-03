@@ -35,7 +35,6 @@ import {
   addMonths,
   subMonths,
 } from "date-fns"
-import { Checkbox } from "@/components/ui/checkbox"
 
 interface CustomerData {
   firstName: string
@@ -339,8 +338,7 @@ export default function CustomerPage() {
     customerData.state &&
     customerData.zipCode &&
     customerData.preferredDate &&
-    customerData.timeWindow &&
-    (estimateData?.services?.isSubscription ? true : customerData.termsAccepted)
+    customerData.timeWindow
 
   const getAvailableDates = () => {
     const dates = []
@@ -710,51 +708,6 @@ export default function CustomerPage() {
                 </CardContent>
               </Card>
 
-              {/* Terms and Conditions section for one-time jobs */}
-              {estimateData?.services?.isSubscription === false && (
-                <Card className="mt-4">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-3 p-4 bg-muted/50 rounded-lg">
-                      <Checkbox
-                        id="terms"
-                        checked={customerData.termsAccepted || false}
-                        onCheckedChange={(checked) => handleInputChange("termsAccepted", checked as boolean)}
-                        className="mt-1"
-                      />
-                      <div className="flex-1">
-                        <label
-                          htmlFor="terms"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                        >
-                          I agree to the{" "}
-                          <a
-                            href="/terms"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#FFCB00] hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Terms & Conditions
-                          </a>{" "}
-                          and{" "}
-                          <a
-                            href="/privacy"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#FFCB00] hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Privacy Policy
-                          </a>
-                        </label>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          By checking this box, you acknowledge that you have read and agree to our terms of service.
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
             </div>
 
             {/* Right Column - Summary */}

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import {
@@ -75,6 +76,7 @@ export default function PaymentPage() {
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null)
   const [promoDiscount, setPromoDiscount] = useState(0)
   const [isSubscription, setIsSubscription] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   // Payment form state
   const [cardNumber, setCardNumber] = useState("")
@@ -197,6 +199,10 @@ export default function PaymentPage() {
 
   const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Require terms acceptance for one-time jobs
+    if (!isSubscription && !termsAccepted) return
+
     setIsLoading(true)
 
     // Simulate payment processing
@@ -221,6 +227,7 @@ export default function PaymentPage() {
         ...bookingData.customer,
         appliedPromoCode: appliedPromo,
         promoDiscount: promoDiscount,
+        termsAccepted,
       },
     }
 
@@ -411,11 +418,57 @@ export default function PaymentPage() {
                 </CardContent>
               </Card>
 
+              {/* Terms and Conditions section for one-time jobs */}
+              {!isSubscription && (
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start space-x-3 p-4 bg-muted/50 rounded-lg">
+                      <Checkbox
+                        id="terms"
+                        checked={termsAccepted}
+                        onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          I agree to the{" "}
+                          <a
+                            href="/terms"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#FFCB00] hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Terms & Conditions
+                          </a>{" "}
+                          and{" "}
+                          <a
+                            href="/privacy"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#FFCB00] hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Privacy Policy
+                          </a>
+                        </label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          By checking this box, you acknowledge that you have read and agree to our terms of service.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Submit Button - Mobile */}
               <div className="lg:hidden">
                 <Button
                   onClick={handleSubmitPayment}
-                  disabled={isLoading}
+                  disabled={isLoading || (!isSubscription && !termsAccepted)}
                   className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                   size="lg"
                 >
@@ -516,7 +569,7 @@ export default function PaymentPage() {
                   <div className="hidden lg:block pt-2">
                     <Button
                       onClick={handleSubmitPayment}
-                      disabled={isLoading}
+                      disabled={isLoading || (!isSubscription && !termsAccepted)}
                       className="w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
                       size="lg"
                     >
