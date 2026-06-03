@@ -388,17 +388,21 @@ export default function CustomerPage() {
       return []
     }
 
-    return estimateData.services.selectedServices
-      .map((serviceId: string) => {
+    const counts: Record<string, number> = {}
+    for (const id of estimateData.services.selectedServices as string[]) {
+      counts[id] = (counts[id] || 0) + 1
+    }
+
+    return Object.entries(counts)
+      .map(([serviceId, quantity]) => {
         const service = availableServices.find((s) => s.id === serviceId)
         if (!service) return null
-
-        let price = service.basePrice
 
         return {
           id: service.id,
           name: service.name,
-          price: price,
+          price: service.basePrice * quantity,
+          quantity,
         }
       })
       .filter(Boolean)
@@ -755,7 +759,9 @@ export default function CustomerPage() {
                         return servicesWithDetails.length > 0 ? (
                           servicesWithDetails.map((service: any, index: number) => (
                             <div key={index} className="flex justify-between text-sm gap-2">
-                              <span className="text-muted-foreground break-words flex-1">{service.name}</span>
+                              <span className="text-muted-foreground break-words flex-1">
+                                {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
+                              </span>
                               <span className="font-medium flex-shrink-0">
                                 {typeof service.price === "string" ? service.price : formatServicePrice(service.id, service.price)}
                               </span>

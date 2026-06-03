@@ -126,15 +126,21 @@ export default function PaymentPage() {
       return []
     }
 
-    return bookingData.services.selectedServices
-      .map((serviceId: string) => {
+    const counts: Record<string, number> = {}
+    for (const id of bookingData.services.selectedServices as string[]) {
+      counts[id] = (counts[id] || 0) + 1
+    }
+
+    return Object.entries(counts)
+      .map(([serviceId, quantity]) => {
         const service = availableServices.find((s) => s.id === serviceId)
         if (!service) return null
 
         return {
           id: service.id,
           name: service.name,
-          price: service.basePrice,
+          price: service.basePrice * quantity,
+          quantity,
         }
       })
       .filter(Boolean)
@@ -514,7 +520,9 @@ export default function PaymentPage() {
                     <div className="space-y-2 pl-6">
                       {getSelectedServicesWithDetails().map((service: any) => (
                         <div key={service.id} className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">{service.name}</span>
+                          <span className="text-muted-foreground">
+                            {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
+                          </span>
                           <span className="font-medium">{formatServicePrice(service.id, service.price)}</span>
                         </div>
                       ))}
