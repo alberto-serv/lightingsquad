@@ -836,7 +836,7 @@ export default function CustomerPage() {
             <Button
               onClick={handleNext}
               disabled={!isFormComplete}
-              className="gap-2 bg-[#FFCB00] hover:bg-[#1e5a8a]"
+              className="gap-2 bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black"
               size="lg"
             >
               Confirm Booking
