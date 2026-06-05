@@ -837,7 +837,7 @@ export default function ServicesPage() {
                   onClick={handleCheckout}
                   className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Checkout · ${formatPrice(total)}
+                  Book now · ${formatPrice(total)}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>

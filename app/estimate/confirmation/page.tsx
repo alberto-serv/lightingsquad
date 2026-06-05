@@ -418,7 +418,7 @@ export default function ConfirmationPage() {
                       </div>
 
                       <p className="text-xs text-muted-foreground">
-                        We&apos;ll confirm exact pricing on-site. Nothing was charged today.
+                        We&apos;ll confirm exact pricing on-site.
                       </p>
                     </>
                   )
