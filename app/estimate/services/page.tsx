@@ -302,8 +302,8 @@ const catalog: Service2[] = [
 ]
 
 const sections: { type: ServiceType; icon: React.ElementType; title: string; subtitle: string }[] = [
-  { type: "installation", icon: Hammer, title: "Installation", subtitle: "TVs, audio, security & more" },
   { type: "lighting", icon: Zap, title: "Lighting", subtitle: "LED, fixtures, outdoor & maintenance" },
+  { type: "installation", icon: Hammer, title: "Installation", subtitle: "TVs, audio, security & more" },
 ]
 
 const LADDER_FEE = 400
