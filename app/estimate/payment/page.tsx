@@ -294,7 +294,8 @@ export default function PaymentPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Membership + Payment Form */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Membership Option */}
+              {/* Membership Option — hidden */}
+              {false && (
               <Card className={`overflow-hidden transition-all duration-200 ${isSubscription ? "ring-2 ring-[#FFCB00]" : ""}`}>
                 <CardContent className="p-0">
                   <div
@@ -346,6 +347,7 @@ export default function PaymentPage() {
                   </div>
                 </CardContent>
               </Card>
+              )}
 
               {/* Payment Information Card — shown only when there's a charge today */}
               {payToday > 0 ? (

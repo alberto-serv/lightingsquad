@@ -329,7 +329,7 @@ export default function CustomerPage() {
       localStorage.setItem("estimateData", JSON.stringify(updatedData))
 
       localStorage.setItem("bookingConfirmation", JSON.stringify(updatedData))
-      router.push("/estimate/payment")
+      router.push("/estimate/confirmation")
     }
   }
 
@@ -882,7 +882,7 @@ export default function CustomerPage() {
               className="gap-2 bg-[#FFCB00] hover:bg-[#1e5a8a]"
               size="lg"
             >
-              Continue to Payment
+              Confirm Booking
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
