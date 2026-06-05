@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { formatServicePrice, splitByPayment, ladderAppliesToPayable } from "@/lib/estimate-pricing"
+import { formatServicePrice } from "@/lib/estimate-pricing"
 import {
   CheckCircle,
   User,
@@ -365,72 +365,41 @@ export default function ConfirmationPage() {
                 <Separator />
 
                 {(() => {
-                  const { payable, estimate } = splitByPayment(getSelectedServicesWithDetails())
+                  const services = getSelectedServicesWithDetails() as any[]
                   const ladderIds = bookingData?.services?.ladderFeeServices || []
-                  const ladderPaid = ladderAppliesToPayable(ladderIds) ? 400 : 0
-                  const ladderEstimate = ladderIds.length > 0 && !ladderAppliesToPayable(ladderIds)
-                  const isSub = bookingData?.services?.isSubscription
-                  const subDiscount = bookingData?.payment?.subscriptionDiscount || 0
-                  const membershipFee = bookingData?.payment?.membershipFee || 0
-                  const promo = bookingData?.customer?.promoDiscount || 0
-                  const paidToday = bookingData?.payment?.total ?? 0
+                  const ladderFee = ladderIds.length > 0 ? 400 : 0
+                  const totalEstimate =
+                    services.reduce((sum: number, s: any) => sum + s.price, 0) + ladderFee
 
                   return (
                     <>
-                      {/* Paid today */}
+                      {/* Selected Services */}
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2 text-sm font-medium">
                           <CheckCircle className="h-4 w-4 text-[#FFCB00]" />
-                          <span>Paid today</span>
+                          <span>Selected Services</span>
                         </div>
                         <div className="space-y-2 pl-6">
-                          {payable.length > 0 ? (
-                            payable.map((service: any, index: number) => (
+                          {services.length > 0 ? (
+                            services.map((service: any, index: number) => (
                               <div key={index} className="flex justify-between text-sm gap-2">
                                 <span className="text-muted-foreground break-words flex-1">
                                   {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
                                 </span>
-                                <span className="font-medium flex-shrink-0">${service.price.toLocaleString("en-US")}</span>
+                                <span className="font-medium flex-shrink-0">
+                                  {formatServicePrice(service.id, service.price)}
+                                </span>
                               </div>
                             ))
                           ) : (
-                            <p className="text-sm text-muted-foreground">No set-price services</p>
+                            <p className="text-sm text-muted-foreground">No services selected</p>
                           )}
 
-                          {ladderPaid > 0 && (
+                          {/* Large ladder fee is a set price, not a "from" estimate */}
+                          {ladderFee > 0 && (
                             <div className="flex justify-between text-sm gap-2">
                               <span className="text-muted-foreground break-words flex-1">Large ladder fee</span>
                               <span className="font-medium flex-shrink-0">$400</span>
-                            </div>
-                          )}
-
-                          {isSub && (
-                            <>
-                              <div className="flex justify-between text-sm gap-2">
-                                <span className="text-muted-foreground break-words flex-1">Membership (first month)</span>
-                                <span className="font-medium flex-shrink-0">
-                                  ${membershipFee.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                                </span>
-                              </div>
-                              {subDiscount > 0 && (
-                                <div className="flex justify-between text-sm gap-2">
-                                  <span className="text-green-600 break-words flex-1">Member discount (15%)</span>
-                                  <span className="font-medium text-green-600 flex-shrink-0">
-                                    -${subDiscount.toLocaleString("en-US")}
-                                  </span>
-                                </div>
-                              )}
-                            </>
-                          )}
-
-                          {promo > 0 && (
-                            <div className="flex justify-between text-sm gap-2">
-                              <span className="text-green-600 break-words flex-1">
-                                Promo Code ({bookingData.customer.appliedPromoCode})
-                              </span>
-                              <span className="font-medium text-green-600 flex-shrink-0">
-                                -${promo.toLocaleString("en-US")}
-                              </span>
                             </div>
                           )}
                         </div>
@@ -441,42 +410,16 @@ export default function ConfirmationPage() {
                       <div className="flex items-center justify-between font-semibold">
                         <div className="flex items-center space-x-2">
                           <DollarSign className="h-4 w-4 text-[#FFCB00]" />
-                          <span className="text-sm">Paid today</span>
+                          <span className="text-sm">Total Estimate</span>
                         </div>
                         <span className="text-base">
-                          ${paidToday.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          ${totalEstimate.toLocaleString("en-US")}
                         </span>
                       </div>
 
-                      {(estimate.length > 0 || ladderEstimate) && (
-                        <>
-                          <Separator />
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2 text-sm font-medium">
-                              <span>Estimated — confirmed on-site</span>
-                            </div>
-                            <div className="space-y-2 pl-6">
-                              {estimate.map((service: any, index: number) => (
-                                <div key={index} className="flex justify-between text-sm gap-2">
-                                  <span className="text-muted-foreground break-words flex-1">
-                                    {service.name}{service.quantity > 1 ? ` × ${service.quantity}` : ""}
-                                  </span>
-                                  <span className="font-medium flex-shrink-0">{formatServicePrice(service.id, service.price)}</span>
-                                </div>
-                              ))}
-                              {ladderEstimate && (
-                                <div className="flex justify-between text-sm gap-2">
-                                  <span className="text-muted-foreground break-words flex-1">Large ladder fee</span>
-                                  <span className="font-medium flex-shrink-0">from $400</span>
-                                </div>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground pl-6">
-                              We&apos;ll confirm exact pricing on-site. These were not charged today.
-                            </p>
-                          </div>
-                        </>
-                      )}
+                      <p className="text-xs text-muted-foreground">
+                        We&apos;ll confirm exact pricing on-site. Nothing was charged today.
+                      </p>
                     </>
                   )
                 })()}
