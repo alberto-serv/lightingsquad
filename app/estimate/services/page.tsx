@@ -10,14 +10,10 @@ import {
   Zap,
   Hammer,
   ArrowRight,
-  ShoppingCart,
   Search,
   Plus,
   Minus,
   Check,
-  ChevronUp,
-  ChevronDown,
-  X,
   Trash2,
   MessageSquare,
   Send,
@@ -82,6 +78,8 @@ interface Service2 {
   type: ServiceType
   benefits: string[]
   hasLadderFee?: boolean
+  /** Shows a "I need a wall mount" checkbox (no price impact — captured as a note). */
+  mountOption?: boolean
   pricing: Pricing
   /** Shown under the price when extra work might apply. */
   reviewNote?: string
@@ -131,7 +129,7 @@ const catalog: Service2[] = [
       unitLabel: "fixtures",
       min: 1,
       max: 40,
-      default: 4,
+      default: 1,
     },
   },
   {
@@ -212,7 +210,8 @@ const catalog: Service2[] = [
     description: "Professional wall mounting with clean cable management.",
     image: "/services/tv-mounting.webp",
     type: "installation",
-    benefits: ["Cable concealment", "Level & secure mount"],
+    benefits: ["Cable concealment", "Wall mount not included"],
+    mountOption: true,
     pricing: {
       kind: "variant",
       groupLabel: "TV Size",
@@ -222,7 +221,7 @@ const catalog: Service2[] = [
         { id: "tv-76", label: '76" and larger', canonicalId: "tv-xl", price: 400 },
       ],
     },
-    reviewNote: "Existing power outlet behind the TV assumed.",
+    reviewNote: "Wall mount/bracket not included. Existing outlet behind the TV assumed.",
   },
   {
     id: "ceiling-fan",
@@ -272,7 +271,6 @@ const catalog: Service2[] = [
         },
       ],
     },
-    reviewNote: "6+ cameras priced as a custom quote.",
   },
   {
     id: "audio-system",
@@ -328,6 +326,7 @@ interface CartConfig {
   attributes: Record<string, string>
   quantity?: number
   ladderFee: boolean
+  needsMount?: boolean
 }
 
 function formatPrice(amount: number): string {
@@ -356,6 +355,7 @@ function defaultConfig(service: Service2): CartConfig {
         ? p.variants[0].perUnit?.default
         : undefined,
     ladderFee: false,
+    needsMount: false,
   }
 }
 
@@ -419,7 +419,6 @@ export default function ServicesPage() {
   const [cart, setCart] = useState<Record<string, CartConfig>>({})
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState("")
-  const [cartOpen, setCartOpen] = useState(false)
   const [requestMessage, setRequestMessage] = useState("")
   const [requestSent, setRequestSent] = useState(false)
 
@@ -566,6 +565,12 @@ export default function ServicesPage() {
   const handleCardClick = (service: Service2) => {
     if (isInCart(service.id)) {
       removeFromCart(service.id)
+      // Collapse back to the original card state on deselect.
+      setExpanded((prev) => {
+        const next = new Set(prev)
+        next.delete(service.id)
+        return next
+      })
       return
     }
     const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
@@ -735,6 +740,24 @@ export default function ServicesPage() {
             </div>
           )}
 
+          {/* Wall-mount option — no price impact, captured as a note */}
+          {service.mountOption && (inCart || showConfig) && (
+            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!cfg.needsMount}
+                  onChange={(e) => updateConfig(service, { needsMount: e.target.checked })}
+                  className="w-4 h-4 accent-[#FFCB00] cursor-pointer flex-shrink-0"
+                />
+                <span className="text-xs font-semibold text-gray-800">I need a wall mount</span>
+              </label>
+              <p className="mt-1 pl-[26px] text-[11px] text-gray-500 leading-tight">
+                The mount/bracket isn&apos;t included — check this and we&apos;ll bring one to fit your TV.
+              </p>
+            </div>
+          )}
+
           {/* Price + action pinned to the bottom */}
           <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-baseline justify-between">
@@ -805,7 +828,7 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="pt-24 pb-16">
+      <div className="pt-24 pb-24">
         {/* Hero */}
         <div className="bg-white border-b">
           <div className="container mx-auto px-4 py-8">
@@ -817,83 +840,6 @@ export default function ServicesPage() {
             </div>
           </div>
         </div>
-
-        {/* Sticky order bar — stays in view as you scroll, so the Book CTA is never lost */}
-        {itemCount > 0 && (
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b shadow-sm">
-            <div className="container mx-auto px-4">
-              <div className="max-w-5xl mx-auto">
-                {/* Summary row */}
-                <div className="flex items-center justify-between gap-4 py-3">
-                  <button onClick={() => setCartOpen((o) => !o)} className="flex items-center gap-3 group">
-                    <div className="relative">
-                      <ShoppingCart className="w-6 h-6 text-gray-700" />
-                      <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#FFCB00] text-black text-xs font-bold flex items-center justify-center">
-                        {itemCount}
-                      </span>
-                    </div>
-                    <div className="text-left">
-                      <div className="flex items-center gap-1 text-sm font-semibold text-gray-900">
-                        {itemCount} service{itemCount > 1 ? "s" : ""} selected
-                        {cartOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </div>
-                      <div className="text-xs text-gray-500">Total ${formatPrice(total)}</div>
-                    </div>
-                  </button>
-
-                  <Button
-                    onClick={handleCheckout}
-                    className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-6 sm:px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    Book now · ${formatPrice(total)}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-
-                {/* Expandable line items (drops down) */}
-                {cartOpen && (
-                  <div className="py-4 border-t max-h-[45vh] overflow-y-auto">
-                    <div className="space-y-2.5">
-                      {cartEntries.map(({ service, cfg }) => {
-                        const variant = selectedVariant(service, cfg)
-                        const detail =
-                          service.pricing.kind === "quantity"
-                            ? `${cfg.quantity ?? service.pricing.default} ${service.pricing.unitLabel}`
-                            : variant?.perUnit
-                            ? `${variant.label} · ${variantQuantity(variant, cfg)} ${variant.perUnit.unitLabel}`
-                            : variant?.label
-                        return (
-                          <div key={service.id} className="flex items-center justify-between gap-3 text-sm">
-                            <div className="min-w-0">
-                              <span className="font-medium text-gray-900">{service.name}</span>
-                              {detail && <span className="text-gray-400"> · {detail}</span>}
-                            </div>
-                            <div className="flex items-center gap-3 flex-shrink-0">
-                              <span className="font-semibold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
-                              <button
-                                onClick={() => removeFromCart(service.id)}
-                                className="text-gray-400 hover:text-gray-700"
-                                aria-label={`Remove ${service.name}`}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      })}
-                      {anyLadder && (
-                        <div className="flex items-center justify-between text-sm pt-1 border-t border-gray-100">
-                          <span className="text-gray-500">Large ladder fee</span>
-                          <span className="font-semibold text-gray-900">${formatPrice(LADDER_FEE)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Search */}
         <div className="container mx-auto px-4 pt-6 pb-2">
@@ -980,6 +926,19 @@ export default function ServicesPage() {
           </div>
         </div>
       </div>
+
+      {/* Floating Book button — a single button, bottom-centered, never a full bar */}
+      {itemCount > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+          <Button
+            onClick={handleCheckout}
+            className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-base"
+          >
+            Book now · ${formatPrice(total)}
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      )}
 
       <Footer />
     </div>
