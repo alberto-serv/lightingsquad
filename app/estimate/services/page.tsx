@@ -828,7 +828,7 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="pt-24 pb-24">
+      <div className="pt-24 pb-16">
         {/* Hero */}
         <div className="bg-white border-b">
           <div className="container mx-auto px-4 py-8">
@@ -888,6 +888,65 @@ export default function ServicesPage() {
               </div>
             )}
 
+            {/* Book section — order summary + checkout, at the bottom of the page */}
+            {itemCount > 0 && (
+              <div className="border-t border-gray-200 pt-10">
+                <div className="max-w-xl mx-auto rounded-2xl border bg-white p-5 sm:p-6 shadow-sm">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Your order · {itemCount} service{itemCount > 1 ? "s" : ""}
+                  </h2>
+                  <div className="space-y-2.5">
+                    {cartEntries.map(({ service, cfg }) => {
+                      const variant = selectedVariant(service, cfg)
+                      const detail =
+                        service.pricing.kind === "quantity"
+                          ? `${cfg.quantity ?? service.pricing.default} ${service.pricing.unitLabel}`
+                          : variant?.perUnit
+                          ? `${variant.label} · ${variantQuantity(variant, cfg)} ${variant.perUnit.unitLabel}`
+                          : variant?.label
+                      return (
+                        <div key={service.id} className="flex items-center justify-between gap-3 text-sm">
+                          <div className="min-w-0">
+                            <span className="font-medium text-gray-900">{service.name}</span>
+                            {detail && <span className="text-gray-400"> · {detail}</span>}
+                          </div>
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            <span className="font-semibold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
+                            <button
+                              onClick={() => removeFromCart(service.id)}
+                              className="text-gray-400 hover:text-red-600 transition-colors"
+                              aria-label={`Remove ${service.name}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                    {anyLadder && (
+                      <div className="flex items-center justify-between text-sm pt-2 border-t border-gray-100">
+                        <span className="text-gray-500">Large ladder fee</span>
+                        <span className="font-semibold text-gray-900">${formatPrice(LADDER_FEE)}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-gray-200 mt-4 pt-4">
+                    <span className="text-base font-semibold text-gray-900">Total</span>
+                    <span className="text-xl font-bold text-gray-900">${formatPrice(total)}</span>
+                  </div>
+
+                  <Button
+                    onClick={handleCheckout}
+                    className="mt-4 w-full bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-12 rounded-full text-base shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    Book now · ${formatPrice(total)}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {/* Request a service — simplified */}
             <div className="border-t border-gray-200 pt-10">
               <div className="max-w-xl mx-auto rounded-2xl border bg-white p-5 sm:p-6 shadow-sm">
@@ -926,19 +985,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </div>
-
-      {/* Floating Book button — a single button, bottom-centered, never a full bar */}
-      {itemCount > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-          <Button
-            onClick={handleCheckout}
-            className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-base"
-          >
-            Book now · ${formatPrice(total)}
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-      )}
 
       <Footer />
     </div>
