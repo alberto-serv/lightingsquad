@@ -19,6 +19,8 @@ import {
   ChevronDown,
   X,
   Trash2,
+  MessageSquare,
+  Send,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -39,7 +41,10 @@ interface Variant {
   id: string
   label: string
   canonicalId: string
+  /** Flat variant price, or the per-unit price when `perUnit` is set. */
   price: number
+  /** When set, this variant is priced per unit and shows a quantity stepper. */
+  perUnit?: { unitLabel: string; min: number; max: number; default: number }
 }
 
 interface AttributeOption {
@@ -64,6 +69,8 @@ type Pricing =
       min: number
       max: number
       default: number
+      /** Non-pricing notes captured for the technician (e.g. indoor vs outdoor). */
+      attributes?: AttributeGroup[]
     }
   | { kind: "variant"; groupLabel: string; variants: Variant[]; attributes?: AttributeGroup[] }
 
@@ -168,7 +175,7 @@ const catalog: Service2[] = [
     description: "Hexagonal LED garage lighting system.",
     image: "/services/garage-hex.webp",
     type: "lighting",
-    benefits: ["Modular layout", "Energy efficient"],
+    benefits: ["Lights included", "Modular layout", "Energy efficient"],
     pricing: {
       kind: "variant",
       groupLabel: "Garage size",
@@ -212,7 +219,7 @@ const catalog: Service2[] = [
       variants: [
         { id: "tv-55", label: 'Up to 55"', canonicalId: "tv-small", price: 200 },
         { id: "tv-75", label: '56" – 75"', canonicalId: "tv-large", price: 350 },
-        { id: "tv-76", label: '76" and larger', canonicalId: "tv-large", price: 350 },
+        { id: "tv-76", label: '76" and larger', canonicalId: "tv-xl", price: 400 },
       ],
     },
     reviewNote: "Existing power outlet behind the TV assumed.",
@@ -235,7 +242,7 @@ const catalog: Service2[] = [
     type: "installation",
     benefits: ["Existing wiring", "App + chime setup", "Same-day available"],
     pricing: { kind: "fixed", canonicalId: "doorbell", price: 150 },
-    reviewNote: "New wiring may require a technician review.",
+    reviewNote: "Ring hardware sold separately (≈ $99). New wiring may need a tech review.",
   },
   {
     id: "security-cameras",
@@ -243,19 +250,20 @@ const catalog: Service2[] = [
     description: "Camera installation, mounting, and app setup.",
     image: "/services/security-cameras.webp",
     type: "installation",
-    benefits: ["App + recording setup", "Cable management"],
+    benefits: ["$175 per camera", "App + recording setup", "Cable management"],
     hasLadderFee: true,
     pricing: {
-      kind: "variant",
-      groupLabel: "How many cameras?",
-      variants: [
-        { id: "cam-single", label: "1 camera", canonicalId: "single-camera", price: 175 },
-        { id: "cam-multi", label: "3 – 5 cameras", canonicalId: "multi-camera", price: 475 },
-      ],
+      kind: "quantity",
+      canonicalId: "single-camera",
+      unitPrice: 175,
+      unitLabel: "cameras",
+      min: 1,
+      max: 6,
+      default: 1,
       attributes: [
         {
           id: "placement",
-          label: "Indoor or Outdoor?",
+          label: "Indoor or outdoor? (no price impact)",
           options: [
             { id: "indoor", label: "Indoor" },
             { id: "outdoor", label: "Outdoor" },
@@ -264,6 +272,7 @@ const catalog: Service2[] = [
         },
       ],
     },
+    reviewNote: "6+ cameras priced as a custom quote.",
   },
   {
     id: "audio-system",
@@ -288,13 +297,19 @@ const catalog: Service2[] = [
     description: "Professional picture and art installation.",
     image: "/services/picture-hanging.webp",
     type: "installation",
-    benefits: ["Precise leveling", "Wall-safe anchors", "Cleanup included"],
+    benefits: ["$45 per item", "Precise leveling", "Cleanup included"],
     hasLadderFee: true,
     pricing: {
       kind: "variant",
-      groupLabel: "How much?",
+      groupLabel: "What are you hanging?",
       variants: [
-        { id: "pic-standard", label: "1 – 3 items", canonicalId: "picture-hanging-standard", price: 125 },
+        {
+          id: "pic-item",
+          label: "By the item",
+          canonicalId: "picture-hanging-item",
+          price: 45,
+          perUnit: { unitLabel: "items", min: 1, max: 20, default: 3 },
+        },
         { id: "pic-gallery", label: "Gallery wall", canonicalId: "picture-hanging-gallery", price: 237 },
       ],
     },
@@ -319,6 +334,11 @@ function formatPrice(amount: number): string {
   return amount.toLocaleString("en-US")
 }
 
+/** Rough singular of a unit label for per-unit price copy ("fixtures" → "fixture"). */
+function singular(label: string): string {
+  return label.endsWith("s") ? label.slice(0, -1) : label
+}
+
 function defaultConfig(service: Service2): CartConfig {
   const p = service.pricing
   return {
@@ -326,8 +346,15 @@ function defaultConfig(service: Service2): CartConfig {
     attributes:
       p.kind === "variant" && p.attributes
         ? Object.fromEntries(p.attributes.map((g) => [g.id, g.options[0].id]))
+        : p.kind === "quantity" && p.attributes
+        ? Object.fromEntries(p.attributes.map((g) => [g.id, g.options[0].id]))
         : {},
-    quantity: p.kind === "quantity" ? p.default : undefined,
+    quantity:
+      p.kind === "quantity"
+        ? p.default
+        : p.kind === "variant"
+        ? p.variants[0].perUnit?.default
+        : undefined,
     ladderFee: false,
   }
 }
@@ -337,12 +364,21 @@ function selectedVariant(service: Service2, cfg: CartConfig): Variant | undefine
   return service.pricing.variants.find((v) => v.id === cfg.variantId) ?? service.pricing.variants[0]
 }
 
+/** Quantity in effect for a per-unit variant (falls back to its default). */
+function variantQuantity(variant: Variant, cfg: CartConfig): number {
+  return cfg.quantity ?? variant.perUnit?.default ?? 1
+}
+
 /** Line price for a service excluding the shared ladder fee. */
 function linePrice(service: Service2, cfg: CartConfig): number {
   const p = service.pricing
   if (p.kind === "fixed") return p.price
   if (p.kind === "quantity") return p.unitPrice * (cfg.quantity ?? p.default)
-  if (p.kind === "variant") return selectedVariant(service, cfg)?.price ?? 0
+  if (p.kind === "variant") {
+    const v = selectedVariant(service, cfg)
+    if (!v) return 0
+    return v.perUnit ? v.price * variantQuantity(v, cfg) : v.price
+  }
   return 0
 }
 
@@ -351,7 +387,8 @@ function startingPrice(service: Service2): number {
   const p = service.pricing
   if (p.kind === "fixed") return p.price
   if (p.kind === "quantity") return p.unitPrice * p.default
-  if (p.kind === "variant") return Math.min(...p.variants.map((v) => v.price))
+  if (p.kind === "variant")
+    return Math.min(...p.variants.map((v) => (v.perUnit ? v.price * v.perUnit.min : v.price)))
   return 0
 }
 
@@ -362,7 +399,8 @@ function canonicalIdsFor(service: Service2, cfg: CartConfig): string[] {
   if (p.kind === "quantity") return Array(cfg.quantity ?? p.default).fill(p.canonicalId)
   if (p.kind === "variant") {
     const v = selectedVariant(service, cfg)
-    return v ? [v.canonicalId] : []
+    if (!v) return []
+    return v.perUnit ? Array(variantQuantity(v, cfg)).fill(v.canonicalId) : [v.canonicalId]
   }
   return []
 }
@@ -382,6 +420,8 @@ export default function ServicesPage() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState("")
   const [cartOpen, setCartOpen] = useState(false)
+  const [requestMessage, setRequestMessage] = useState("")
+  const [requestSent, setRequestSent] = useState(false)
 
   /* ----------------------------- persistence ---------------------------- */
   useEffect(() => {
@@ -512,9 +552,22 @@ export default function ServicesPage() {
     router.push("/estimate/customer")
   }
 
-  // Clicking anywhere on a card (outside the controls) runs its primary action.
+  const handleRequestSubmit = () => {
+    if (!requestMessage.trim()) return
+    const subject = encodeURIComponent("Service Request — The Lighting Squad")
+    const body = encodeURIComponent(requestMessage)
+    window.location.href = `mailto:hello@thelightingsquad.com?subject=${subject}&body=${body}`
+    setRequestSent(true)
+    setTimeout(() => setRequestSent(false), 4000)
+  }
+
+  // Clicking anywhere on a card (outside the controls) toggles it: a selected
+  // card is removed, an unselected one is added (or expanded to choose options).
   const handleCardClick = (service: Service2) => {
-    if (isInCart(service.id)) return
+    if (isInCart(service.id)) {
+      removeFromCart(service.id)
+      return
+    }
     const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
     if (configurable && !expanded.has(service.id)) toggleExpanded(service.id)
     else addToCart(service)
@@ -578,10 +631,30 @@ export default function ServicesPage() {
                     active={(cfg.variantId ?? service.pricing.variants[0].id) === v.id}
                     onClick={() => updateConfig(service, { variantId: v.id })}
                     label={v.label}
-                    trailing={`$${formatPrice(v.price)}`}
+                    trailing={v.perUnit ? `$${formatPrice(v.price)}/${singular(v.perUnit.unitLabel)}` : `$${formatPrice(v.price)}`}
                   />
                 ))}
               </ConfigGroup>
+              {(() => {
+                const v = selectedVariant(service, cfg)
+                if (!v?.perUnit) return null
+                return (
+                  <div>
+                    <p className="text-xs font-medium text-gray-700 mb-1.5">
+                      How many {v.perUnit.unitLabel}?
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <Stepper
+                        value={variantQuantity(v, cfg)}
+                        min={v.perUnit.min}
+                        max={v.perUnit.max}
+                        onChange={(q) => updateConfig(service, { quantity: q })}
+                      />
+                      <span className="text-xs text-gray-500">${formatPrice(v.price)} each</span>
+                    </div>
+                  </div>
+                )
+              })()}
               {service.pricing.attributes?.map((group) => {
                 const selectedOpt = group.options.find((o) => o.id === cfg.attributes[group.id])
                 return (
@@ -606,17 +679,39 @@ export default function ServicesPage() {
           )}
 
           {showConfig && service.pricing.kind === "quantity" && (
-            <div className="mt-3" onClick={(e) => e.stopPropagation()}>
-              <p className="text-xs font-medium text-gray-700 mb-1.5">How many {service.pricing.unitLabel}?</p>
-              <div className="flex items-center gap-3">
-                <Stepper
-                  value={cfg.quantity ?? service.pricing.default}
-                  min={service.pricing.min}
-                  max={service.pricing.max}
-                  onChange={(q) => updateConfig(service, { quantity: q })}
-                />
-                <span className="text-xs text-gray-500">${formatPrice(service.pricing.unitPrice)} each</span>
+            <div className="mt-3 space-y-3" onClick={(e) => e.stopPropagation()}>
+              <div>
+                <p className="text-xs font-medium text-gray-700 mb-1.5">How many {service.pricing.unitLabel}?</p>
+                <div className="flex items-center gap-3">
+                  <Stepper
+                    value={cfg.quantity ?? service.pricing.default}
+                    min={service.pricing.min}
+                    max={service.pricing.max}
+                    onChange={(q) => updateConfig(service, { quantity: q })}
+                  />
+                  <span className="text-xs text-gray-500">${formatPrice(service.pricing.unitPrice)} each</span>
+                </div>
               </div>
+              {service.pricing.attributes?.map((group) => {
+                const selectedOpt = group.options.find((o) => o.id === cfg.attributes[group.id])
+                return (
+                  <ConfigGroup key={group.id} label={group.label}>
+                    {group.options.map((o) => (
+                      <OptionPill
+                        key={o.id}
+                        active={cfg.attributes[group.id] === o.id}
+                        onClick={() =>
+                          updateConfig(service, { attributes: { ...cfg.attributes, [group.id]: o.id } })
+                        }
+                        label={o.label}
+                      />
+                    ))}
+                    {selectedOpt?.note && (
+                      <p className="w-full text-[11px] text-amber-600 mt-1">{selectedOpt.note}</p>
+                    )}
+                  </ConfigGroup>
+                )
+              })}
             </div>
           )}
 
@@ -644,12 +739,19 @@ export default function ServicesPage() {
           <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-baseline justify-between">
               <div className="w-full">
-                <span className="text-lg font-bold text-gray-900">
-                  {service.pricing.kind !== "fixed" && (
-                    <span className="text-xs font-medium text-gray-500">from </span>
-                  )}
-                  ${formatPrice(inCart ? linePrice(service, cfg) : startingPrice(service))}
-                </span>
+                {!inCart && service.pricing.kind === "quantity" ? (
+                  <span className="text-lg font-bold text-gray-900">
+                    ${formatPrice(service.pricing.unitPrice)}
+                    <span className="text-xs font-medium text-gray-500"> / {singular(service.pricing.unitLabel)}</span>
+                  </span>
+                ) : (
+                  <span className="text-lg font-bold text-gray-900">
+                    {!inCart && service.pricing.kind !== "fixed" && (
+                      <span className="text-xs font-medium text-gray-500">from </span>
+                    )}
+                    ${formatPrice(inCart ? linePrice(service, cfg) : startingPrice(service))}
+                  </span>
+                )}
                 {/* Reserve two lines so cards with and without a note match height */}
                 {!inCart && (
                   <p className="text-[11px] text-gray-400 mt-0.5 leading-tight line-clamp-2 min-h-[1.75rem]">
@@ -703,7 +805,7 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="pt-24 pb-40">
+      <div className="pt-24 pb-16">
         {/* Hero */}
         <div className="bg-white border-b">
           <div className="container mx-auto px-4 py-8">
@@ -715,6 +817,83 @@ export default function ServicesPage() {
             </div>
           </div>
         </div>
+
+        {/* Sticky order bar — stays in view as you scroll, so the Book CTA is never lost */}
+        {itemCount > 0 && (
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b shadow-sm">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto">
+                {/* Summary row */}
+                <div className="flex items-center justify-between gap-4 py-3">
+                  <button onClick={() => setCartOpen((o) => !o)} className="flex items-center gap-3 group">
+                    <div className="relative">
+                      <ShoppingCart className="w-6 h-6 text-gray-700" />
+                      <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#FFCB00] text-black text-xs font-bold flex items-center justify-center">
+                        {itemCount}
+                      </span>
+                    </div>
+                    <div className="text-left">
+                      <div className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+                        {itemCount} service{itemCount > 1 ? "s" : ""} selected
+                        {cartOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </div>
+                      <div className="text-xs text-gray-500">Total ${formatPrice(total)}</div>
+                    </div>
+                  </button>
+
+                  <Button
+                    onClick={handleCheckout}
+                    className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-6 sm:px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    Book now · ${formatPrice(total)}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+
+                {/* Expandable line items (drops down) */}
+                {cartOpen && (
+                  <div className="py-4 border-t max-h-[45vh] overflow-y-auto">
+                    <div className="space-y-2.5">
+                      {cartEntries.map(({ service, cfg }) => {
+                        const variant = selectedVariant(service, cfg)
+                        const detail =
+                          service.pricing.kind === "quantity"
+                            ? `${cfg.quantity ?? service.pricing.default} ${service.pricing.unitLabel}`
+                            : variant?.perUnit
+                            ? `${variant.label} · ${variantQuantity(variant, cfg)} ${variant.perUnit.unitLabel}`
+                            : variant?.label
+                        return (
+                          <div key={service.id} className="flex items-center justify-between gap-3 text-sm">
+                            <div className="min-w-0">
+                              <span className="font-medium text-gray-900">{service.name}</span>
+                              {detail && <span className="text-gray-400"> · {detail}</span>}
+                            </div>
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                              <span className="font-semibold text-gray-900">${formatPrice(linePrice(service, cfg))}</span>
+                              <button
+                                onClick={() => removeFromCart(service.id)}
+                                className="text-gray-400 hover:text-gray-700"
+                                aria-label={`Remove ${service.name}`}
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {anyLadder && (
+                        <div className="flex items-center justify-between text-sm pt-1 border-t border-gray-100">
+                          <span className="text-gray-500">Large ladder fee</span>
+                          <span className="font-semibold text-gray-900">${formatPrice(LADDER_FEE)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Search */}
         <div className="container mx-auto px-4 pt-6 pb-2">
@@ -762,89 +941,45 @@ export default function ServicesPage() {
                 <p className="text-sm mt-1">Try a different search term.</p>
               </div>
             )}
-          </div>
-        </div>
-      </div>
 
-      {/* Running cart summary */}
-      {itemCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-2xl">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              {/* Expandable line items */}
-              {cartOpen && (
-                <div className="py-4 border-b max-h-[45vh] overflow-y-auto">
-                  <div className="space-y-2.5">
-                    {cartEntries.map(({ service, cfg }) => {
-                      const variant = selectedVariant(service, cfg)
-                      const detail =
-                        service.pricing.kind === "quantity"
-                          ? `${cfg.quantity ?? service.pricing.default} ${service.pricing.unitLabel}`
-                          : variant?.label
-                      return (
-                        <div key={service.id} className="flex items-center justify-between gap-3 text-sm">
-                          <div className="min-w-0">
-                            <span className="font-medium text-gray-900">{service.name}</span>
-                            {detail && <span className="text-gray-400"> · {detail}</span>}
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="font-semibold text-gray-900">
-                              {service.pricing.kind !== "fixed" && (
-                                <span className="text-xs font-normal text-gray-400">from </span>
-                              )}
-                              ${formatPrice(linePrice(service, cfg))}
-                            </span>
-                            <button
-                              onClick={() => removeFromCart(service.id)}
-                              className="text-gray-400 hover:text-gray-700"
-                              aria-label={`Remove ${service.name}`}
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })}
-                    {anyLadder && (
-                      <div className="flex items-center justify-between text-sm pt-1 border-t border-gray-100">
-                        <span className="text-gray-500">Large ladder fee</span>
-                        <span className="font-semibold text-gray-900">${formatPrice(LADDER_FEE)}</span>
-                      </div>
-                    )}
-                  </div>
+            {/* Request a service — simplified */}
+            <div className="border-t border-gray-200 pt-10">
+              <div className="max-w-xl mx-auto rounded-2xl border bg-white p-5 sm:p-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-1">
+                  <MessageSquare className="w-5 h-5 text-[#FFCB00]" />
+                  <h2 className="text-base font-semibold text-gray-900">Don&apos;t see what you need?</h2>
                 </div>
-              )}
-
-              {/* Summary bar */}
-              <div className="flex items-center justify-between gap-4 py-4">
-                <button onClick={() => setCartOpen((o) => !o)} className="flex items-center gap-3 group">
-                  <div className="relative">
-                    <ShoppingCart className="w-6 h-6 text-gray-700" />
-                    <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#FFCB00] text-black text-xs font-bold flex items-center justify-center">
-                      {itemCount}
-                    </span>
-                  </div>
-                  <div className="text-left">
-                    <div className="flex items-center gap-1 text-sm font-semibold text-gray-900">
-                      {itemCount} service{itemCount > 1 ? "s" : ""} selected
-                      {cartOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-                    </div>
-                    <div className="text-xs text-gray-500">Total ${formatPrice(total)}</div>
-                  </div>
-                </button>
-
-                <Button
-                  onClick={handleCheckout}
-                  className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Book now · ${formatPrice(total)}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                <p className="text-sm text-gray-500 mb-3">
+                  Tell us what you&apos;re looking for and we&apos;ll get back to you.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    placeholder="Describe the service you need…"
+                    value={requestMessage}
+                    onChange={(e) => setRequestMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleRequestSubmit()}
+                    className="h-11 rounded-lg border-gray-200 bg-white"
+                  />
+                  <Button
+                    onClick={handleRequestSubmit}
+                    disabled={!requestMessage.trim()}
+                    className="h-11 shrink-0 rounded-lg bg-gray-900 hover:bg-gray-800 text-white px-5"
+                  >
+                    {requestSent ? (
+                      "Opening email…"
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send request
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       <Footer />
     </div>
