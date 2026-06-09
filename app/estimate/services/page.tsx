@@ -891,14 +891,14 @@ export default function ServicesPage() {
             {/* Book section — count + total + checkout.
                 In-flow card on desktop; pinned to the bottom of the screen on mobile. */}
             {itemCount > 0 && (
-              <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:border-t max-sm:border-gray-200 max-sm:bg-white max-sm:shadow-2xl">
-                <div className="max-w-xl mx-auto rounded-2xl border bg-white p-5 sm:p-6 shadow-sm max-sm:max-w-none max-sm:rounded-none max-sm:border-0 max-sm:shadow-none max-sm:p-3">
+              <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
+                <div className="rounded-2xl border bg-white p-5 sm:p-6 shadow-sm max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <div className="text-base font-semibold text-gray-900">
+                      <div className="text-base font-semibold text-gray-900 max-sm:text-white">
                         {itemCount} service{itemCount > 1 ? "s" : ""}
                       </div>
-                      <div className="text-sm text-gray-500">Total ${formatPrice(total)}</div>
+                      <div className="text-sm text-gray-500 max-sm:text-gray-300">Total ${formatPrice(total)}</div>
                     </div>
                     <Button
                       onClick={handleCheckout}
