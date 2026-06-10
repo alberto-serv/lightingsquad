@@ -892,17 +892,17 @@ export default function ServicesPage() {
                 In-flow card on desktop; pinned to the bottom of the screen on mobile. */}
             {itemCount > 0 && (
               <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
-                <div className="rounded-2xl border bg-white p-5 sm:p-6 shadow-sm max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
+                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-5 sm:p-6 shadow-sm max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <div className="text-base font-semibold text-gray-900 max-sm:text-white">
+                      <div className="text-base font-semibold text-white">
                         {itemCount} service{itemCount > 1 ? "s" : ""}
                       </div>
-                      <div className="text-sm text-gray-500 max-sm:text-gray-300">Total ${formatPrice(total)}</div>
+                      <div className="text-sm text-gray-300">Total ${formatPrice(total)}</div>
                     </div>
                     <Button
                       onClick={handleCheckout}
-                      className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-12 px-6 rounded-full text-base shadow-md hover:shadow-lg transition-all duration-300"
+                      className="bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-12 px-12 max-sm:px-8 rounded-full text-base shadow-md hover:shadow-lg transition-all duration-300"
                     >
                       Book now · ${formatPrice(total)}
                       <ArrowRight className="w-4 h-4 ml-2" />
