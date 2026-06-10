@@ -2,7 +2,7 @@
  * Canonical service ids whose price is an estimate ("from $X"), not a fixed price.
  * These are the variable / configurable services (size, quantity, project scope),
  * so their displayed price is always a starting estimate — never a final set price.
- * Keep this in sync with the variant / quantity services in /estimate/services2.
+ * Keep this in sync with the variant / quantity services in /estimate/services.
  */
 export const ESTIMATE_PRICE_IDS = new Set<string>([
   "tv-small",
