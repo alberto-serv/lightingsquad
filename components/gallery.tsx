@@ -28,7 +28,7 @@ const galleryItems = [
   },
   {
     title: "Security Cameras",
-    description: "Ring doorbell and camera installations",
+    description: "Smart doorbell and camera installations",
     image: "/placeholder.svg?height=400&width=600",
   },
 ]

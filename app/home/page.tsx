@@ -152,7 +152,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-lg font-bold">Security & Smart Home</h3>
                 <p className="text-sm text-muted-foreground">
-                  Ring doorbell, cameras, smart switches, and dimmer installs
+                  Smart doorbell, cameras, smart switches, and dimmer installs
                 </p>
                 <p className="text-[#112337] font-bold">Starting at $75</p>
               </CardContent>
@@ -275,7 +275,7 @@ export default function HomePage() {
                       ))}
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Installed Ring doorbell and 4 security cameras. Everything works perfectly and the wiring is completely hidden. Great value for the price.
+                      Installed a smart doorbell and 4 security cameras. Everything works perfectly and the wiring is completely hidden. Great value for the price.
                     </p>
                   </CardContent>
                 </Card>

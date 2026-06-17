@@ -29,11 +29,11 @@ const upgradePackages = [
     id: "smart-home-bundle",
     title: "Smart Home Starter Bundle",
     description:
-      "Get started with a smart home setup: smart switches, dimmers, and a Ring doorbell professionally installed with clean wiring.",
+      "Get started with a smart home setup: smart switches, dimmers, and a smart doorbell professionally installed with clean wiring.",
     price: 375,
     benefits: [
       "3 smart switches/dimmers installed",
-      "Ring doorbell installation",
+      "Smart doorbell installation",
       "All wiring concealed",
       "App setup and configuration",
       "Professional installation included",

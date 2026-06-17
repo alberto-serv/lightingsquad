@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
-  Zap,
-  Hammer,
   ArrowRight,
   Search,
   Plus,
@@ -57,6 +55,7 @@ interface AttributeGroup {
 
 type Pricing =
   | { kind: "fixed"; canonicalId: string; price: number }
+  | { kind: "hourly"; canonicalId: string; hourlyRate: number }
   | {
       kind: "quantity"
       canonicalId: string
@@ -80,81 +79,31 @@ interface Service2 {
   hasLadderFee?: boolean
   /** Shows a "I need a wall mount" checkbox (no price impact — captured as a note). */
   mountOption?: boolean
+  /** Shows a "+$75 mount soundbar & connect subwoofer" checkbox (TV). */
+  soundbarOption?: boolean
+  /** Shows a numeric "estimated fixture height (ft)" input — captured as a note, no price impact. */
+  heightInput?: boolean
   pricing: Pricing
   /** Shown under the price when extra work might apply. */
   reviewNote?: string
 }
 
 const catalog: Service2[] = [
-  /* -------------------------------- Lighting ----------------------------- */
   {
     id: "light-fixture",
     name: "Light Fixture Install",
     description: "Install or replace any standard light fixture.",
     image: "/services/light-fixture.webp",
     type: "lighting",
-    benefits: ["Hardware check included", "Cleanup included"],
+    benefits: ["Removal of existing fixture included", "Hardware check included", "Cleanup included"],
     hasLadderFee: true,
     pricing: { kind: "fixed", canonicalId: "light-fixture", price: 150 },
-  },
-  {
-    id: "smart-switch",
-    name: "Smart Switch / Dimmer",
-    description: "Smart switch or dimmer install and app pairing.",
-    image: "/services/switches-outlets.webp",
-    type: "lighting",
-    benefits: ["App pairing included", "Per device"],
-    pricing: { kind: "fixed", canonicalId: "smart-switch", price: 125 },
-  },
-  {
-    id: "outlet-switch",
-    name: "Outlet / Dimmer Upgrade",
-    description: "Upgrade or replace an outlet or dimmer switch.",
-    image: "/services/switches-outlets.webp",
-    type: "lighting",
-    benefits: ["Per device", "Safety tested"],
-    pricing: { kind: "fixed", canonicalId: "outlet-switch", price: 100 },
-  },
-  {
-    id: "led-bulb",
-    name: "LED Bulb Upgrade",
-    description: "Swap existing bulbs to energy-efficient LEDs.",
-    image: "/services/led-bulb-upgrade.webp",
-    type: "lighting",
-    benefits: ["Energy efficient", "Per fixture pricing", "Bulbs not included"],
-    pricing: {
-      kind: "quantity",
-      canonicalId: "led-bulb-per-fixture",
-      unitPrice: 17,
-      unitLabel: "fixtures",
-      min: 1,
-      max: 40,
-      default: 1,
-    },
-  },
-  {
-    id: "fixture-cleaning",
-    name: "Fixture / Chandelier Cleaning",
-    description: "Professional deep cleaning of fixtures and chandeliers.",
-    image: "/services/fixture-cleaning.webp",
-    type: "lighting",
-    benefits: ["Detailed hand cleaning", "Bulb check included", "Cleanup included"],
-    hasLadderFee: true,
-    pricing: { kind: "fixed", canonicalId: "fixture-cleaning", price: 150 },
-  },
-  {
-    id: "exterior-bulb",
-    name: "Exterior Bulb Replacement",
-    description: "Hard-to-reach exterior bulb replacement.",
-    image: "/services/exterior-bulb.webp",
-    type: "lighting",
-    benefits: ["Tall-reach equipment", "Per visit", "Bulbs not included"],
-    pricing: { kind: "fixed", canonicalId: "exterior-bulb-replacement", price: 150 },
+    reviewNote: "Additional fee for extensive assembly or crystal chandeliers.",
   },
   {
     id: "outdoor-lighting",
     name: "Outdoor Lighting",
-    description: "Pathway, garden, and accent lighting design.",
+    description: "Pathway, garden, and accent lighting design. Commercial grade components.",
     image: "/services/outdoor-lighting.webp",
     type: "lighting",
     benefits: ["Custom layout", "Weatherproof fixtures"],
@@ -178,10 +127,49 @@ const catalog: Service2[] = [
       kind: "variant",
       groupLabel: "Garage size",
       variants: [
-        { id: "garage-1", label: "1-car garage", canonicalId: "garage-hex-1car", price: 700 },
+        { id: "garage-1", label: "1-car garage", canonicalId: "garage-hex-1car", price: 750 },
         { id: "garage-2", label: "2-car garage", canonicalId: "garage-hex-2car", price: 1150 },
       ],
     },
+  },
+  {
+    id: "ceiling-fan",
+    name: "Ceiling Fan Install",
+    description: "Install or replace a standard ceiling fan.",
+    image: "/services/ceiling-fan.webp",
+    type: "installation",
+    benefits: ["Balance & test", "Cleanup included"],
+    hasLadderFee: true,
+    pricing: { kind: "fixed", canonicalId: "ceiling-fan", price: 175 },
+  },
+  {
+    id: "tv-mounting",
+    name: "TV Mounting",
+    description: "Professional wall mounting with clean cable management.",
+    image: "/services/tv-mounting.webp",
+    type: "installation",
+    benefits: ["Cable concealment", "Wall mount not included"],
+    mountOption: true,
+    soundbarOption: true,
+    pricing: {
+      kind: "variant",
+      groupLabel: "TV Size",
+      variants: [
+        { id: "tv-74", label: '74" and smaller', canonicalId: "tv-small", price: 200 },
+        { id: "tv-75", label: '75" and larger', canonicalId: "tv-large", price: 275 },
+      ],
+    },
+    reviewNote: "Wall mount/bracket not included. Existing outlet behind the TV assumed.",
+  },
+  {
+    id: "fixture-cleaning",
+    name: "Fixture / Chandelier Cleaning",
+    description: "Professional deep cleaning of fixtures and chandeliers.",
+    image: "/services/fixture-cleaning.webp",
+    type: "lighting",
+    benefits: ["Detailed hand cleaning", "Bulb check included", "Cleanup included"],
+    hasLadderFee: true,
+    pricing: { kind: "hourly", canonicalId: "fixture-cleaning", hourlyRate: 150 },
   },
   {
     id: "permanent-led",
@@ -202,46 +190,44 @@ const catalog: Service2[] = [
       ],
     },
   },
-
-  /* ------------------------------ Installation --------------------------- */
   {
-    id: "tv-mounting",
-    name: "TV Mounting",
-    description: "Professional wall mounting with clean cable management.",
-    image: "/services/tv-mounting.webp",
+    id: "audio-system",
+    name: "Audio System Install",
+    description: "Soundbar or full surround sound setup. Material provided by client.",
+    image: "/services/audio-system.webp",
     type: "installation",
-    benefits: ["Cable concealment", "Wall mount not included"],
-    mountOption: true,
-    pricing: {
-      kind: "variant",
-      groupLabel: "TV Size",
-      variants: [
-        { id: "tv-55", label: 'Up to 55"', canonicalId: "tv-small", price: 200 },
-        { id: "tv-75", label: '56" – 75"', canonicalId: "tv-large", price: 350 },
-        { id: "tv-76", label: '76" and larger', canonicalId: "tv-xl", price: 400 },
-      ],
-    },
-    reviewNote: "Wall mount/bracket not included. Existing outlet behind the TV assumed.",
+    benefits: ["Concealed wiring", "Calibration included"],
+    hasLadderFee: true,
+    pricing: { kind: "hourly", canonicalId: "audio-system", hourlyRate: 150 },
   },
   {
-    id: "ceiling-fan",
-    name: "Ceiling Fan Install",
-    description: "Install or replace a standard ceiling fan.",
-    image: "/services/ceiling-fan.webp",
-    type: "installation",
-    benefits: ["Balance & test", "Cleanup included"],
-    hasLadderFee: true,
-    pricing: { kind: "fixed", canonicalId: "ceiling-fan", price: 185 },
+    id: "smart-switch",
+    name: "Smart Switch / Dimmer / Outlet Installation",
+    description: "Smart switch or dimmer install and app pairing. Materials provided by the client.",
+    image: "/services/switches-outlets.webp",
+    type: "lighting",
+    benefits: ["App pairing included", "Per device"],
+    pricing: { kind: "fixed", canonicalId: "smart-switch", price: 150 },
+  },
+  {
+    id: "exterior-bulb",
+    name: "Exterior Bulb Replacement",
+    description: "Hard-to-reach exterior bulb replacement.",
+    image: "/services/exterior-bulb.webp",
+    type: "lighting",
+    benefits: ["Tall-reach equipment", "Per visit", "Bulbs not included"],
+    heightInput: true,
+    pricing: { kind: "fixed", canonicalId: "exterior-bulb-replacement", price: 150 },
   },
   {
     id: "doorbell",
-    name: "Ring Doorbell Install",
+    name: "Smart Doorbell Install",
     description: "Smart video doorbell installation and app setup.",
     image: "/services/doorbell.webp",
     type: "installation",
     benefits: ["Existing wiring", "App + chime setup", "Same-day available"],
     pricing: { kind: "fixed", canonicalId: "doorbell", price: 150 },
-    reviewNote: "Ring hardware sold separately (≈ $99). New wiring may need a tech review.",
+    reviewNote: "Doorbell hardware sold separately (≈ $99). New wiring may need a tech review.",
   },
   {
     id: "security-cameras",
@@ -249,45 +235,9 @@ const catalog: Service2[] = [
     description: "Camera installation, mounting, and app setup.",
     image: "/services/security-cameras.webp",
     type: "installation",
-    benefits: ["$175 per camera", "App + recording setup", "Cable management"],
+    benefits: ["App + recording setup", "Cable management"],
     hasLadderFee: true,
-    pricing: {
-      kind: "quantity",
-      canonicalId: "single-camera",
-      unitPrice: 175,
-      unitLabel: "cameras",
-      min: 1,
-      max: 6,
-      default: 1,
-      attributes: [
-        {
-          id: "placement",
-          label: "Indoor or outdoor? (no price impact)",
-          options: [
-            { id: "indoor", label: "Indoor" },
-            { id: "outdoor", label: "Outdoor" },
-            { id: "both", label: "Both" },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: "audio-system",
-    name: "Audio System Install",
-    description: "Soundbar or full surround sound setup.",
-    image: "/services/audio-system.webp",
-    type: "installation",
-    benefits: ["Concealed wiring", "Calibration included"],
-    hasLadderFee: true,
-    pricing: {
-      kind: "variant",
-      groupLabel: "System type",
-      variants: [
-        { id: "audio-soundbar", label: "Soundbar (concealed wiring)", canonicalId: "soundbar", price: 200 },
-        { id: "audio-surround", label: "Full surround (5.1 / 7.1)", canonicalId: "surround-sound", price: 600 },
-      ],
-    },
+    pricing: { kind: "hourly", canonicalId: "single-camera", hourlyRate: 150 },
   },
   {
     id: "picture-hanging",
@@ -295,38 +245,26 @@ const catalog: Service2[] = [
     description: "Professional picture and art installation.",
     image: "/services/picture-hanging.webp",
     type: "installation",
-    benefits: ["$45 per item", "Precise leveling", "Cleanup included"],
+    benefits: ["Precise leveling", "Cleanup included"],
     hasLadderFee: true,
-    pricing: {
-      kind: "variant",
-      groupLabel: "What are you hanging?",
-      variants: [
-        {
-          id: "pic-item",
-          label: "By the item",
-          canonicalId: "picture-hanging-item",
-          price: 45,
-          perUnit: { unitLabel: "items", min: 1, max: 20, default: 3 },
-        },
-        { id: "pic-gallery", label: "Gallery wall", canonicalId: "picture-hanging-gallery", price: 237 },
-      ],
-    },
+    pricing: { kind: "hourly", canonicalId: "picture-hanging", hourlyRate: 150 },
   },
 ]
 
-const sections: { type: ServiceType; icon: React.ElementType; title: string; subtitle: string }[] = [
-  { type: "lighting", icon: Zap, title: "Lighting", subtitle: "LED, fixtures, outdoor & maintenance" },
-  { type: "installation", icon: Hammer, title: "Installation", subtitle: "TVs, audio, security & more" },
-]
-
 const LADDER_FEE = 400
+const SOUNDBAR_FEE = 75
 
 interface CartConfig {
   variantId?: string
   attributes: Record<string, string>
   quantity?: number
+  /** True when the ceiling is 15'+ and the large-ladder fee applies. */
   ladderFee: boolean
   needsMount?: boolean
+  /** TV: mount a soundbar & connect subwoofer (+$75). */
+  soundbar?: boolean
+  /** Exterior bulb: customer's estimated fixture height in feet (note only). */
+  heightFt?: string
 }
 
 function formatPrice(amount: number): string {
@@ -356,6 +294,8 @@ function defaultConfig(service: Service2): CartConfig {
         : undefined,
     ladderFee: false,
     needsMount: false,
+    soundbar: false,
+    heightFt: "",
   }
 }
 
@@ -369,23 +309,31 @@ function variantQuantity(variant: Variant, cfg: CartConfig): number {
   return cfg.quantity ?? variant.perUnit?.default ?? 1
 }
 
+/** True when this service is billed hourly (price shown as "$X/hr"). */
+function isHourly(service: Service2): boolean {
+  return service.pricing.kind === "hourly"
+}
+
 /** Line price for a service excluding the shared ladder fee. */
 function linePrice(service: Service2, cfg: CartConfig): number {
   const p = service.pricing
-  if (p.kind === "fixed") return p.price
-  if (p.kind === "quantity") return p.unitPrice * (cfg.quantity ?? p.default)
-  if (p.kind === "variant") {
+  let base = 0
+  if (p.kind === "fixed") base = p.price
+  else if (p.kind === "hourly") base = p.hourlyRate
+  else if (p.kind === "quantity") base = p.unitPrice * (cfg.quantity ?? p.default)
+  else if (p.kind === "variant") {
     const v = selectedVariant(service, cfg)
-    if (!v) return 0
-    return v.perUnit ? v.price * variantQuantity(v, cfg) : v.price
+    base = v ? (v.perUnit ? v.price * variantQuantity(v, cfg) : v.price) : 0
   }
-  return 0
+  if (service.soundbarOption && cfg.soundbar) base += SOUNDBAR_FEE
+  return base
 }
 
 /** The "starting at" headline price shown on a collapsed card. */
 function startingPrice(service: Service2): number {
   const p = service.pricing
   if (p.kind === "fixed") return p.price
+  if (p.kind === "hourly") return p.hourlyRate
   if (p.kind === "quantity") return p.unitPrice * p.default
   if (p.kind === "variant")
     return Math.min(...p.variants.map((v) => (v.perUnit ? v.price * v.perUnit.min : v.price)))
@@ -395,20 +343,22 @@ function startingPrice(service: Service2): number {
 /** Expand a configured cart entry into canonical service ids for downstream pages. */
 function canonicalIdsFor(service: Service2, cfg: CartConfig): string[] {
   const p = service.pricing
-  if (p.kind === "fixed") return [p.canonicalId]
-  if (p.kind === "quantity") return Array(cfg.quantity ?? p.default).fill(p.canonicalId)
-  if (p.kind === "variant") {
+  const ids: string[] = []
+  if (p.kind === "fixed" || p.kind === "hourly") ids.push(p.canonicalId)
+  else if (p.kind === "quantity") ids.push(...Array(cfg.quantity ?? p.default).fill(p.canonicalId))
+  else if (p.kind === "variant") {
     const v = selectedVariant(service, cfg)
-    if (!v) return []
-    return v.perUnit ? Array(variantQuantity(v, cfg)).fill(v.canonicalId) : [v.canonicalId]
+    if (v) ids.push(...(v.perUnit ? Array(variantQuantity(v, cfg)).fill(v.canonicalId) : [v.canonicalId]))
   }
-  return []
+  // Soundbar add-on (TV) propagates as its own line so downstream totals match.
+  if (service.soundbarOption && cfg.soundbar) ids.push("tv-soundbar")
+  return ids
 }
 
 /** Canonical id used to flag a ladder fee for downstream (any non-empty set => flat $400). */
 function ladderCanonicalId(service: Service2, cfg: CartConfig): string | undefined {
   const p = service.pricing
-  if (p.kind === "fixed") return p.canonicalId
+  if (p.kind === "fixed" || p.kind === "hourly") return p.canonicalId
   if (p.kind === "variant") return selectedVariant(service, cfg)?.canonicalId
   return undefined
 }
@@ -499,6 +449,13 @@ export default function ServicesPage() {
       delete next[id]
       return next
     })
+    // Collapse the card back to its original (unexpanded) height on deselect.
+    setExpanded((prev) => {
+      if (!prev.has(id)) return prev
+      const next = new Set(prev)
+      next.delete(id)
+      return next
+    })
   }
 
   const updateConfig = (service: Service2, patch: Partial<CartConfig>) => {
@@ -564,13 +521,8 @@ export default function ServicesPage() {
   // card is removed, an unselected one is added (or expanded to choose options).
   const handleCardClick = (service: Service2) => {
     if (isInCart(service.id)) {
+      // removeFromCart also collapses the card back to its original height.
       removeFromCart(service.id)
-      // Collapse back to the original card state on deselect.
-      setExpanded((prev) => {
-        const next = new Set(prev)
-        next.delete(service.id)
-        return next
-      })
       return
     }
     const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
@@ -720,23 +672,47 @@ export default function ServicesPage() {
             </div>
           )}
 
-          {/* Large ladder fee — separated module */}
+          {/* Ceiling height — drives the large-ladder fee */}
           {service.hasLadderFee && (inCart || showConfig) && (
+            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
+              <p className="text-xs font-semibold text-gray-800">Is your ceiling under 15&apos; tall?</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <OptionPill
+                  active={!cfg.ladderFee}
+                  onClick={() => updateConfig(service, { ladderFee: false })}
+                  label="Yes, under 15'"
+                />
+                <OptionPill
+                  active={cfg.ladderFee}
+                  onClick={() => updateConfig(service, { ladderFee: true })}
+                  label="No, 15' or taller"
+                />
+              </div>
+              {cfg.ladderFee && (
+                <p className="mt-2 text-[11px] font-semibold text-[#8a6d00]">
+                  Large ladder required — an extra ${LADDER_FEE} applies for ceilings 15&apos; and taller.
+                </p>
+              )}
+              <p className="mt-1 text-[11px] text-gray-500 leading-tight">
+                Indoors we can reach fixtures up to 26&apos; tall.
+              </p>
+            </div>
+          )}
+
+          {/* Soundbar add-on — TV only (+$75) */}
+          {service.soundbarOption && (inCart || showConfig) && (
             <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={cfg.ladderFee}
-                  onChange={(e) => updateConfig(service, { ladderFee: e.target.checked })}
+                  checked={!!cfg.soundbar}
+                  onChange={(e) => updateConfig(service, { soundbar: e.target.checked })}
                   className="w-4 h-4 accent-[#FFCB00] cursor-pointer flex-shrink-0"
                 />
                 <span className="text-xs font-semibold text-gray-800">
-                  Add large ladder fee <span className="text-[#8a6d00]">+${LADDER_FEE}</span>
+                  Mount soundbar &amp; connect subwoofer <span className="text-[#8a6d00]">+${SOUNDBAR_FEE}</span>
                 </span>
               </label>
-              <p className="mt-1 pl-[26px] text-[11px] text-gray-500 leading-tight">
-                For interior ceilings over 15&apos; tall.
-              </p>
             </div>
           )}
 
@@ -758,11 +734,40 @@ export default function ServicesPage() {
             </div>
           )}
 
+          {/* Estimated fixture height — exterior bulb (note only, no price impact) */}
+          {service.heightInput && (inCart || showConfig) && (
+            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3" onClick={(e) => e.stopPropagation()}>
+              <label className="block text-xs font-semibold text-gray-800 mb-1.5">
+                Estimated height of the fixtures
+              </label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  value={cfg.heightFt ?? ""}
+                  onChange={(e) => updateConfig(service, { heightFt: e.target.value })}
+                  placeholder="e.g. 20"
+                  className="h-9 w-24 rounded-lg"
+                />
+                <span className="text-xs text-gray-500">feet</span>
+              </div>
+              <p className="mt-1 text-[11px] text-gray-500 leading-tight">
+                Helps us bring the right reach equipment. Indoors we reach up to 26&apos;.
+              </p>
+            </div>
+          )}
+
           {/* Price + action pinned to the bottom */}
           <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-baseline justify-between">
               <div className="w-full">
-                {!inCart && service.pricing.kind === "quantity" ? (
+                {isHourly(service) ? (
+                  <span className="text-lg font-bold text-gray-900">
+                    ${formatPrice(startingPrice(service))}
+                    <span className="text-xs font-medium text-gray-500">/hr</span>
+                  </span>
+                ) : !inCart && service.pricing.kind === "quantity" ? (
                   <span className="text-lg font-bold text-gray-900">
                     ${formatPrice(service.pricing.unitPrice)}
                     <span className="text-xs font-medium text-gray-500"> / {singular(service.pricing.unitLabel)}</span>
@@ -856,29 +861,14 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        {/* Sections by booking type */}
+        {/* All services in one flat grid */}
         <div className="container mx-auto px-4 py-4">
           <div className="max-w-5xl mx-auto space-y-12">
-            {sections.map((section) => {
-              const SectionIcon = section.icon
-              const services = filterServices(catalog.filter((s) => s.type === section.type))
-              if (services.length === 0) return null
-              return (
-                <div key={section.type}>
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-full border shadow-sm">
-                      <SectionIcon className="w-4 h-4 text-[#FFCB00]" />
-                      <span className="text-sm font-semibold text-gray-900">{section.title}</span>
-                    </div>
-                    <span className="text-sm text-gray-400">{section.subtitle}</span>
-                    <div className="flex-1 h-px bg-gray-200" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-                    {services.map(renderCard)}
-                  </div>
-                </div>
-              )
-            })}
+            {filterServices(catalog).length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+                {filterServices(catalog).map(renderCard)}
+              </div>
+            )}
 
             {noResults && (
               <div className="text-center py-12 text-gray-500">

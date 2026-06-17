@@ -20,8 +20,8 @@ const services = [
     icon: Shield,
     title: "Security & Smart Home",
     description:
-      "Ring doorbell and camera installations, smart switches, dimmers, and outlet upgrades for a modern home.",
-    features: ["Ring Doorbells", "Security Cameras", "Smart Switches", "Outlet Upgrades"],
+      "Smart doorbell and camera installations, smart switches, dimmers, and outlet upgrades for a modern home.",
+    features: ["Smart Doorbells", "Security Cameras", "Smart Switches", "Outlet Upgrades"],
   },
   {
     icon: Plug,

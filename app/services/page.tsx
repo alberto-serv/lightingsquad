@@ -25,7 +25,7 @@ const services = [
   {
     id: "security",
     title: "Security & Smart Home",
-    description: "Ring doorbell, camera systems, smart switches, and dimmer installations",
+    description: "Smart doorbell, camera systems, smart switches, and dimmer installations",
     price: "Starting at $75",
     icon: Shield,
   },

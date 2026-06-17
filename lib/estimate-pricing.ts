@@ -9,7 +9,6 @@ export const ESTIMATE_PRICE_IDS = new Set<string>([
   "tv-large",
   "soundbar",
   "surround-sound",
-  "single-camera",
   "multi-camera",
   "picture-hanging-standard",
   "picture-hanging-gallery",
@@ -27,6 +26,17 @@ export const ESTIMATE_PRICE_IDS = new Set<string>([
   "permanent-led-xl",
   "led-bulb-per-fixture",
   "led-bulb-whole-home",
+])
+
+/**
+ * Canonical service ids billed by the hour — displayed as "$X/hr", with the
+ * final number of hours quoted on site.
+ */
+export const HOURLY_PRICE_IDS = new Set<string>([
+  "fixture-cleaning",
+  "single-camera",
+  "audio-system",
+  "picture-hanging",
 ])
 
 export function isEstimatePrice(id: string): boolean {
@@ -50,8 +60,9 @@ export function ladderAppliesToPayable(ladderIds: string[] | undefined | null): 
   return !!ladderIds?.some((id) => !ESTIMATE_PRICE_IDS.has(id))
 }
 
-/** Format a line price as "$X" or "from $X" depending on whether the id is an estimate. */
+/** Format a line price as "$X/hr", "from $X", or "$X" depending on the id. */
 export function formatServicePrice(id: string, price: number): string {
   const formatted = `$${price.toLocaleString("en-US")}`
+  if (HOURLY_PRICE_IDS.has(id)) return `${formatted}/hr`
   return ESTIMATE_PRICE_IDS.has(id) ? `from ${formatted}` : formatted
 }

@@ -19,7 +19,7 @@ export default function SecuritySmartHomePage() {
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-balance">Security & Smart Home Installation</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Protect your home and upgrade to smart technology with Ring doorbells, security cameras, smart switches, and dimmer installations—all professionally wired and configured.
+                Protect your home and upgrade to smart technology with smart doorbells, security cameras, smart switches, and dimmer installations—all professionally wired and configured.
               </p>
               <div className="bg-yellow-50 border-2 border-[#FFCB00] rounded-lg p-4">
                 <p className="text-3xl font-bold text-[#112337]">Starting at $75</p>
