@@ -689,11 +689,11 @@ export default function ServicesPage() {
                 />
               </div>
               {cfg.ladderFee && (
-                <p className="mt-2 text-[11px] font-semibold text-[#8a6d00]">
+                <p className="mt-2 text-[11px] font-semibold text-gray-800">
                   Large ladder required — an extra ${LADDER_FEE} applies for ceilings 15&apos; and taller.
                 </p>
               )}
-              <p className="mt-1 text-[11px] text-gray-500 leading-tight">
+              <p className="mt-1 text-[11px] text-gray-800 leading-tight">
                 Indoors we can reach fixtures up to 26&apos; tall.
               </p>
             </div>
@@ -830,7 +830,7 @@ export default function ServicesPage() {
     searchQuery.trim() && catalog.every((s) => filterServices([s]).length === 0)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 max-sm:pb-24">
       <Header />
 
       <div className="pt-24 pb-16 max-sm:pb-28">
@@ -881,7 +881,7 @@ export default function ServicesPage() {
             {/* Book section — count + total + checkout.
                 In-flow card on desktop; pinned to the bottom of the screen on mobile. */}
             {itemCount > 0 && (
-              <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
+              <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:!my-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
                 <div className="rounded-2xl border border-gray-800 bg-gray-900 p-5 sm:p-6 shadow-sm max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
