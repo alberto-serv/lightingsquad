@@ -86,6 +86,8 @@ interface Service2 {
   pricing: Pricing
   /** Shown under the price when extra work might apply. */
   reviewNote?: string
+  /** Renders the price as a "from $X" starting estimate (no configurable options). */
+  estimate?: boolean
 }
 
 const catalog: Service2[] = [
@@ -107,14 +109,8 @@ const catalog: Service2[] = [
     image: "/services/outdoor-lighting.webp",
     type: "lighting",
     benefits: ["Custom layout", "Weatherproof fixtures"],
-    pricing: {
-      kind: "variant",
-      groupLabel: "Project size",
-      variants: [
-        { id: "outdoor-basic", label: "Basic (5 – 8 lights)", canonicalId: "landscape-basic", price: 850 },
-        { id: "outdoor-custom", label: "Custom / large", canonicalId: "landscape-custom", price: 2500 },
-      ],
-    },
+    estimate: true,
+    pricing: { kind: "fixed", canonicalId: "landscape-basic", price: 850 },
   },
   {
     id: "garage-hex",
@@ -231,8 +227,8 @@ const catalog: Service2[] = [
   },
   {
     id: "security-cameras",
-    name: "Security Cameras",
-    description: "Camera installation, mounting, and app setup.",
+    name: "Security Cameras / Security Lights",
+    description: "Camera installation, mounting, security light installation and app setup.",
     image: "/services/security-cameras.webp",
     type: "installation",
     benefits: ["App + recording setup", "Cable management"],
@@ -371,6 +367,7 @@ export default function ServicesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [requestMessage, setRequestMessage] = useState("")
   const [requestSent, setRequestSent] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
 
   /* ----------------------------- persistence ---------------------------- */
   useEffect(() => {
@@ -406,6 +403,11 @@ export default function ServicesPage() {
   const anyLadder = cartEntries.some(({ cfg }) => cfg.ladderFee)
   const total = servicesSubtotal + (anyLadder ? LADDER_FEE : 0)
   const itemCount = cartEntries.length
+
+  // The flat $400 large-ladder fee is charged once. The first selected service that
+  // opts in "carries" it (its card price shows the fee); any later ladder selection
+  // just flags that the fee is already in the total via a toast.
+  const ladderOwnerId = cartEntries.find(({ cfg }) => cfg.ladderFee)?.service.id
 
   // Persist on every cart change so a refresh restores the order.
   useEffect(() => {
@@ -464,6 +466,23 @@ export default function ServicesPage() {
       return { ...prev, [service.id]: { ...base, ...patch } }
     })
   }
+
+  // Toggling the large-ladder fee. The $400 only adds once, so if another selected
+  // service already carries it, tell the customer it's already in their total.
+  const setLadder = (service: Service2, value: boolean) => {
+    if (value) {
+      const alreadyCharged = cartEntries.some(({ service: s, cfg }) => s.id !== service.id && cfg.ladderFee)
+      if (alreadyCharged) setToast("We've already added the $400 large-ladder fee to your total.")
+    }
+    updateConfig(service, { ladderFee: value })
+  }
+
+  // Auto-dismiss the toast.
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 3500)
+    return () => clearTimeout(t)
+  }, [toast])
 
   const toggleExpanded = (id: string) => {
     setExpanded((prev) => {
@@ -536,6 +555,8 @@ export default function ServicesPage() {
     const cfg = cart[service.id] ?? defaultConfig(service)
     const configurable = service.pricing.kind === "variant" || service.pricing.kind === "quantity"
     const showConfig = configurable && (inCart || expanded.has(service.id))
+    // This card shows the flat $400 fee in its price only when it's the one carrying it.
+    const carriesLadder = inCart && cfg.ladderFee && service.id === ladderOwnerId
 
     return (
       <Card
@@ -679,18 +700,20 @@ export default function ServicesPage() {
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <OptionPill
                   active={!cfg.ladderFee}
-                  onClick={() => updateConfig(service, { ladderFee: false })}
+                  onClick={() => setLadder(service, false)}
                   label="Yes, under 15'"
                 />
                 <OptionPill
                   active={cfg.ladderFee}
-                  onClick={() => updateConfig(service, { ladderFee: true })}
+                  onClick={() => setLadder(service, true)}
                   label="No, 15' or taller"
                 />
               </div>
               {cfg.ladderFee && (
                 <p className="mt-2 text-[11px] font-semibold text-gray-800">
-                  Large ladder required — an extra ${LADDER_FEE} applies for ceilings 15&apos; and taller.
+                  {service.id === ladderOwnerId
+                    ? `Large ladder required — an extra $${LADDER_FEE} applies for ceilings 15' and taller.`
+                    : `The $${LADDER_FEE} large-ladder fee is already in your total.`}
                 </p>
               )}
               <p className="mt-1 text-[11px] text-gray-800 leading-tight">
@@ -766,6 +789,9 @@ export default function ServicesPage() {
                   <span className="text-lg font-bold text-gray-900">
                     ${formatPrice(startingPrice(service))}
                     <span className="text-xs font-medium text-gray-500">/hr</span>
+                    {carriesLadder && (
+                      <span className="block text-xs font-semibold text-[#8a6d00]">+ ${formatPrice(LADDER_FEE)} large-ladder fee</span>
+                    )}
                   </span>
                 ) : !inCart && service.pricing.kind === "quantity" ? (
                   <span className="text-lg font-bold text-gray-900">
@@ -774,10 +800,10 @@ export default function ServicesPage() {
                   </span>
                 ) : (
                   <span className="text-lg font-bold text-gray-900">
-                    {!inCart && service.pricing.kind !== "fixed" && (
+                    {((!inCart && service.pricing.kind !== "fixed") || service.estimate) && (
                       <span className="text-xs font-medium text-gray-500">from </span>
                     )}
-                    ${formatPrice(inCart ? linePrice(service, cfg) : startingPrice(service))}
+                    ${formatPrice((inCart ? linePrice(service, cfg) : startingPrice(service)) + (carriesLadder ? LADDER_FEE : 0))}
                   </span>
                 )}
                 {/* Reserve two lines so cards with and without a note match height */}
@@ -816,7 +842,7 @@ export default function ServicesPage() {
                 className="mt-2 w-full rounded-lg bg-[#FFCB00] hover:bg-[#FFCB00]/90 text-black font-semibold h-10 text-sm"
               >
                 <Plus className="w-4 h-4 mr-1" />
-                {configurable ? "Add to cart" : "Book"}
+                {configurable || service.estimate ? "Add to cart" : "Book"}
               </Button>
             )}
           </div>
@@ -832,6 +858,16 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-gray-50 max-sm:pb-24">
       <Header />
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-20 left-1/2 z-50 -translate-x-1/2 px-4 w-full max-w-sm">
+          <div className="flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-lg">
+            <Check className="h-4 w-4 flex-shrink-0 text-[#FFCB00]" />
+            {toast}
+          </div>
+        </div>
+      )}
 
       <div className="pt-24 pb-16 max-sm:pb-28">
         {/* Hero */}
