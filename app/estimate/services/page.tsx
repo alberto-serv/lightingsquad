@@ -557,6 +557,13 @@ export default function ServicesPage() {
     const showConfig = configurable && (inCart || expanded.has(service.id))
     // This card shows the flat $400 fee in its price only when it's the one carrying it.
     const carriesLadder = inCart && cfg.ladderFee && service.id === ladderOwnerId
+    // Whether the card reveals any extra controls once added (and so grows on its own).
+    const hasInCartExtras =
+      configurable ||
+      !!service.hasLadderFee ||
+      !!service.soundbarOption ||
+      !!service.mountOption ||
+      !!service.heightInput
 
     return (
       <Card
@@ -806,10 +813,12 @@ export default function ServicesPage() {
                     ${formatPrice((inCart ? linePrice(service, cfg) : startingPrice(service)) + (carriesLadder ? LADDER_FEE : 0))}
                   </span>
                 )}
-                {/* Reserve two lines so cards with and without a note match height */}
-                {!inCart && (
+                {/* Reserve two lines so cards with and without a note match height.
+                    Cards that reveal no extra controls when added keep the reserve so
+                    their height stays constant on selection. */}
+                {(!inCart || !hasInCartExtras) && (
                   <p className="text-[11px] text-gray-400 mt-0.5 leading-tight line-clamp-2 min-h-[1.75rem]">
-                    {service.reviewNote ?? ""}
+                    {!inCart ? service.reviewNote ?? "" : ""}
                   </p>
                 )}
               </div>
