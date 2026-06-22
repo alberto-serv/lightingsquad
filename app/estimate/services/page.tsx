@@ -909,6 +909,10 @@ export default function ServicesPage() {
         {/* All services in one flat grid */}
         <div className="container mx-auto px-4 py-4">
           <div className="max-w-5xl mx-auto space-y-12">
+            {/* Services grid + the sticky book bar share one block, so on desktop the
+                bar can pin to the bottom of the viewport while scrolling, then settle
+                just above the request form below without ever overlapping it. */}
+            <div>
             {filterServices(catalog).length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                 {filterServices(catalog).map(renderCard)}
@@ -924,10 +928,11 @@ export default function ServicesPage() {
             )}
 
             {/* Book section — count + total + checkout.
-                In-flow card on desktop; pinned to the bottom of the screen on mobile. */}
+                Sticks to the bottom of the viewport on desktop so it stays visible
+                without scrolling to the end; pinned to the bottom of the screen on mobile. */}
             {itemCount > 0 && (
-              <div className="border-t border-gray-200 pt-10 max-sm:border-0 max-sm:pt-0 max-sm:!my-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
-                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-5 sm:p-6 shadow-sm max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
+              <div className="sm:sticky sm:bottom-6 sm:z-30 sm:mt-12 max-sm:!my-0 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:bg-gray-900 max-sm:shadow-2xl">
+                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-5 sm:p-6 shadow-sm sm:shadow-2xl max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:shadow-none max-sm:p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <div className="text-base font-semibold text-white">
@@ -946,6 +951,7 @@ export default function ServicesPage() {
                 </div>
               </div>
             )}
+            </div>
 
             {/* Request a service — simplified */}
             <div className="border-t border-gray-200 pt-10">
